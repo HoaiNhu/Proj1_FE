@@ -1,6 +1,7 @@
 import React from "react";
+import HeaderComponent from "../HeaderComponent/HeaderComponent";
 
-function DefaultComponent({children}) {
+function DefaultComponent({ children }) {
   return (
     <div>
       <HeaderComponent />

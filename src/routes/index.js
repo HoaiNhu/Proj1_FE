@@ -1,27 +1,27 @@
-const { default: OrderPage } = require("../../pages/OrderPage/OrderPage");
-const { default: ProductsPage } = require("../../pages/ProductsPage/ProductsPage");
-const { default: HomePage } = require("../pages/HomePage/HomePage");
-const { default: NotFoundPage } = require("../pages/NotFoundPage/NotFoundPage");
+import HomePage from "../pages/HomePage/HomePage";
+import OrderPage from "../pages/OrderPage/OrderPage";
+import ProductsPage from "../pages/ProductsPage/ProductsPage";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
 export const routes = [
   {
-    path: "/",
+    path: '/',
     page: HomePage,
     isShowHeader: true,
   },
 
   {
-    path: "/order",
+    path: '/order',
     page: OrderPage,
     isShowHeader: true,
   },
   {
-    path: "/products",
+    path: '/products',
     page: ProductsPage,
     isShowHeader: true,
   },
   {
-    path: "*",
+    path: '*',
     page: NotFoundPage,
     isShowHeader: false,
   },
