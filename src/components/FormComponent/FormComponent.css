@@ -1,0 +1,27 @@
+.form-label {
+  font-size: 1.6rem; /* kích thước chữ cho label */
+  font-family: "Poppins", sans-serif; /* font family */
+  color: #3a060e; /* màu chữ */
+}
+
+.form-control.form-text {
+  width: 42rem;
+  height: 4.4rem;
+  border-radius: 5rem;
+  background-color: #fff; /* màu nền với độ mờ */
+  border: 1px solid #b1e321; /* màu viền */
+  font-size: 1.6rem;
+  font-family: "Poppins", sans-serif; /* font family */
+  color: #3a060e; /* màu chữ */
+  margin: 5px 0;
+  padding-left: 20px;
+}
+
+.form-control::placeholder {
+  color: #3a060e;
+  opacity: 0.6;
+}
+
+/* .form-control.form-text:active {
+  border: #3a060e;
+} */
