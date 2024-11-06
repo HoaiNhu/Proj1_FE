@@ -110,6 +110,7 @@ const LogInPage = () => {
           }}
         >
           Bạn chưa có tài khoản?{" "}
+          <u>
           <a
             href="./signup"
             style={{
@@ -120,6 +121,7 @@ const LogInPage = () => {
           >
             Đăng ký
           </a>
+          </u>
         </div>
       </div>
     </div>
