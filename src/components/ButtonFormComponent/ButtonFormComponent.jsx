@@ -1,10 +1,9 @@
 import React from "react";
-import "./ButtonFormComponent.css"
 
-const ButtonComponent = (props) => {
+const ButtonFormComponent = (props) => {
   return (
     <button
-      className="btn btn-form"
+      className="btn-form"
       style={{
         height: "44px",
         width: "auto",
@@ -15,4 +14,4 @@ const ButtonComponent = (props) => {
   );
 };
 
-export default ButtonComponent;
+export default ButtonFormComponent;

@@ -1,0 +1,19 @@
+.btn__noBG__component {
+  display: flex;
+  width: var(--button-width);
+  height: var(--button-height);
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  color: var(--green100);
+  border: none;
+  background: var(--white);
+  font-size: 1.6rem;
+  font-weight: 600;
+  transition-duration: 0.25s;
+}
+
+.btn__noBG__component:hover {
+  color: var(--brown100) !important;
+}

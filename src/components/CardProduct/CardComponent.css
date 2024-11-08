@@ -1,0 +1,86 @@
+/* Card container styling */
+
+.card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color:#3A060E ;
+    
+  }
+
+  
+  /* Button styling */
+  .card button {
+    background-color: #3A060E;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 100%;
+    
+  }
+  .card button:hover {
+    background-color: #3A060E;
+    
+  }
+  
+  
+  /* Image styling */
+  .card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    object-fit: cover;
+    height: 200px;
+  
+  }
+  
+  /* Card body styling */
+  .card-body {
+    text-align: center;
+    object-fit: cover;
+     
+  }
+
+  .card-body :hover
+  {
+    transform: scale(1.1);
+    transition: 0.25s;
+  }
+  
+  /* Title styling */
+  .card-title {
+    color: var(--White, #FFF);
+    font-family: Poppins;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 149.978%; /* 23.996px */
+    text-transform: capitalize;
+    padding-top: 5%;
+  }
+  
+  /* Text styling */
+  .card-subtitle {
+    color: var(--button-color, #B1E321);
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 149.978%; /* 29.996px */
+    text-transform: capitalize;
+    padding-bottom: 10px;
+  }
+  
+  /* Price text */
+  .card-text.price {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #B1E321;
+  }
+  
+  /* Media query for responsive design */
+  @media (max-width: 767px) {
+    .card {
+      width: 100%; /* Đảm bảo thẻ rộng 100% trên màn hình nhỏ */
+    }
+  }
+  

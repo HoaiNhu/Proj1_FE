@@ -1,19 +1,18 @@
-import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-
-function CardProduct() {
+import Button from 'react-bootstrap/Button';
+import './CardComponent.css'
+const CardProduct = ( {img, title, price} )=> {
   return (
-    <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src="holder.js/100px180" />
-      <Card.Body>
-        <Card.Title>Card Title</Card.Title>
-        <Card.Text>
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </Card.Text>
-        <Button variant="primary">Go somewhere</Button>
+    <Card style={{ width: '250px' }}>
+    <Button className='button'>
+     <Card.Body>
+        <Card.Img  src= {img} />
       </Card.Body>
+        <Card.Title >{title}</Card.Title>
+        <Card.Subtitle>{price}</Card.Subtitle>
+        </Button>
     </Card>
+ 
   );
 }
 
