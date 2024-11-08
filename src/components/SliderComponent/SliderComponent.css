@@ -9,6 +9,7 @@
     width: 100vw;
     margin:auto;
     max-height: 100% ; /* Căn giữa slider */
+    cursor: pointer;
 }
 
 /* Đảm bảo ảnh trong slider chiếm toàn bộ chiều rộng slider */
