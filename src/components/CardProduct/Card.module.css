@@ -1,0 +1,25 @@
+.primary {
+    display: flex;
+    background-color: white !important; /* Đảm bảo background là màu trắng */
+    color: #3A060E !important; 
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-color: #B1E321 !important;
+}
+
+.secondary {
+    display: flex;
+    background-color: #3A060E !important; /* Màu nền nâu cho secondary */
+    color: white !important;
+    border-radius: 15px;
+    border: none !important;
+}
+
+/* Class riêng cho hình ảnh và title */
+.cardImage {
+    width: 100%;
+}
+
+.cardTitle {
+    color: inherit; /* Đảm bảo lấy màu từ parent */
+}
