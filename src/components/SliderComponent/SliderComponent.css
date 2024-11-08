@@ -6,29 +6,30 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 100%;
+    width: 100vw;
+    margin:auto;
+    max-height: 100% ; /* Căn giữa slider */
 }
 
-/* Đảm bảo ảnh trong slider chiếm toàn bộ chiều rộng viewport */
+/* Đảm bảo ảnh trong slider chiếm toàn bộ chiều rộng slider */
 .slider-image {
-    width: 100vw;
+    width: 100% ;
     height: 100%;
-    object-fit: cover ;
+    object-fit: cover;
     object-position: center;
 }
 
 /* Responsive cho màn hình lớn */
 @media (min-width: 1024px) {
     .slider-item {
-        height: 500px; /* Chiều cao slider cho màn hình lớn */
+        height: auto; /* Chiều cao slider cho màn hình lớn */
     }
 }
 
 /* Responsive cho màn hình trung bình (tablet) */
 @media (min-width: 768px) and (max-width: 1023px) {
     .slider-item {
-        height: 400px; /* Chiều cao slider cho màn hình tablet */
+        height: auto; /* Chiều cao slider cho màn hình tablet */
     }
 
     .slider-image {
