@@ -1,5 +1,5 @@
 import Card from 'react-bootstrap/Card';
-import './CardProduct.css';
+import './Card.css';
 
 const CardProduct = ({ img, title, price }) => {
   return (

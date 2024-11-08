@@ -3,7 +3,7 @@
   border: none;
   border-radius: 8px;
   overflow: hidden;
-  background-color: #3A060E;
+  background-color:white;
   width: 25rem;
 }
 
@@ -20,12 +20,12 @@
 .card-body {
   text-align: center;
   padding: 20px;
-  background-color: #3A060E;
+  background-color: white;
 }
 
 /* Card title styling */
 .card-title {
-  color: white;
+  color: #3A060E;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -45,10 +45,7 @@
 }
 
 /* Hover effect for card image */
-.card img:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease;
-}
+
 
 /* Media query for responsive design */
 @media (max-width: 767px) {
