@@ -1,13 +1,24 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
 import HeaderComponent from "./components/HeaderComponent/HeaderComponent";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
+import ButtonComponent from "./components/ButtonComponent/ButtonComponent";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import WebFont from "webfontloader";
+import "@glints/poppins";
 
 function App() {
+  useEffect(() => {
+    WebFont.load({
+      google: {
+        families: ["Poppins"],
+      },
+    });
+  }, []);
+
   return (
-    <div>
+    <div style={{ fontFamily: "poppins" }}>
       <Router>
         <Routes>
           {routes.map((route) => {

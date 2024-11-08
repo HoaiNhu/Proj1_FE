@@ -1,0 +1,30 @@
+
+
+img {
+  width: 148px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.col.navbar-search {
+  display: flex;
+  flex-direction: row;
+}
+
+a.btn__signup {
+  display: flex;
+  width: var(--button-width);
+  height: var(--button-height);
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  background: var(--white);
+  color: var(--brown100);
+  border: none;
+  font-size: 1.6rem;
+  font-weight: 600;
+  transition-duration: 0.25s;
+  cursor: pointer;
+  text-decoration: none;
+}

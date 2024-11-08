@@ -1,7 +1,7 @@
 import React from "react";
 import ButtonFormComponent from "../../components/ButtonFormComponent/ButtonFormComponent";
 import FormComponent from "../../components/FormComponent/FormComponent";
-import Styles from "../../style";
+
 
 const SignUpPage = () => {
   return (
