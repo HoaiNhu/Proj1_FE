@@ -1,33 +1,41 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+
+/* nav top */
 img {
   width: 148px;
   height: auto;
   border-radius: 5px;
 }
 
-
 .navbar__search__form {
   display: flex;
-  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn__container {
   display: flex;
-  gap: 5px;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .btn__signup {
   display: flex;
-  width: var(--button-width);
+  width: max-content;
   height: var(--button-height);
-  padding: 8px 16px;
+  padding: 8px 8px;
   justify-content: center;
   align-items: center;
-  border-radius: 50px;
   background: var(--white);
   color: var(--brown100);
   border: none;
   font-size: 1.6rem;
-  font-weight: 600;
   transition-duration: 0.25s;
   cursor: pointer;
   text-decoration: none;
@@ -35,4 +43,31 @@ img {
 
 .btn__signup:hover {
   color: var(--green100);
+}
+
+.nav__cart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 20px 0;
+  padding: 8px;
+  color: var(--brown100);
+  transition: 0.25s;
+}
+
+.nav__cart:hover {
+  color: var(--green100);
+}
+
+/* nav bot */
+
+.nav__bot {
+  margin-top: 20px;
+}
+
+.nav__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
 }

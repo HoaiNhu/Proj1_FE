@@ -15,5 +15,5 @@
 }
 
 .btn__noBG__component:hover {
-  color: var(--brown100) !important;
+  color: var(--brown100);
 }
