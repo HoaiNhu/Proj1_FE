@@ -1,17 +1,21 @@
-
-
 img {
   width: 148px;
   height: auto;
   border-radius: 5px;
 }
 
-.col.navbar-search {
+
+.navbar__search__form {
   display: flex;
-  flex-direction: row;
+  gap: 5px;
 }
 
-a.btn__signup {
+.btn__container {
+  display: flex;
+  gap: 5px;
+}
+
+.btn__signup {
   display: flex;
   width: var(--button-width);
   height: var(--button-height);
@@ -27,4 +31,8 @@ a.btn__signup {
   transition-duration: 0.25s;
   cursor: pointer;
   text-decoration: none;
+}
+
+.btn__signup:hover {
+  color: var(--green100);
 }

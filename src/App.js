@@ -4,6 +4,7 @@ import { routes } from "./routes";
 import HeaderComponent from "./components/HeaderComponent/HeaderComponent";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import ButtonComponent from "./components/ButtonComponent/ButtonComponent";
+import ButtonNoBGComponent from "./components/ButtonNoBGComponent/ButtonNoBGComponent";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import WebFont from "webfontloader";
 import "@glints/poppins";

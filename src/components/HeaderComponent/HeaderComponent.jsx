@@ -12,20 +12,19 @@ function HeaderComponent() {
           <div className="row">
             <div className="col">
               <a className="navbar-brand" href="/">
-                <img src={img} alt="Avocado" className={styles.navbar__img} />
+                <img src={img} alt="Avocado" className="navbar__img" />
               </a>
             </div>
-
-            <div className="col navbar-search-form">
-              <SearchBoxComponent></SearchBoxComponent>
-            </div>
-            <div className="col navbar-search-btn">
-              <ButtonComponent>Tìm kiếm</ButtonComponent>
-            </div>
-
             <div className="col">
+              <div className={styles.navbar__search__form}>
+                <SearchBoxComponent></SearchBoxComponent>
+                <ButtonComponent>Tìm kiếm</ButtonComponent>
+              </div>
+            </div>
+
+            <div className="col nav-cart">
               <svg
-                className="nav-cart"
+                className="nav-cart-img"
                 xmlns="http://www.w3.org/2000/svg"
                 width="31"
                 height="30"
@@ -39,12 +38,12 @@ function HeaderComponent() {
               </svg>
             </div>
             <div className="col">
-              <a href="/" className="btn__signup" style={styles.btn_signup}>
-                Đăng kí
-              </a>
-            </div>
-            <div className="col">
-              <ButtonComponent>Đăng nhập</ButtonComponent>
+              <div className={styles.btn__container}>
+                <a href="/" className={styles.btn__signup}>
+                  Đăng kí
+                </a>
+                <ButtonComponent>Đăng nhập</ButtonComponent>
+              </div>
             </div>
           </div>
         </div>
