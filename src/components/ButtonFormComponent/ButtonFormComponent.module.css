@@ -1,18 +1,19 @@
-.btn.btn-form {
-  width: 525px; /* Độ rộng */
-  height: 60px; /* Chiều cao */
-  background-color: #b1e321; /* Màu nền */
-  color: #3a060e; /* Màu chữ */
-  font-size: 16px; /* Kích thước chữ */
-  font-family: "Poppins", sans-serif; /* Font family */
-  border-radius: 50px; /* Góc bo tròn */
-  border: none; /* Bỏ viền mặc định */
+.btn__form {
+  width: var(--search-box-width);
+  height: var(--search-box-height);
+  background-color: var(--green100);
+  color: var(--brown100); 
+  border-radius: 50px; 
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  transition: 0.25s;
 }
 
-.btn-form:hover {
+.btn__form:hover {
   background-color: #3a060e; /* Màu nền khi hover */
   color: #b1e321;
 }

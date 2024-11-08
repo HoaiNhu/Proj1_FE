@@ -1,20 +1,12 @@
 import React from "react";
-import "./FormComponent.css";
+import styles from "./FormComponent.module.css";
 
 const FormComponent = (props) => {
   return (
-    <div
-      className="mb-3"
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-        width: "42rem",
-      }}
-    >
+    <div className={`${styles.form__control}`}>
       <input
         type={props.type}
-        className="form-control form-text"
+        className={` ${styles.form__text}`}
         id={props.id}
         placeholder={props.placeholder}
       />

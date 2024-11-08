@@ -8,11 +8,13 @@
   --brown50: #3a060580;
   --brown30: #3a060e4d;
   --green100: #b1e321;
+  --green80: #b2e321cc;
   --green50: #b3e42150;
   --green30: #b1e3214d;
+  --green10: #b2e3211d;
   --white: #fff;
-  --grey: #f9f9f9;
-  /*  */
+  --grey9: #f9f9f9;
+  --grey: #ccc;
   --button-width: 13rem;
   --button-height: 4.4rem;
   --search-box-width: 44rem;

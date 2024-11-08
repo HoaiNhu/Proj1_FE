@@ -62,12 +62,13 @@ img {
 /* nav bot */
 
 .nav__bot {
-  margin-top: 20px;
+  margin: 5px;
 }
 
 .nav__content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 10px;
+  display: inline-flex;
+  justify-content: left;
+  align-items:center;
+  padding: 10px 0;
+  margin-left: 138px;
 }

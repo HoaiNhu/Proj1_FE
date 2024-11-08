@@ -5,10 +5,9 @@
   padding: 8px 16px;
   justify-content: center;
   align-items: center;
-  border-radius: 50px;
   color: var(--green100);
   border: none;
-  background: var(--white);
+  background: transparent;
   font-size: 1.6rem;
   font-weight: 600;
   transition-duration: 0.25s;

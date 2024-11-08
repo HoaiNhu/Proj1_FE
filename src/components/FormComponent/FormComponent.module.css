@@ -1,0 +1,19 @@
+.form__control {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.form__text {
+  width: var(--search-box-width);
+  height: var(--search-box-height);
+  border-radius: 5rem;
+  border: var(--white);
+  background-color: var(--white);
+  font-size: 1.6rem;
+  color: var(--brown100);
+  margin: 10px 0;
+  padding-left: 20px;
+  outline: none;
+  /* box-shadow: 0 0 5px var(--grey); */
+}

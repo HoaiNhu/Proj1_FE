@@ -3,6 +3,7 @@ import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import SearchBoxComponent from "../../components/SearchBoxComponent/SearchBoxComponent";
 import ButtonNoBGComponent from "../../components/ButtonNoBGComponent/ButtonNoBGComponent";
 import "./NotFoundPage.css";
+import FormComponent from "../../components/FormComponent/FormComponent";
 
 const NotFoundPage = () => {
   return (
@@ -11,6 +12,12 @@ const NotFoundPage = () => {
       <ButtonComponent>Đăng nhập</ButtonComponent>
       <SearchBoxComponent></SearchBoxComponent>
       <ButtonNoBGComponent className="custom_btn">home</ButtonNoBGComponent>
+      <FormComponent
+        id="emailInput"
+        label="Email"
+        type="email"
+        placeholder="Nhập email"
+      />
     </div>
   );
 };

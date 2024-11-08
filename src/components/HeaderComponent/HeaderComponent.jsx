@@ -7,7 +7,7 @@ import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
 
 function HeaderComponent() {
   return (
-    <div className="container-xl text-center">
+    <div className="container-xl text-center" style={{ width: "width-screen" }}>
       <div className={styles.navbar}>
         <div className="container-fluid">
           {/* nav top */}

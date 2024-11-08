@@ -5,6 +5,7 @@ import HeaderComponent from "./components/HeaderComponent/HeaderComponent";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import ButtonComponent from "./components/ButtonComponent/ButtonComponent";
 import ButtonNoBGComponent from "./components/ButtonNoBGComponent/ButtonNoBGComponent";
+import LogInPage from "./pages/LogInPage/LogInPage";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import WebFont from "webfontloader";
 import "@glints/poppins";
