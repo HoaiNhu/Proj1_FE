@@ -4,10 +4,14 @@ import TagPriceComponent from '../TagPriceComponent/TagPriceComponent';
 import { Button, Col, Row } from 'react-bootstrap';
 const CardProduct = ({type, img, title, price }) => {
   return (
-    <Card style={{width:"23rem", overflow: "hidden"}} className={type === 'primary' ? styles.primary : styles.secondary} >
+    <Card 
+    style={{
+      width:"23rem", 
+      overflow: "hidden", 
+      borderRadius:15}} className={type === 'primary' ? styles.primary : styles.secondary} >
       <Card.Img src={img} className={type === 'primary' ? styles.primary : styles.secondary}
       style={{  
-        borderTopLeftRadius: 15,  borderTopRightRadius: 15,
+        borderRadius: 15,
         objectFit: "cover",
         height: "auto",
         width: "auto"
