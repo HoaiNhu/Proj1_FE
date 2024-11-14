@@ -2,13 +2,18 @@ import React from "react";
 import ButtonFormComponent from "../../components/ButtonFormComponent/ButtonFormComponent";
 import FormComponent from "../../components/FormComponent/FormComponent";
 import styles from "./LogInPage.css";
+import img1 from "../../assets/img/hero_2.jpg";
+import img2 from "../../assets/img/AVOCADO.png";
 
 const LogInPage = () => {
   return (
     <div className="container-xl container-login">
       <div className="login-container">
         {/* logIn right */}
-        <div></div>
+        <div className="login-container__img">
+          <img className="login__img" src={img1} alt="Hình cái bánh" />
+          <img className="login__logo" src={img2} alt="Login logo" />
+        </div>
         {/* logIn left */}
         <div className="login__left">
           <h1 className="login__title">ĐĂNG NHẬP</h1>

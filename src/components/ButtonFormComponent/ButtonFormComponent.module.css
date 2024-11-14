@@ -2,8 +2,8 @@
   width: var(--search-box-width);
   height: var(--search-box-height);
   background-color: var(--green100);
-  color: var(--brown100); 
-  border-radius: 50px; 
+  color: var(--brown100);
+  border-radius: 50px;
   border: none;
   display: flex;
   justify-content: center;
@@ -11,6 +11,7 @@
   font-size: 1.6rem;
   font-weight: 600;
   transition: 0.25s;
+  margin-top: 5px;
 }
 
 .btn__form:hover {
