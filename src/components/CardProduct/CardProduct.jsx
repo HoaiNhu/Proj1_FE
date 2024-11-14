@@ -6,13 +6,14 @@ const CardProduct = ({ type, img, title, price }) => {
   return (
     <Card
       style={{
-        width: "23rem",
+        width: "29rem",
         overflow: "hidden",
         borderRadius: 15
       }} className={type === 'primary' ? styles.primary : styles.secondary} >
       <Card.Img src={img} className={type === 'primary' ? styles.primary : styles.secondary}
         style={{
-          borderRadius: 15,
+          borderTopLeftRadius:'15px',
+          borderTopRightRadius: '15px',
           objectFit: "cover",
           height: "auto",
           width: "auto"
