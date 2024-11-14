@@ -3,10 +3,11 @@ import SliderComponent from '../../../components/SliderComponent/SliderComponent
 import slider1 from '../../../assets/img/slider1.webp'
 import slider2 from '../../../assets/img/slider2.webp'
 import slider3 from '../../../assets/img/slider3.webp'
-import CardProduct from '../../../components/CardProduct/Card'
+import CardProduct from '../../../components/CardProduct/CardProduct'
 import image1 from '../../../assets/img/cake1.webp'
-import { Col, Container } from 'react-bootstrap'
+import { Col } from 'react-bootstrap'
 import {Row} from 'react-bootstrap'
+
 const HomePage = () => {
   return (
     <div>
@@ -31,23 +32,43 @@ const HomePage = () => {
 
 
   {/* 1 slide  */}
-        <Row style={{width: 1000, margin: 'auto',  cursor: 'pointer'}}>
+        <Row style={{maxWidth: 1000, margin: 'auto',  cursor: 'pointer'}}>
           <Col>
-            <CardProduct img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
+            <CardProduct type={"secondary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
           </Col>
           <Col>
-            <CardProduct img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
+            <CardProduct type={"secondary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
           </Col>
           <Col>
-            <CardProduct img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
+            <CardProduct type={"secondary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
           </Col>
           <Col>
-            <CardProduct img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
+            <CardProduct type={"secondary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
           </Col>
         </Row>
       </div>
+      {/* Sản phẩm */}
       <div>
-        <h1 style={{ color: "#3A060E", textAlign: "center", marginTop: "80px", fontSize: "4rem"}}>SẢN PHẨM</h1>
+        <h1 style={{ color: "#3A060E", textAlign: "center", marginTop: "80px", fontSize: "4rem", paddingBottom:25}}>SẢN PHẨM</h1>
+        <h3 style={{ color: "#3A060E", textAlign: "center",  fontSize: "16px ", paddingBottom:25}}>Chào mừng đến với bộ sưu tập bánh của Avocado</h3>
+
+
+        {/* 1 tab */}
+        <Row style={{width: 1000, margin: 'auto',  cursor: 'pointer'}}>
+          <Col>
+            <CardProduct type={"primary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
+          </Col>
+          <Col>
+            <CardProduct type={"primary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
+          </Col>
+          <Col>
+            <CardProduct type={"primary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
+          </Col>
+          <Col>
+            <CardProduct type={"primary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"}/>
+          </Col>
+        </Row>
+
       </div>
     </div>
   )
