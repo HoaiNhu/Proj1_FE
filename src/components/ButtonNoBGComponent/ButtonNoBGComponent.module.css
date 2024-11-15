@@ -11,8 +11,13 @@
   font-size: 1.6rem;
   font-weight: 600;
   transition-duration: 0.25s;
+  text-decoration: none;
 }
 
 .btn__noBG__component:hover {
+  color: var(--brown100);
+}
+
+.active {
   color: var(--brown100);
 }

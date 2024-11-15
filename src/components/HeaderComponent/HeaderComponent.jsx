@@ -48,12 +48,14 @@ function HeaderComponent() {
           {/* nav bottom */}
           <div className={`row ${styles.nav__bot}`}>
             <div className={styles.nav__content}>
-              <ButtonNoBGComponent>Trang chủ</ButtonNoBGComponent>
-              <ButtonNoBGComponent>Sản phẩm</ButtonNoBGComponent>
-              <ButtonNoBGComponent>Tin tức</ButtonNoBGComponent>
-              <ButtonNoBGComponent>Giới thiệu</ButtonNoBGComponent>
-              <ButtonNoBGComponent>Liên hệ</ButtonNoBGComponent>
-              <ButtonNoBGComponent>Khác</ButtonNoBGComponent>
+              <ButtonNoBGComponent to="/">Trang chủ</ButtonNoBGComponent>
+              <ButtonNoBGComponent to="/products">Sản phẩm</ButtonNoBGComponent>
+              <ButtonNoBGComponent to="/news">Tin tức</ButtonNoBGComponent>
+              <ButtonNoBGComponent to="/introduce">
+                Giới thiệu
+              </ButtonNoBGComponent>
+              <ButtonNoBGComponent to="/contact">Liên hệ</ButtonNoBGComponent>
+              <ButtonNoBGComponent to="/others">Khác</ButtonNoBGComponent>
             </div>
           </div>
         </div>

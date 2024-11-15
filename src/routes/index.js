@@ -5,6 +5,7 @@ import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import LogInPage from "../pages/LogInPage/LogInPage";
 import HeaderComponent from "../components/HeaderComponent/HeaderComponent";
+import IntroducePage from "../pages/User/IntroducePage/IntroducePage";
 
 export const routes = [
   {
@@ -20,9 +21,17 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+
   {
     path: "/products",
     page: ProductsPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/introduce",
+    page: IntroducePage,
     isShowHeader: true,
     isShowFooter: true,
   },
