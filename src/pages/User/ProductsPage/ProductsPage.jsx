@@ -1,9 +1,22 @@
-import React from 'react'
+import React from "react";
+import "./ProductsPage.css";
 
 const ProductsPage = () => {
   return (
-    <div>ProductsPage</div>
-  )
-}
+    <div>
+      <div className="container-xl product-container">
+        <div className="product">
+          {/* product top */}
+          <div className="product__top">
+            <h1 className="product__title">SẢN PHẨM</h1>
+          </div>
 
-export default ProductsPage
+          {/* product bot */}
+          
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductsPage;

@@ -12,6 +12,7 @@
   font-weight: 600;
   transition-duration: 0.25s;
   text-decoration: none;
+  text-align: center;
 }
 
 .btn__noBG__component:hover {
