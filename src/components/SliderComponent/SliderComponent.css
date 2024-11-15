@@ -3,7 +3,7 @@
 
 /* CSS cho container của slide */
 .slider-container{
-    width: 100vw;
+    width: 100%;
     margin-left: auto;
 }
 .slider-item {
