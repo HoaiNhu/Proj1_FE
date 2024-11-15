@@ -43,7 +43,7 @@ const FooterComponent = () => {
                       />
                     </svg>
                     <p className="address__content">
-                      Địa chỉ: Số 8, Phường Đông Hòa, Dĩ An, Bình Dương{" "}
+                      Địa chỉ: Đường Mạc Đĩnh Chi, khu phố Tân Hòa, Dĩ An, Bình Dương{" "}
                     </p>
                   </div>
                 </li>

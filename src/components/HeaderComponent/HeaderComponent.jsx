@@ -45,7 +45,9 @@ function HeaderComponent() {
                 <a href="/signup" className={styles.btn__signup}>
                   Đăng kí
                 </a>
-                <ButtonComponent>Đăng nhập</ButtonComponent>
+                <a href="/login" className={styles.btn__signup}>
+                  <ButtonComponent>Đăng nhập</ButtonComponent>
+                </a>
               </div>
             </div>
 

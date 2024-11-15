@@ -6,7 +6,8 @@ import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import LogInPage from "../pages/LogInPage/LogInPage";
 import HeaderComponent from "../components/HeaderComponent/HeaderComponent";
 import IntroducePage from "../pages/User/IntroducePage/IntroducePage";
-
+import ContactPage from "../pages/User/ContactPage/ContactPage";
+import NewsPage from "../pages/User/NewsPage/NewsPage"
 export const routes = [
   {
     path: "/",
@@ -55,5 +56,18 @@ export const routes = [
     page: NotFoundPage,
     isShowHeader: false,
     isShowFooter: false,
+  },
+
+  {
+    path: "/contact",
+    page: ContactPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/news",
+    page: NewsPage,
+    isShowHeader: true,
+    isShowFooter: true,
   },
 ];
