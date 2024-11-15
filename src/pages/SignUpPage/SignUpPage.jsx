@@ -9,13 +9,13 @@ const SignUpPage = () => {
   return (
     <div className="container-xl container-signup">
       <div className="signup-container">
-        {/* SignUp right */}
+        {/* SignUp left */}
         <div className="signup-container__img">
           <img className="signup__img" src={img1} alt="Hình cái bánh" />
           <img className="signup__logo" src={img2} alt="Signup logo" />
         </div>
-        {/* SignUp left */}
-        <div className="signup__left">
+        {/* SignUp right */}
+        <div className="signup__right">
           <h1 className="signup__title">ĐĂNG KÍ</h1>
           <form>
             <FormComponent

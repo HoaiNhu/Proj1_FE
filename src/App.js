@@ -11,6 +11,7 @@ import LogInPage from "./pages/LogInPage/LogInPage";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import WebFont from "webfontloader";
 import "@glints/poppins";
+import FooterComponent from "./components/FooterComponent/FooterComponent";
 
 function App() {
   useEffect(() => {
@@ -27,15 +28,21 @@ function App() {
         <Routes>
           {routes.map((route) => {
             const Page = route.page;
-            const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+            const Header = route.isShowHeader ? DefaultComponent : Fragment;
+            const Footer = route.isShowFooter ? FooterComponent : Fragment;
             return (
               <Route
                 key={route.path}
                 path={route.path}
                 element={
-                  <Layout>
-                    <Page />
-                  </Layout>
+                  <div>
+                    <Header>
+                      <Page />
+                    </Header>
+                    <Footer>
+                      <Page />
+                    </Footer>
+                  </div>
                 }
               />
             );

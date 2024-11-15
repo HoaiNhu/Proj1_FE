@@ -11,34 +11,40 @@ export const routes = [
     path: "/",
     page: HomePage,
     isShowHeader: true,
+    isShowFooter: true,
   },
 
   {
     path: "/order",
     page: OrderPage,
     isShowHeader: true,
+    isShowFooter: true,
   },
   {
     path: "/products",
     page: ProductsPage,
     isShowHeader: true,
+    isShowFooter: true,
   },
 
   {
     path: "/signup",
     page: SignUpPage,
     isShowHeader: true,
+    isShowFooter: true,
   },
 
   {
     path: "/login",
     page: LogInPage,
     isShowHeader: true,
+    isShowFooter: true,
   },
 
   {
     path: "*",
     page: NotFoundPage,
     isShowHeader: false,
+    isShowFooter: false,
   },
 ];
