@@ -1,10 +1,10 @@
-
 .product {
-    margin: 50px 0;
-    font-size: 1.6rem;
-    color: var(--brown100);
-  }
-/* ========================== title===================== */
+  margin: 40px 0;
+  font-size: 1.6rem;
+  color: var(--brown100);
+}
+
+/* ========================== top========================== */
 .product__top {
   margin: 0 auto;
   padding: 30px 0;
@@ -16,3 +16,39 @@
   font-weight: 700;
   margin: 10px 0;
 }
+
+/* ========================bot======================== */
+.product__bot {
+  display: flex;
+  justify-content: center;
+  align-items: top;
+}
+
+/* ========================Side menu======================== */
+.side-menu__category {
+  margin-right: 20px;
+}
+/* =========================product list ==================== */
+
+.product__list {
+  display: grid;
+  gap: 5px;
+  justify-content: space-between;
+  grid-template-columns: repeat(3, 1fr);
+  /* background-color: var(--grey5); */
+}
+
+/* .CardProduct.product__item {
+  font-weight: 600;
+} */
+
+/* .row > * {
+  padding: 0 0;
+} */
+/* ==========================see-more=========================== */
+/* .btn__see-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+} */

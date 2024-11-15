@@ -5,9 +5,9 @@ import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
 const SideMenuComponent = () => {
   return (
     <div>
-      <div className="side-menu">
+      <div className="side-menu sticky-left">
         <div
-          className="btn-group-vertical btn__side-menu"
+          className=" btn__side-menu"
           role="group"
           aria-label="Vertical button group"
         >

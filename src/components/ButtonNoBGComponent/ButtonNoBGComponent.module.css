@@ -17,6 +17,9 @@
 
 .btn__noBG__component:hover {
   color: var(--brown100);
+  /* font-size: 1.8rem; */
+  opacity: 0.9;
+  text-shadow: 1px 0 0 currentColor;
 }
 
 .active {
