@@ -24,7 +24,7 @@ const CardProduct = ({ type, img, title, price }) => {
           style={{
             fontFamily: 'Poppins',
             fontSize: 16,
-            fontWeight: 400,
+            fontWeight: 300,
             lineHeight: 1.5,
             textTransform: "capitalize",
             textAlign: "center",

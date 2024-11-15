@@ -11,6 +11,7 @@ import ButtonNoBGComponent from '../../../components/ButtonNoBGComponent/ButtonN
 import story from '../../../assets/img/story.jpg'
 import LinesEllipsis from 'react-lines-ellipsis'
 import CardNews from '../../../components/CardNews/CardNews'
+import news from '../../../assets/img/news.jpg'
 const text = 'Tiệm bánh ngọt Avocado - "My sweetie, my love" mang trong mình sứ mệnh mang đến những chiếc bánh ngọt ngào và tinh tế, không chỉ để thỏa mãn vị giác mà còn để lan tỏa tình yêu và niềm vui đến mọi người. Với phương châm "My sweetie, my love," chúng tôi cam kết sử dụng những nguyên liệu tươi ngon nhất, kết hợp với kỹ thuật làm bánh hiện đại và sự sáng tạo không ngừng. Mỗi chiếc bánh từ Avocado không chỉ là một món ăn, mà còn là một tác phẩm nghệ thuật, được chăm chút tỉ mỉ từ khâu chọn nguyên liệu đến khi hoàn thiện. Chúng tôi hy vọng rằng mỗi lần thưởng thức bánh từ Avocado, khách hàng sẽ cảm nhận được tình yêu và sự tận tâm mà chúng tôi gửi gắm trong từng sản phẩm.';
 const HomePage = () => {
   return (
@@ -26,7 +27,7 @@ const HomePage = () => {
           paddingTop: 50,
           paddingBottom: 60,
           backgroundColor: "#3A060E",
-          width: "100vw"
+          width: "100%"
 
         }}>
         <h1
@@ -86,7 +87,7 @@ const HomePage = () => {
 
       {/* Sản phẩm */}
       <div
-        style={{ width: "100vw", marginTop: 50 }}>
+        style={{ width: "100%", marginTop: 50 }}>
         <h1
           style={{
             color: "#3A060E",
@@ -225,7 +226,8 @@ const HomePage = () => {
                 marginLeft: 45,
                 marginRight: 45,
                 marginTop: 20,
-                marginBottom: 25
+                marginBottom: 25,
+                color: '#3A060E'
               }}
             />
             <div>
@@ -265,8 +267,10 @@ const HomePage = () => {
             paddingBottom: 25
           }}>Cập nhật thông tin mới nhất về các hoạt động của Avocado</h3>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', marginLeft: '137px', marginRight: '137px', gap: '18px', paddingBottom: 50 }}>
-          <CardNews img={image1} title={'Bánh kem Strawberry Cream giảm giá 10%'} detail={'Hòa vào không khí Giáng sinh, Avocado gửi đến khách hàng nhiều ưu đãi hấp dẫn: Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', marginLeft: '137px', marginRight: '137px', gap: '25px', paddingBottom: 50 }}>
+          <CardNews img={news} title={'Giáng sinh cùng Avocado: Bánh kem Strawberry Cream giảm giá 10%'} detail={'Hòa vào không khí Giáng sinh, Avocado gửi đến khách hàng nhiều ưu đãi hấp dẫn: Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
+          <CardNews img={news} title={'Giáng sinh cùng Avocado: Bánh kem Strawberry Cream giảm giá 10%'} detail={'Hòa vào không khí Giáng sinh, Avocado gửi đến khách hàng nhiều ưu đãi hấp dẫn: Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
+          <CardNews img={news} title={'Giáng sinh cùng Avocado: Bánh kem Strawberry Cream giảm giá 10%'} detail={'Hòa vào không khí Giáng sinh, Avocado gửi đến khách hàng nhiều ưu đãi hấp dẫn: Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
         </div>
       </div>
     </div>

@@ -1,24 +1,25 @@
 import Card from 'react-bootstrap/Card';
-import styles from './CardNews.css'
+import './CardNews.css'
 import LinesEllipsis from 'react-lines-ellipsis';
-const CardNews = ({ img, title , detail}) => {
+import { CardSubtitle } from 'react-bootstrap';
+const CardNews = ({ img, title, detail }) => {
   return (
-    <Card
+    <Card className='CardNews'
       style={{
-        width: "29rem",
+        width: "37.7rem",
         overflow: "hidden",
         borderRadius: 15
       }} >
-      <Card.Img src={img} 
+      <Card.Img src={img}
         style={{
-          borderTopLeftRadius:'15px',
+          borderTopLeftRadius: '15px',
           borderTopRightRadius: '15px',
           objectFit: "cover",
-          height: "auto",
+          height: "28.2rem",
           width: "auto"
         }}
       />
-     
+
       <Card.Body >
         <Card.Title
           style={{
@@ -27,23 +28,27 @@ const CardNews = ({ img, title , detail}) => {
             fontWeight: 400,
             lineHeight: 1.5,
             textTransform: "capitalize",
-            textAlign: "center",
-            fontWeight: 700
+            fontWeight: 700,
+            marginLeft: 25,
+            marginRight: 25
           }}
         >{title}</Card.Title>
-        
-        <LinesEllipsis
-              text={detail}
-              maxLine='2' // Số dòng tối đa
-              ellipsis='...'
-              trimRight
-              basedOn='words'
-              style={{
-                fontSize: 16,
-                alignContent: 'center'
-              }}
-            />
+        <CardSubtitle>
+          <LinesEllipsis
+            text={detail}
+            maxLine='2' // Số dòng tối đa
+            ellipsis='...'
+            trimRight
+            basedOn='words'
+            style={{
+              fontSize: 16,
+              marginLeft: 25,
+              fontWeight: 300
+            }}
+          />
+        </CardSubtitle>
       </Card.Body>
-      </Card>
-  )}
-  export default CardNews
+    </Card>
+  )
+}
+export default CardNews
