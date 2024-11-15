@@ -4,6 +4,7 @@ import SearchBoxComponent from "../../components/SearchBoxComponent/SearchBoxCom
 import ButtonNoBGComponent from "../../components/ButtonNoBGComponent/ButtonNoBGComponent";
 import "./NotFoundPage.css";
 import FormComponent from "../../components/FormComponent/FormComponent";
+import FooterComponent from "../../components/FooterComponent/FooterComponent";
 
 const NotFoundPage = () => {
   return (
@@ -18,6 +19,7 @@ const NotFoundPage = () => {
         type="email"
         placeholder="Nhập email"
       />
+      <FooterComponent></FooterComponent>
     </div>
   );
 };

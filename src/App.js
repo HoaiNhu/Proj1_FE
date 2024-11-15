@@ -1,6 +1,8 @@
 import React, { Fragment, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
+import "./assets/css/reset.css";
+import "./assets/css/style.css";
 import HeaderComponent from "./components/HeaderComponent/HeaderComponent";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import ButtonComponent from "./components/ButtonComponent/ButtonComponent";
