@@ -4,6 +4,7 @@ import ProductsPage from "../pages/User/ProductsPage/ProductsPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import LogInPage from "../pages/LogInPage/LogInPage";
+import HeaderComponent from "../components/HeaderComponent/HeaderComponent";
 
 export const routes = [
   {
