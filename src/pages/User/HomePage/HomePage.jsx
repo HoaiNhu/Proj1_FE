@@ -24,7 +24,7 @@ const HomePage = () => {
     <div >
       {/* Banner quànrg cáo */}
       <div >
-        <SliderComponent arrImg={[slider1, slider3, slider2]} />
+        <SliderComponent onClick={()=> handleClick('/products')} arrImg={[slider1, slider3, slider2]} />
       </div>
       <div
         style={{
