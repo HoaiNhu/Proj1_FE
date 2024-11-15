@@ -67,8 +67,8 @@ img {
 
 .nav__content {
   display: inline-flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
   padding: 10px 0;
-  margin-left: 138px;
+  margin: 15px 0 0 ;
 }

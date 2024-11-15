@@ -1,16 +1,21 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./ButtonNoBGComponent.module.css";
 
 const ButtonNoBGComponent = ({ to, children, className = "", ...props }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+
   return (
-    <NavLink
+    <Link
       to={to}
-      className={({ isActive }) =>`${styles.btn__noBG__component} ${className} ${isActive ? styles.active : "" }`}
+      className={`${styles.btn__noBG__component} ${
+        isActive ? styles.active : ""
+      } ${className}`}
       {...props}
     >
       {children}
-    </NavLink>
+    </Link>
   );
 };
 

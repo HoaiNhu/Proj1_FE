@@ -20,4 +20,7 @@
 
 .active {
   color: var(--brown100);
+  /* font-size: 1.8rem; */
+  transition: 0.25s;
+  transform: scale(1.2);
 }
