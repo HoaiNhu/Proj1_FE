@@ -1,5 +1,6 @@
 import Card from 'react-bootstrap/Card';
 import styles from './CardNews.css'
+import LinesEllipsis from 'react-lines-ellipsis';
 const CardNews = ({ img, title , detail}) => {
   return (
     <Card
@@ -27,22 +28,21 @@ const CardNews = ({ img, title , detail}) => {
             lineHeight: 1.5,
             textTransform: "capitalize",
             textAlign: "center",
+            fontWeight: 700
           }}
         >{title}</Card.Title>
         
-          <Card.Subtitle
-            style={{
-              color: "#B1E321",
-              fontFamily: 'Poppins',
-              fontSize: 20,
-              fontWeight: 700,
-              lineHeight: 1.5,
-              textTransform: "capitalize",
-              textAlign: "center",
-            }}
-          >{}
-          </Card.Subtitle>
-        {detail}
+        <LinesEllipsis
+              text={detail}
+              maxLine='2' // Số dòng tối đa
+              ellipsis='...'
+              trimRight
+              basedOn='words'
+              style={{
+                fontSize: 16,
+                alignContent: 'center'
+              }}
+            />
       </Card.Body>
       </Card>
   )}

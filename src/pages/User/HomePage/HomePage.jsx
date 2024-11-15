@@ -193,13 +193,13 @@ const HomePage = () => {
 
           <div
             style={{
-              width: '645px',
-              height: '300px',
+              maxWidth: '56rem',
+              maxHeight: '30rem',
               borderRadius: 15,
               background: '#b1e3214d',
-              marginRight: '137px',
+              marginLeft: '10rem',
               flexShrink: 0,
-              marginLeft: '25px',
+              
               marginTop: '45px'
             }}>
             <h3
@@ -207,7 +207,7 @@ const HomePage = () => {
                 color: "#3A060E",
                 textAlign: "center",
                 marginTop: "80px",
-                fontSize: "18px",
+                fontSize: "1.8rem",
                 fontWeight: 700,
                 marginTop: 45,
                 paddingBottom: 25
@@ -222,8 +222,8 @@ const HomePage = () => {
               basedOn='words'
               style={{
                 fontSize: 16,
-                paddingLeft: 45,
-                paddingRight: 45,
+                marginLeft: 45,
+                marginRight: 45,
                 marginTop: 20,
                 marginBottom: 25
               }}
@@ -237,7 +237,7 @@ const HomePage = () => {
                   fontSize: "16px",
                   fontStyle: 'italic',
                   textDecoration: 'underline',
-                  padding: 45,
+                  marginLeft:45,
                   cursor: 'pointer'
                 }}
               >Xem thêm </a>
@@ -265,8 +265,8 @@ const HomePage = () => {
             paddingBottom: 25
           }}>Cập nhật thông tin mới nhất về các hoạt động của Avocado</h3>
 
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', marginLeft: '137px', marginRight: '137px', gap: '18px', paddingBottom: 50 }}>
-          <CardNews img={image1} title={'Bánh kem Strawberry Cream giảm giá 10%'} detail={'Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', marginLeft: '137px', marginRight: '137px', gap: '18px', paddingBottom: 50 }}>
+          <CardNews img={image1} title={'Bánh kem Strawberry Cream giảm giá 10%'} detail={'Hòa vào không khí Giáng sinh, Avocado gửi đến khách hàng nhiều ưu đãi hấp dẫn: Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
         </div>
       </div>
     </div>
