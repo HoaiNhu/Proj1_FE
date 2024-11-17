@@ -262,6 +262,7 @@ const HomePage = () => {
                   marginLeft: 45,
                   cursor: 'pointer'
                 }}
+                onClick={()=> handleClick('/introduce')}
               >Xem thêm </a>
             </div>
           </div>
