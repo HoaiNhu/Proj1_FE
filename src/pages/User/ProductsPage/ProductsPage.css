@@ -32,8 +32,8 @@
 
 .product__list {
   display: grid;
-  gap: 5px;
-  justify-content: space-between;
+  gap:5px;
+  justify-content: center;
   grid-template-columns: repeat(3, 1fr);
   /* background-color: var(--grey5); */
 }

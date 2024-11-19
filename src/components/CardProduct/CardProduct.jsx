@@ -6,10 +6,10 @@ const CardProduct = ({ type, img, title, price }) => {
   return (
     <Card
       style={{
-        width: "26rem",
+        width: "29rem",
         overflow: "hidden",
         borderRadius: 15,
-        margin: "10px",
+        margin: "auto",
       }}
       className={type === "primary" ? styles.primary : styles.secondary}
     >

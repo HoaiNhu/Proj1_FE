@@ -6,7 +6,7 @@ const CardNews = ({ img, title, detail }) => {
   return (
     <Card className='CardNews'
       style={{
-        width: "37.7rem",
+        width: "27rem",
         overflow: "hidden",
         borderRadius: 15
       }} >
@@ -15,8 +15,7 @@ const CardNews = ({ img, title, detail }) => {
           borderTopLeftRadius: '15px',
           borderTopRightRadius: '15px',
           objectFit: "cover",
-          height: "28.2rem",
-          width: "auto"
+          height:'20em'
         }}
       />
 
@@ -29,8 +28,8 @@ const CardNews = ({ img, title, detail }) => {
             lineHeight: 1.5,
             textTransform: "capitalize",
             fontWeight: 700,
-            marginLeft: 25,
-            marginRight: 25
+            marginLeft: 10,
+            marginRight: 10
           }}
         >{title}</Card.Title>
         <CardSubtitle>
@@ -42,7 +41,7 @@ const CardNews = ({ img, title, detail }) => {
             basedOn='words'
             style={{
               fontSize: 16,
-              marginLeft: 25,
+              marginLeft: 10,
               fontWeight: 300
             }}
           />

@@ -24,7 +24,7 @@ const HomePage = () => {
     <div >
       {/* Banner quànrg cáo */}
       <div >
-        <SliderComponent arrImg={[slider1, slider3, slider2]} />
+        <SliderComponent onClick={()=> handleClick('/products')} arrImg={[slider1, slider3, slider2]} />
       </div>
       <div
         style={{
@@ -262,6 +262,7 @@ const HomePage = () => {
                   marginLeft: 45,
                   cursor: 'pointer'
                 }}
+                onClick={()=> handleClick('/introduce')}
               >Xem thêm </a>
             </div>
           </div>

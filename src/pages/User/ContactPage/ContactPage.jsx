@@ -34,7 +34,7 @@ const ContactPage = () => {
                     </div>
                 </div>
                 <div>
-                    <a href='https://www.google.com/maps/dir//%C4%90.+M%E1%BA%A1c+%C4%90%C4%A9nh+Chi,+Khu+ph%E1%BB%91+T%C3%A2n+H%C3%B2a,+D%C4%A9+An,+B%C3%ACnh+D%C6%B0%C6%A1ng/@10.8822003,106.7000994,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x3174d89aad780e49:0x54542761d4c22175!2m2!1d106.7825013!2d10.8822113?entry=ttu&g_ep=EgoyMDI0MTExMi4wIKXMDSoASAFQAw%3D%3D'>
+                    <a href='https://maps.app.goo.gl/FMaW1VRMx8zUBUom7'>
                         <img className='img' src={address}>
                         </img>
                     </a>
