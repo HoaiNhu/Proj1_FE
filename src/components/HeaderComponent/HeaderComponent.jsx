@@ -4,8 +4,14 @@ import img from "../../assets/img/AVOCADO.png";
 import SearchBoxComponent from "../SearchBoxComponent/SearchBoxComponent";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
+import { useNavigate } from "react-router-dom";
 
-function HeaderComponent() {
+const HeaderComponent = () => {
+  const navigate = useNavigate();
+  const handleNavigationLogin = () => {
+    navigate("/login");
+  };
+
   return (
     <div className="bg-white sticky-top">
       <div
@@ -45,9 +51,12 @@ function HeaderComponent() {
                 <a href="/signup" className={styles.btn__signup}>
                   Đăng kí
                 </a>
-                <a href="/login" className={styles.btn__signup}>
+                <div
+                  onClick={handleNavigationLogin}
+                  className={styles.btn__signup}
+                >
                   <ButtonComponent>Đăng nhập</ButtonComponent>
-                </a>
+                </div>
               </div>
             </div>
 
@@ -71,6 +80,6 @@ function HeaderComponent() {
       </div>
     </div>
   );
-}
+};
 
 export default HeaderComponent;

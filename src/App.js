@@ -1,17 +1,15 @@
+import "@glints/poppins";
+import axios from "axios";
 import React, { Fragment, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { routes } from "./routes";
+import { useQuery } from "react-query";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import WebFont from "webfontloader";
+import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/reset.css";
 import "./assets/css/style.css";
-import HeaderComponent from "./components/HeaderComponent/HeaderComponent";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
-import ButtonComponent from "./components/ButtonComponent/ButtonComponent";
-import ButtonNoBGComponent from "./components/ButtonNoBGComponent/ButtonNoBGComponent";
-import LogInPage from "./pages/LogInPage/LogInPage";
-import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import WebFont from "webfontloader";
-import "@glints/poppins";
 import FooterComponent from "./components/FooterComponent/FooterComponent";
+import { routes } from "./routes";
 
 function App() {
   useEffect(() => {
@@ -21,6 +19,19 @@ function App() {
       },
     });
   }, []);
+
+  // useEffect(() => {
+  //   fetchApi();
+  // }, []);
+
+  // const fetchApi = async () => {
+  //   const res = await axios.get(
+  //     `${process.env.REACT_APP_API_URL_BACKEND}/product/get-all`
+  //   );
+  //   return res.data;
+  // };
+
+  // const query = useQuery({ queryKey: ["todos"], queryFn: fetchApi });
 
   return (
     <div style={{ fontFamily: "poppins" }}>
@@ -36,12 +47,9 @@ function App() {
                 path={route.path}
                 element={
                   <div>
-                    <Header>
-                      <Page />
-                    </Header>
-                    <Footer>
-                      <Page />
-                    </Footer>
+                    <Header />
+                    <Page />
+                    <Footer />
                   </div>
                 }
               />

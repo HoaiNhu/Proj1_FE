@@ -1,11 +1,12 @@
 import React from "react";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import SearchBoxComponent from "../../components/SearchBoxComponent/SearchBoxComponent";
 import ButtonNoBGComponent from "../../components/ButtonNoBGComponent/ButtonNoBGComponent";
-import "./NotFoundPage.css";
-import FormComponent from "../../components/FormComponent/FormComponent";
 import FooterComponent from "../../components/FooterComponent/FooterComponent";
+import FormComponent from "../../components/FormComponent/FormComponent";
+import SearchBoxComponent from "../../components/SearchBoxComponent/SearchBoxComponent";
 import SideMenuComponent from "../../components/SideMenuComponent/SideMenuComponent";
+import "./NotFoundPage.css";
+import OTPComponent from "../../components/OTPComponent/OTPComponent";
 
 const NotFoundPage = () => {
   return (
@@ -22,6 +23,7 @@ const NotFoundPage = () => {
       />
       <FooterComponent></FooterComponent>
       <SideMenuComponent></SideMenuComponent>
+      <OTPComponent></OTPComponent>
     </div>
   );
 };

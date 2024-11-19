@@ -1,15 +1,15 @@
-.container-login {
+.container-enter-otp {
   background-color: var(--white);
 }
 
-.login-container {
+.enter-otp-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 80vh;
 }
-/* -----------------------login left------------------------ */
-.login-container__img {
+/* -----------------------enter-otp left------------------------ */
+.enter-otp-container__img {
   height: 36rem;
   width: 45rem;
   position: relative;
@@ -21,14 +21,14 @@
   border-radius: 15px;
 }
 
-.login__img {
+.enter-otp__img {
   height: 100%;
   width: auto;
   object-fit: cover;
   transform: scale(2);
 }
 
-.login__logo {
+.enter-otp__logo {
   position: absolute;
   height: 90px;
   width: auto;
@@ -36,10 +36,11 @@
   left: center;
 }
 
-/* -----------------------login right------------------------ */
+/* -----------------------enter-otp right------------------------ */
 
-.login__left {
+.enter-otp__left {
   width: auto;
+  height: 36rem;
   padding: 20px;
   border: none;
   border-radius: 20px;
@@ -47,38 +48,32 @@
   background-color: var(--grey5);
 }
 
-.login__title {
-  margin-bottom: 1.6rem;
+.enter-otp__title {
+  margin-bottom: 60px;
   text-align: center;
   color: var(--brown100);
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--font-size-title);
 }
 
-.login__form {
+.enter-otp__form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.login__extend {
+.enter-otp__extend {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   font-size: 1.4rem;
   color: var(--brown100);
   margin-bottom: 10px;
 }
 
-.remember__password {
-  display: flex;
-  align-items: center;
-  padding: 8px;
+.enter-otp b {
   cursor: pointer;
-}
-
-.remember__checkbox {
-  margin-right: 8px;
+  font-weight: 600;
 }
 
 .forgot__password {
@@ -88,19 +83,14 @@
   text-decoration: none;
   cursor: pointer;
   padding: 8px;
+  transition: 0.25s;
+  cursor: pointer;
 }
 
-.case__signup {
-  text-align: center;
-  margin-top: 15px;
-  font-size: 1.4rem;
-  color: var(--brown100);
-}
-
-.btn__goto__signup {
-  color: var(--brown100);
-  text-decoration: none;
-  font-style: italic;
-  padding: 8px;
-  /* color: var(--green100); */
+.otp__input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
 }

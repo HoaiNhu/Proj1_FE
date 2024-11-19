@@ -1,15 +1,15 @@
-.container-login {
+.container-forgot-password {
   background-color: var(--white);
 }
 
-.login-container {
+.forgot-password-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 80vh;
 }
-/* -----------------------login left------------------------ */
-.login-container__img {
+/* -----------------------forgot-password left------------------------ */
+.forgot-password-container__img {
   height: 36rem;
   width: 45rem;
   position: relative;
@@ -21,14 +21,14 @@
   border-radius: 15px;
 }
 
-.login__img {
+.forgot-password__img {
   height: 100%;
   width: auto;
   object-fit: cover;
   transform: scale(2);
 }
 
-.login__logo {
+.forgot-password__logo {
   position: absolute;
   height: 90px;
   width: auto;
@@ -36,10 +36,11 @@
   left: center;
 }
 
-/* -----------------------login right------------------------ */
+/* -----------------------forgot-password right------------------------ */
 
-.login__left {
+.forgot-password__left {
   width: auto;
+  height: 36rem;
   padding: 20px;
   border: none;
   border-radius: 20px;
@@ -47,38 +48,27 @@
   background-color: var(--grey5);
 }
 
-.login__title {
-  margin-bottom: 1.6rem;
+.forgot-password__title {
+  margin-bottom: 50px;
   text-align: center;
   color: var(--brown100);
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--font-size-title);
 }
 
-.login__form {
+.forgot-password__form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.login__extend {
+.forgot-password__extend {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   font-size: 1.4rem;
   color: var(--brown100);
   margin-bottom: 10px;
-}
-
-.remember__password {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  cursor: pointer;
-}
-
-.remember__checkbox {
-  margin-right: 8px;
 }
 
 .forgot__password {
@@ -88,19 +78,9 @@
   text-decoration: none;
   cursor: pointer;
   padding: 8px;
+  transition: 0.25s;
 }
 
-.case__signup {
-  text-align: center;
-  margin-top: 15px;
-  font-size: 1.4rem;
-  color: var(--brown100);
-}
-
-.btn__goto__signup {
-  color: var(--brown100);
-  text-decoration: none;
-  font-style: italic;
-  padding: 8px;
-  /* color: var(--green100); */
+.forgot-password:hover {
+  color: var(--green100);
 }

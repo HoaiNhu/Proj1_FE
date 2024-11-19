@@ -4,8 +4,14 @@ import FormComponent from "../../components/FormComponent/FormComponent";
 import styles from "./LogInPage.css";
 import img1 from "../../assets/img/hero_2.jpg";
 import img2 from "../../assets/img/AVOCADO.png";
+import { useNavigate } from "react-router-dom";
+import ForgotPassword from "../ForgotPasswordPage/pages/EnterEmail";
 
 const LogInPage = () => {
+  const nav = useNavigate();
+  const handleForgotPassword = () => {
+    nav("/forgot-password");
+  };
   return (
     <div className="container-xl container-login">
       <div className="login-container">
@@ -38,9 +44,9 @@ const LogInPage = () => {
                 <input className="remember__checkbox" type="checkbox" />
                 Ghi nhớ mật khẩu
               </label>
-              <a href="#" className="forgot__password">
+              <div onClick={handleForgotPassword} className="forgot__password">
                 Quên mật khẩu?
-              </a>
+              </div>
             </div>
 
             <ButtonFormComponent>Đăng nhập</ButtonFormComponent>

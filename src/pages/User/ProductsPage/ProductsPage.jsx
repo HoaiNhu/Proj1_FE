@@ -54,9 +54,9 @@ const ProductsPage = () => {
               ></CardProduct>
             </div>
             {/* button see more */}
-            {/* <ButtonComponent className="btn__see-more">
+            <ButtonComponent className="btn__see-more">
               Xem thêm
-            </ButtonComponent> */}
+            </ButtonComponent>
           </div>
         </div>
       </div>
