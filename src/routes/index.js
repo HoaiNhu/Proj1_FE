@@ -1,3 +1,4 @@
+import AddProductPage from "../pages/Admin/CRUDProduct/AddProductPage/AddProductPage";
 import ForgotPassword from "../pages/ForgotPasswordPage/pages/EnterEmail";
 import EnterNewPassword from "../pages/ForgotPasswordPage/pages/EnterNewPassword";
 import EnterOTP from "../pages/ForgotPasswordPage/pages/EnterOTP";
@@ -83,6 +84,12 @@ export const routes = [
   {
     path: "/news",
     page: NewsPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/add-product",
+    page: AddProductPage,
     isShowHeader: true,
     isShowFooter: true,
   },

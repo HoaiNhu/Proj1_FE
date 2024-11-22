@@ -54,10 +54,13 @@
 }
 
 .introduce__paragraph--title {
+  margin-bottom: 10px;
   font-weight: 700;
   font-size: 2rem;
 }
 
 .introduce__paragraph--content {
   text-align: justify;
+  word-spacing: 5px;
+  line-height: 1.75;
 }

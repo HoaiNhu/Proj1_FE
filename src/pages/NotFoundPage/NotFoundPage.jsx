@@ -7,6 +7,8 @@ import SearchBoxComponent from "../../components/SearchBoxComponent/SearchBoxCom
 import SideMenuComponent from "../../components/SideMenuComponent/SideMenuComponent";
 import "./NotFoundPage.css";
 import OTPComponent from "../../components/OTPComponent/OTPComponent";
+import AddProductPage from "../Admin/CRUDProduct/AddProductPage/AddProductPage";
+import DropdownComponent from "../../components/DropdownComponent/DropdownComponent";
 
 const NotFoundPage = () => {
   return (
@@ -24,6 +26,8 @@ const NotFoundPage = () => {
       <FooterComponent></FooterComponent>
       <SideMenuComponent></SideMenuComponent>
       <OTPComponent></OTPComponent>
+      <AddProductPage></AddProductPage>
+      <DropdownComponent>Chọn phường</DropdownComponent>
     </div>
   );
 };

@@ -11,7 +11,7 @@ const EnterNewPassword = () => {
 
   const handleSendNewPassword = () => {
     alert("Đổi mật khẩu thành công");
-    nav("/");
+    nav("/login");
   };
 
   return (
