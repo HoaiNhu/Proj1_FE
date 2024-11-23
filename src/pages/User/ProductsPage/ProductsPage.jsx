@@ -19,7 +19,9 @@ const ProductsPage = () => {
           <div className="product__bot">
             {/* side menu */}
             <div className="side-menu__category">
-              <SideMenuComponent></SideMenuComponent>
+              <SideMenuComponent>Bánh sinh nhật</SideMenuComponent>
+              <SideMenuComponent>Bánh mặn</SideMenuComponent>
+              <SideMenuComponent>Bánh cưới</SideMenuComponent>
             </div>
 
             {/* product list */}

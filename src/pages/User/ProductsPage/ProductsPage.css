@@ -27,12 +27,13 @@
 /* ========================Side menu======================== */
 .side-menu__category {
   margin-right: 20px;
+  background-color: var(--white);
 }
 /* =========================product list ==================== */
 
 .product__list {
   display: grid;
-  gap:5px;
+  gap: 5px;
   justify-content: center;
   grid-template-columns: repeat(3, 1fr);
   /* background-color: var(--grey5); */

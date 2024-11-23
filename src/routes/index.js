@@ -11,6 +11,7 @@ import IntroducePage from "../pages/User/IntroducePage/IntroducePage";
 import NewsPage from "../pages/User/NewsPage/NewsPage";
 import OrderPage from "../pages/User/OrderPage/OrderPage";
 import ProductsPage from "../pages/User/ProductsPage/ProductsPage";
+import UserInfoPage from "../pages/User/UserInfoPage/UserInfoPage";
 export const routes = [
   {
     path: "/",
@@ -71,6 +72,13 @@ export const routes = [
   {
     path: "/forgot-password/new-password",
     page: EnterNewPassword,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/info",
+    page: UserInfoPage,
     isShowHeader: true,
     isShowFooter: true,
   },

@@ -2,7 +2,7 @@ import React from "react";
 import "./SideMenuComponent.css";
 import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
 
-const SideMenuComponent = () => {
+const SideMenuComponent = (props) => {
   return (
     <div>
       <div className="side-menu sticky-left">
@@ -11,18 +11,7 @@ const SideMenuComponent = () => {
           role="group"
           aria-label="Vertical button group"
         >
-          <ButtonNoBGComponent className="btn__component">
-            Bánh sinh nhật
-          </ButtonNoBGComponent>
-          <ButtonNoBGComponent className="btn__component">
-            Bánh cưới
-          </ButtonNoBGComponent>
-          <ButtonNoBGComponent className="btn__component">
-            Bánh ngọt
-          </ButtonNoBGComponent>
-          <ButtonNoBGComponent className="btn__component">
-            Phụ kiện
-          </ButtonNoBGComponent>
+          <button className="btn__component">{props.children}</button>
         </div>
       </div>
     </div>

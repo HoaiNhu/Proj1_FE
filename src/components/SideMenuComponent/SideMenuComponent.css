@@ -19,12 +19,24 @@
   width: 20rem;
   justify-content: left;
   align-content: center;
-  align-items: top;
+  align-items: center;
+  display: flex;
+  height: var(--button-height);
+  padding: 8px 16px;
+  color: var(--green100);
+  border: none;
+  background: transparent;
+  font-size: 1.6rem;
+  font-weight: 600;
+  transition-duration: 0.25s;
+  text-decoration: none;
+  text-align: center;
 }
 
 .btn__component:hover {
   background: var(--green30);
   border-radius: 8px;
+  color: var(--brown100);
 }
 
 .active {

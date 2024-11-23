@@ -13,7 +13,7 @@ const HeaderComponent = () => {
   };
 
   return (
-    <div className="bg-white sticky-top">
+    <div className="bg-white sticky-top bg-shadow">
       <div
         className="container-xl text-center "
         style={{ width: "width-screen" }}
