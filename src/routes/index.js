@@ -5,6 +5,7 @@ import EnterOTP from "../pages/ForgotPasswordPage/pages/EnterOTP";
 import LogInPage from "../pages/LogInPage/LogInPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
+import BankingInfoPage from "../pages/User/BankingInfoPage/BankingInfoPage";
 import ContactPage from "../pages/User/ContactPage/ContactPage";
 import HomePage from "../pages/User/HomePage/HomePage";
 import IntroducePage from "../pages/User/IntroducePage/IntroducePage";
@@ -95,9 +96,17 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+
   {
     path: "/add-product",
     page: AddProductPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/banking-info",
+    page: BankingInfoPage,
     isShowHeader: true,
     isShowFooter: true,
   },
