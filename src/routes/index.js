@@ -1,3 +1,4 @@
+import DiscountListPage from "../pages/Admin/CRUDDiscount/DiscountListPage/DiscountListPage";
 import AddProductPage from "../pages/Admin/CRUDProduct/AddProductPage/AddProductPage";
 import ForgotPassword from "../pages/ForgotPasswordPage/pages/EnterEmail";
 import EnterNewPassword from "../pages/ForgotPasswordPage/pages/EnterNewPassword";
@@ -107,6 +108,13 @@ export const routes = [
   {
     path: "/banking-info",
     page: BankingInfoPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/discount-list",
+    page: DiscountListPage,
     isShowHeader: true,
     isShowFooter: true,
   },
