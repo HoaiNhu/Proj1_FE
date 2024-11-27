@@ -5,6 +5,9 @@ import { useQuery } from "react-query";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import WebFont from "webfontloader";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css";
+import "bootstrap-datepicker";
+
 import "./assets/css/reset.css";
 import "./assets/css/style.css";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
