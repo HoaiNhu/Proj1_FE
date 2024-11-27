@@ -29,9 +29,10 @@
 .category__title,
 .time-start__title,
 .time-end__title {
-  font-size: 2rem;
+  font-size: 1.6rem;
+  font-weight: 600;
   color: var(--brown100);
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .banner__image {
@@ -62,6 +63,6 @@
   display: flex;
   justify-content: right;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
   margin-bottom: 30px;
 }

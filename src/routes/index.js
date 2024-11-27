@@ -1,6 +1,7 @@
 import AddDiscountPage from "../pages/Admin/CRUDDiscount/AddDiscountPage/AddDiscountPage";
 import DiscountListPage from "../pages/Admin/CRUDDiscount/DiscountListPage/DiscountListPage";
 import AddProductPage from "../pages/Admin/CRUDProduct/AddProductPage/AddProductPage";
+import StoreInfoPage from "../pages/Admin/CRUDStoreInfo/StoreInfoPage";
 import ForgotPassword from "../pages/ForgotPasswordPage/pages/EnterEmail";
 import EnterNewPassword from "../pages/ForgotPasswordPage/pages/EnterNewPassword";
 import EnterOTP from "../pages/ForgotPasswordPage/pages/EnterOTP";
@@ -109,6 +110,13 @@ export const routes = [
   {
     path: "/banking-info",
     page: BankingInfoPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/store-info",
+    page: StoreInfoPage,
     isShowHeader: true,
     isShowFooter: true,
   },
