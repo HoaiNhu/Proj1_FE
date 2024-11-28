@@ -1,0 +1,186 @@
+.title{
+    color: #3A060E;
+
+/* Font_Header */
+font-family: Poppins;
+font-size: 40px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+margin-left: 331px;
+margin-top: -10px;
+}
+
+.product_area {
+    width: 1200px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    background: var(--White, #FFF);
+    box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
+    margin-top: -140px;
+    margin-left: 50px;
+}
+
+.Btn_area {
+    width: 1200px;
+    height: 224px;
+    flex-shrink: 0;
+    border-radius: 0px 0px 15px 15px;
+    background: var(--button-color, #B1E321);
+    margin-top: 5px;
+}
+
+.Buy_btn {
+    width: var(--button-width);
+    height: var(--button-height);
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    background-color: var(--brown100);
+    color: var(--green100);
+    border: none;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-left: 830px;
+    margin-top: 40px;
+
+}
+
+.Buy_more {
+    border: none;
+    background-color: #B1E321;
+    color: #3A060E;
+    margin-left: 37px;
+    margin-top: 40px;
+}
+
+.Btn_holder {
+    display: flex;
+}
+
+.total_holder {
+    display: flex;
+    margin-left: 50px;
+}
+
+
+.tongtien {
+    color: #3A060E;
+
+/* Font_Title */
+font-family: Poppins;
+font-size: 20px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+margin-left: 43px;
+margin-top: 10px;
+margin-bottom: 10px;
+}
+
+.total {
+    color: var(--Color1, #3A060E);
+
+    /* Font_Title */
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-left: 18px;
+    margin-right: 75px;
+    margin-top: 56px;
+}
+
+.product_area {
+    margin-top: 30px;
+}
+
+
+.LineProduct {
+display: flex;
+width: 1200px;
+align-items: center;
+gap: 55px;
+margin-top: 5px;
+padding: 20px;
+background: var(--White, #FFF);
+box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
+}
+
+
+.ProductInforHear,
+.PriceHeader,
+.QuantityHeader,
+.MoneyHeader,
+.MoneyProduct
+ {
+    color: #3A060E;
+
+    /* Font_Title */
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-left: 20px;
+}
+.HeaderHolder{
+    display: flex;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.HeaderInfor{
+    margin-left: 85px;
+}
+.HeaderPrice{
+    margin-left: 330px;
+}
+.HeaderQuantity{
+    margin-left: 130px;
+}
+.HeaderMoney{
+    margin-left: 90px;
+}
+.PriceProduct{
+
+    width: 200px;
+   margin-left: 10px;
+}
+
+.ProductInfor{
+    margin-left: 50px;
+}
+.Money{
+    
+    width: 200px;
+    margin-left: 50px;
+    
+}
+.Price{
+color: #3A060E;
+
+/* Font_Text_Big */
+font-family: Poppins;
+font-size: 20px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+}
+.thanhtien{
+    color: #3A060E;
+
+    /* Font_Title */
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 770px ;
+}
+.Quantity{
+    margin-left: -10px;
+}

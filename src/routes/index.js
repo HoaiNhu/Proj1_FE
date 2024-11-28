@@ -19,6 +19,7 @@ import OrderPage from "../pages/User/OrderPage/OrderPage";
 import ProductsPage from "../pages/User/ProductsPage/ProductsPage";
 import UserInfoPage from "../pages/User/UserInfoPage/UserInfoPage";
 import CartPage from "../pages/User/CartPage/CartPage"
+import OrderInformationPage from "../pages/User/OrderInformationPage/OrderInformationPage";
 export const routes = [
   {
     path: "/",
@@ -153,6 +154,12 @@ export const routes = [
   {
     path: "/cart",
     page: CartPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/order-information",
+    page: OrderInformationPage,
     isShowHeader: true,
     isShowFooter: true,
   },
