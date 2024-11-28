@@ -2,7 +2,7 @@ import AddDiscountPage from "../pages/Admin/CRUDDiscount/AddDiscountPage/AddDisc
 import DiscountListPage from "../pages/Admin/CRUDDiscount/DiscountListPage/DiscountListPage";
 import AddProductPage from "../pages/Admin/CRUDProduct/AddProductPage/AddProductPage";
 import UpdateProductPage from "../pages/Admin/CRUDProduct/UpdateProductPage/UpdateProductPage";
-import ViewProductDetailPage from "../pages/Admin/CRUDProduct/ViewDetailProductPage/ViewDetailProductPage";
+import ViewProductDetailPage from "../pages/Admin/CRUDProduct/ViewProductDetailPage/ViewProductDetailPage";
 import StoreInfoPage from "../pages/Admin/CRUDStoreInfo/StoreInfoPage";
 import ForgotPassword from "../pages/ForgotPasswordPage/pages/EnterEmail";
 import EnterNewPassword from "../pages/ForgotPasswordPage/pages/EnterNewPassword";
