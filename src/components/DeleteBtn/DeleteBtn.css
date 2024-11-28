@@ -1,0 +1,7 @@
+.deleteBtn {
+    width: 19px;
+    height: 24px;
+    flex-shrink: 0;
+    fill: var(--Color1, #3A060E);
+    border: none;
+}

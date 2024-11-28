@@ -1,0 +1,33 @@
+.producInfor {
+    display: flex;
+}
+
+.imagePro {
+    width: 164.122px;
+    height: 116px;
+    flex-shrink: 0;
+    border-radius: 15px;
+}
+
+.ProName {
+    color: #3A060E;
+
+    /* Font_Title */
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    width: 300px;
+    margin-left: 10px;
+}
+
+.ProSize {
+    color: #3A060E;
+    font-family: Poppins;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-left: 10px;
+}

@@ -18,6 +18,7 @@ import NewsPage from "../pages/User/NewsPage/NewsPage";
 import OrderPage from "../pages/User/OrderPage/OrderPage";
 import ProductsPage from "../pages/User/ProductsPage/ProductsPage";
 import UserInfoPage from "../pages/User/UserInfoPage/UserInfoPage";
+import CartPage from "../pages/User/CartPage/CartPage"
 export const routes = [
   {
     path: "/",
@@ -149,6 +150,12 @@ export const routes = [
     isShowFooter: true,
   },
 
+  {
+    path: "/cart",
+    page: CartPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
   {
     path: "*",
     page: NotFoundPage,
