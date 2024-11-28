@@ -1,6 +1,8 @@
 import AddDiscountPage from "../pages/Admin/CRUDDiscount/AddDiscountPage/AddDiscountPage";
 import DiscountListPage from "../pages/Admin/CRUDDiscount/DiscountListPage/DiscountListPage";
 import AddProductPage from "../pages/Admin/CRUDProduct/AddProductPage/AddProductPage";
+import UpdateProductPage from "../pages/Admin/CRUDProduct/UpdateProductPage/UpdateProductPage";
+import ViewProductDetailPage from "../pages/Admin/CRUDProduct/ViewDetailProductPage/ViewDetailProductPage";
 import StoreInfoPage from "../pages/Admin/CRUDStoreInfo/StoreInfoPage";
 import ForgotPassword from "../pages/ForgotPasswordPage/pages/EnterEmail";
 import EnterNewPassword from "../pages/ForgotPasswordPage/pages/EnterNewPassword";
@@ -103,6 +105,18 @@ export const routes = [
   {
     path: "/add-product",
     page: AddProductPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/view-product-detail",
+    page: ViewProductDetailPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/update-product",
+    page: UpdateProductPage,
     isShowHeader: true,
     isShowFooter: true,
   },
