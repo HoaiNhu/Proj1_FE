@@ -67,6 +67,7 @@ img {
 
 .nav__cart:hover {
   color: var(--green100);
+  cursor: pointer;
 }
 
 /* nav bot */

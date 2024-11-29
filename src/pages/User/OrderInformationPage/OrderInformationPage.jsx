@@ -2,6 +2,7 @@ import React from 'react'
 import ProductInfor from '../../../components/ProductInfor/ProductInfor'
 import imageProduct from "../../../assets/img/hero_3.jpg"
 import './OrderInformation.css'
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent"
 const OrderInformationPage = () => {
     return (
         <div className="container-xl cart-container">
@@ -18,31 +19,31 @@ const OrderInformationPage = () => {
                     <h1 className='title'> Thông tin đơn hàng</h1>
                 </div>
             </div>
-            <div className='product_area'>
+            <div className='order_area'>
                 <table>
                     <thead>
                         <tr>
                             <div className='HeaderHolder'>
-                           <div className='HeaderInfor'>
-                            <th className='ProductInforHear'>Thông tin sản phẩm</th>
-                            </div>
-                            <div className='HeaderPrice'>
-                            <th className='PriceHeader'>Đơn giá</th>
-                            </div>
-                            <div className='HeaderQuantity'>
-                            <th className='QuantityHeader'>Số lượng</th>
-                            </div>
-                            <div className='HeaderMoney'>
-                            <th className='MoneyHeader'>Thành tiền</th>
-                            </div>
+                                <div className='HeaderInfor'>
+                                    <th className='ProductInforHear'>Thông tin sản phẩm</th>
+                                </div>
+                                <div className='HeaderPrice'>
+                                    <th className='PriceHeader'>Đơn giá</th>
+                                </div>
+                                <div className='HeaderQuantity'>
+                                    <th className='QuantityHeader'>Số lượng</th>
+                                </div>
+                                <div className='HeaderMoney'>
+                                    <th className='MoneyHeader'>Thành tiền</th>
+                                </div>
                             </div>
                         </tr>
-                        
+
                     </thead>
                     <tbody>
                         <tr>
                             <div className='LineProduct'>
-                            
+
                                 <div className='ProductInfor'>
                                     <ProductInfor image={imageProduct} name={"Summer Orange Cream"} size={'24cm'}></ProductInfor>
                                 </div>
@@ -53,13 +54,13 @@ const OrderInformationPage = () => {
                                     <p>x1</p>
                                 </div>
                                 <div className='Money'>
-                                <p className='MoneyProduct'>250,000 VND</p>
+                                    <p className='MoneyProduct'>250,000 VND</p>
                                 </div>
                             </div>
                         </tr>
                         <tr>
                             <div className='LineProduct'>
-                            
+
                                 <div className='ProductInfor'>
                                     <ProductInfor image={imageProduct} name={"Summer Orange Cream"} size={'24cm'}></ProductInfor>
                                 </div>
@@ -70,20 +71,100 @@ const OrderInformationPage = () => {
                                     <p>x1</p>
                                 </div>
                                 <div className='Money'>
-                                <p className='MoneyProduct'>250,000 VND</p>
+                                    <p className='MoneyProduct'>250,000 VND</p>
                                 </div>
                             </div>
                         </tr>
-                        </tbody>
-                        <tfoot>
-                            <div className='LineProduct'>
-                                <p className='tongtien'>Tổng tiền:</p>
-                                    <p className='thanhtien'>500,000 VND</p>
-                            </div>
-                        </tfoot>
-                        </table>
+                    </tbody>
+                    <tfoot>
+                        <div className='TongtienHolder'>
+                            <p className='tongtien'>Tổng tiền:</p>
+                            <p className='thanhtien'>500,000 VND</p>
                         </div>
+                    </tfoot>
+                </table>
+            </div>
+            <div className='question'>
+                <p className='login-question'>Bạn đã có tài khoản? <a href='./login' target='_blank' className='login-link'>Đăng nhập</a></p>
+            </div>
+
+            <div>
+                {/* =====Dia chi giao hang===== */}
+                <div className='addressHolder'>
+                    <p className='DiaChi'>Địa chỉ</p>
+                    <div>
+                        <input className='input-address' type='text' placeholder='Nhập địa chỉ giao hàng: Số nhà, hẻm, đường,...'></input>
+                    </div>
+                </div>
+                <div className='comboBoxHolder'>
+                    <div className='ProvinceHolder'>
+                        <select className='Province' name='Province'>
+                            <option value="" disabled selected>Chọn tỉnh</option>
+                            <option value={"Bến Tre"}>Bến Tre</option>
+                            <option value={"Tiền Giang"}>Tiền Giang</option>
+                        </select>
+                    </div>
+                    <div className='DistrictHolder'>
+                        <select className='District' name='District'>
+                            <option value="" disabled selected>Chọn quận/huyện</option>
+                            <option value={"Bến Tre"}>Bến Tre</option>
+                            <option value={"Tiền Giang"}>Tiền Giang</option>
+                        </select>
+                    </div>
+                    <div className='VillageHolder'>
+                        <select className='Village' name='Village'>
+                            <option value="" disabled selected>Chọn phường/xã</option>
+                            <option value={"Bến Tre"}>Bến Tre</option>
+                            <option value={"Tiền Giang"}>Tiền Giang</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* =====Thoi gian giao hang==== */}
+                <div className='DeliveryTimeHolder'>
+                    <p className='ThoiGian'>Thời gian giao hàng dự kiến:</p>
+                    <div className='lableHolder'>
+                        <div className='labelTime'>
+                            <label className='ChonGio'>Chọn giờ:</label>
+                        </div>
+                        <div className='lableDate'>
+                            <label className='ChonNgay'>Chọn ngày:</label>
+                        </div>
+                    </div>
+                    <div className='comboBoxHolder'>
+
+                        <div className='TimeHolder'>
+                            <input type='time' className='clock'></input>
+                        </div>
+
+                        <div className='DateHolder'>
+                            <input type="date" id="datePicker" className='Datepicker' />
+                        </div>
+                    </div>
+                </div>
+                {/* ============Ghi chu don hang======== */}
+                <div className='Note'>
+                    <div>
+                        <label className='labelNote'>Ghi chú đơn hàng:</label>
+                        <div>
+                            <textarea rows="5" cols="50" placeholder="Nhập ghi chú đơn hàng....." className='inputNote'></textarea>
+                        </div>
+                    </div>
+                </div>
+
+        {/* ================= Button======== */}
+                <div className='Button-area'>
+                    <button className='chinhsachBtn'><a href='/chinhsach' target='_blank' className='chinhsach'>Chính sách đơn hàng</a></button>
+                    <div className='Btn_holder'>
+                    <div>
+                    <ButtonComponent>Giỏ hàng</ButtonComponent>
+                    </div>
+                    <ButtonComponent className='Next_btn'>Tiếp theo</ButtonComponent>
+                    </div>
+                </div>
+            </div>
         </div>
+
     )
 }
 
