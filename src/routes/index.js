@@ -21,6 +21,7 @@ import UserInfoPage from "../pages/User/UserInfoPage/UserInfoPage";
 import CartPage from "../pages/User/CartPage/CartPage";
 import OrderInformationPage from "../pages/User/OrderInformationPage/OrderInformationPage";
 import OrderHistoryPage from "../pages/User/OrderHistoryPage/OrderHistoryPage";
+import UserListPage from "../pages/Admin/CRUDUser/UserListPage/UserListPage";
 export const routes = [
   {
     path: "/",
@@ -172,6 +173,13 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+  {
+    path: "/user-list",
+    page: UserListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
   {
     path: "*",
     page: NotFoundPage,
