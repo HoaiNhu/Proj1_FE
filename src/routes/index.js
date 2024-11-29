@@ -22,6 +22,7 @@ import CartPage from "../pages/User/CartPage/CartPage";
 import OrderInformationPage from "../pages/User/OrderInformationPage/OrderInformationPage";
 import OrderHistoryPage from "../pages/User/OrderHistoryPage/OrderHistoryPage";
 import UserListPage from "../pages/Admin/CRUDUser/UserListPage/UserListPage";
+import PaymentPage from "../pages/User/PaymentPage/PaymentPage";
 export const routes = [
   {
     path: "/",
@@ -166,7 +167,6 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
-
   {
     path: "/order-information",
     page: OrderInformationPage,
@@ -180,6 +180,12 @@ export const routes = [
     isShowFooter: true,
   },
 
+  {
+    path: "/payment",
+    page: PaymentPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
   {
     path: "*",
     page: NotFoundPage,
