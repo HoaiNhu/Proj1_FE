@@ -1,5 +1,6 @@
-.titleHolder {
+.titleHolderCart {
     display: flex;
+   
 }
 
 .back_btn {
@@ -12,14 +13,16 @@
     margin-left: 30px;
 }
 
-.title {
+.titleCart {
     color: #3A060E;
+
+    /* Font_Header */
     font-family: Poppins;
-    font-size: 20px;
+    font-size: 40px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    margin-top: 5px;
+    margin-left: 500px;
 }
 
 .product_area {
@@ -32,7 +35,7 @@
     margin-left: 50px;
 }
 
-.Btn_area {
+.Btnarea {
     width: 1200px;
     height: 224px;
     flex-shrink: 0;
@@ -66,16 +69,16 @@
     margin-top: 40px;
 }
 
-.Btn_holder {
+.Btnholder {
     display: flex;
 }
 
-.total_holder {
+.total-holder {
     display: flex;
     margin-left: 50px;
 }
 
-.tongtien {
+.tong {
     color: #000;
     ;
 

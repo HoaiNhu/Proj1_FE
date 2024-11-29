@@ -8,6 +8,7 @@ const BankingInfoPage = () => {
     <div>
       <div className="container-xl">
         <div className="title-row">
+          
           <svg
             className="back-icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -21,6 +22,7 @@ const BankingInfoPage = () => {
               fill="currentColor"
             />
           </svg>
+          
           <h2 className="title__content">Thông tin chuyển khoản</h2>
         </div>
 
