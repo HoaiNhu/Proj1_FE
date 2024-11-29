@@ -47,6 +47,7 @@ function UserInfoPage() {
               <SideMenuComponent>Thông tin cá nhân</SideMenuComponent>
               <SideMenuComponent>Khuyến mãi</SideMenuComponent>
               <SideMenuComponent>Đơn hàng</SideMenuComponent>
+              <SideMenuComponent>Đăng xuất</SideMenuComponent>
             </div>
             <div className="user-info">
               <h2 className="user-info__title">Thông tin cá nhân</h2>
