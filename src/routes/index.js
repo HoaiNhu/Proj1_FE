@@ -1,3 +1,11 @@
+import ReportPage from "../pages/Admin/CRUDReport/ReportPage";
+import DetailCategoryPage from "../pages/Admin/CRUDCategory/DetailCategoryPage/DetailCategoryPage";
+import UpdateCategoryPage from "../pages/Admin/CRUDCategory/UpdateCategoryPage/UpdateCategoryPage";
+import AddCategoryPage from "../pages/Admin/CRUDCategory/AddCategoryPage/AddCategoryPage";
+import CategoryListPage from "../pages/Admin/CRUDCategory/CategoryListPage/CategoryListPage";
+import UpdateStatusPage from "../pages/Admin/CRUDStatus/UpdateStatusPage/UpdateStatusPage";
+import AddStatusPage from "../pages/Admin/CRUDStatus/AddStatusPage/AddStatusPage";
+import StatusListPage from "../pages/Admin/CRUDStatus/StatusListPage/StatusListPage";
 import AddDiscountPage from "../pages/Admin/CRUDDiscount/AddDiscountPage/AddDiscountPage";
 import DiscountListPage from "../pages/Admin/CRUDDiscount/DiscountListPage/DiscountListPage";
 import AddProductPage from "../pages/Admin/CRUDProduct/AddProductPage/AddProductPage";
@@ -160,6 +168,62 @@ export const routes = [
   {
     path: "/add-discount",
     page: AddDiscountPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/status-list",
+    page: StatusListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/add-status",
+    page: AddStatusPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/update-status",
+    page: UpdateStatusPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/category-list",
+    page: CategoryListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/add-category",
+    page: AddCategoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/update-category",
+    page: UpdateCategoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/detail-category",
+    page: DetailCategoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/report",
+    page: ReportPage,
     isShowHeader: true,
     isShowFooter: true,
   },

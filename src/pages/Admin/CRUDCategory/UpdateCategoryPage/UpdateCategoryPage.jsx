@@ -1,14 +1,14 @@
 import FormComponent from "../../../../components/FormComponent/FormComponent";
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
-import "./AddCategoryPage.css";
+import "./UpdateCategoryPage.css";
 
-const AddCategoryPage = () => {
+const UpdateCategoryPage = () => {
 
   return (
     <div>
       <div className="container-xl">
-        <div className="add-category__container">
+        <div className="update-category__container">
           {/* side menu */}
           <div className="side-menu__category">
             <SideMenuComponent>Thông tin cửa hàng</SideMenuComponent>
@@ -20,11 +20,11 @@ const AddCategoryPage = () => {
             <SideMenuComponent>Thống kê</SideMenuComponent>
           </div>
 
-          <iv className="add-category__content">
-            <div className="category__info">
+          <div className="update-category__content">
+            <div className="status__info">
           
-              <div className="add_category__title">
-                <label>Thêm loại bánh</label>
+              <div className="update_category__title">
+                <label>Sửa loại bánh</label>
               </div>
            
               <div className="content">
@@ -32,26 +32,35 @@ const AddCategoryPage = () => {
                   <label className="id__title">Mã loại bánh</label>
                   <FormComponent placeholder="C6"></FormComponent>
                 </div>
-                <div className="content__item">
-  <label className="name__title">
-    Tên loại bánh <i className="fas fa-pencil-alt" style={{ marginLeft: '5px' }}></i>
-  </label>
-  <FormComponent placeholder="Bánh mùa đông"></FormComponent>
-</div>
-
+                <div className="content__item" style={{ position: 'relative' }}>
+                  <label className="name__title">Tên loại bánh</label>
+                    <span 
+                        className="material-icons" 
+                        style={{ 
+                        fontSize: '26px',
+                        marginRight: "45px",
+                        position: 'absolute', 
+                        top: '0', 
+                        right: '0', 
+                        cursor: 'pointer' 
+                        }}
+                    >edit
+                  </span>
+                  <FormComponent placeholder="Bánh mùa đông"></FormComponent>
+                </div>
               </div>
 
               {/* button */}
-              <div className="btn__add-category">
-                <ButtonComponent>Thêm</ButtonComponent>
+              <div className="btn__update-category">
+                <ButtonComponent>Lưu</ButtonComponent>
                 <ButtonComponent>Thoát</ButtonComponent>
               </div>
             </div>
-          </iv>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default AddCategoryPage;
+export default UpdateCategoryPage;
