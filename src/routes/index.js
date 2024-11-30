@@ -1,3 +1,11 @@
+import ReportPage from "../pages/Admin/CRUDReport/ReportPage";
+import DetailCategoryPage from "../pages/Admin/CRUDCategory/DetailCategoryPage/DetailCategoryPage";
+import UpdateCategoryPage from "../pages/Admin/CRUDCategory/UpdateCategoryPage/UpdateCategoryPage";
+import AddCategoryPage from "../pages/Admin/CRUDCategory/AddCategoryPage/AddCategoryPage";
+import CategoryListPage from "../pages/Admin/CRUDCategory/CategoryListPage/CategoryListPage";
+import UpdateStatusPage from "../pages/Admin/CRUDStatus/UpdateStatusPage/UpdateStatusPage";
+import AddStatusPage from "../pages/Admin/CRUDStatus/AddStatusPage/AddStatusPage";
+import StatusListPage from "../pages/Admin/CRUDStatus/StatusListPage/StatusListPage";
 import AddDiscountPage from "../pages/Admin/CRUDDiscount/AddDiscountPage/AddDiscountPage";
 import DiscountListPage from "../pages/Admin/CRUDDiscount/DiscountListPage/DiscountListPage";
 import AddProductPage from "../pages/Admin/CRUDProduct/AddProductPage/AddProductPage";
@@ -24,6 +32,9 @@ import OrderHistoryPage from "../pages/User/OrderHistoryPage/OrderHistoryPage";
 import UserListPage from "../pages/Admin/CRUDUser/UserListPage/UserListPage";
 import PaymentPage from "../pages/User/PaymentPage/PaymentPage";
 import OrderDetailHistoryPage from "../pages/User/OrderDetailHistoryPage/OrderDetailHistoryPage";
+import NewsPageAdmin from "../pages/Admin/CRUDNews/NewsPage/NewsPage";
+import AddNews from "../pages/Admin/CRUDNews/AddNews/AddNews";
+import UpdateStatus from "../pages/Admin/CRUDOrderStatus/UpdateStatus/UpdateStatus";
 export const routes = [
   {
     path: "/",
@@ -170,6 +181,62 @@ export const routes = [
   },
 
   {
+    path: "/status-list",
+    page: StatusListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/add-status",
+    page: AddStatusPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/update-status",
+    page: UpdateStatusPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/category-list",
+    page: CategoryListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/admin/add-category",
+    page: AddCategoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/admin/update-category",
+    page: UpdateCategoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/detail-category",
+    page: DetailCategoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/report",
+    page: ReportPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
     path: "/cart",
     page: CartPage,
     isShowHeader: true,
@@ -182,7 +249,7 @@ export const routes = [
     isShowFooter: true,
   },
   {
-    path: "/user-list",
+    path: "/admin/user-list",
     page: UserListPage,
     isShowHeader: true,
     isShowFooter: true,
@@ -191,6 +258,24 @@ export const routes = [
   {
     path: "/payment",
     page: PaymentPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/admin/news",
+    page: NewsPageAdmin,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/admin/news/add-news",
+    page: AddNews,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/admin/order-status/update",
+    page: UpdateStatus,
     isShowHeader: true,
     isShowFooter: true,
   },
