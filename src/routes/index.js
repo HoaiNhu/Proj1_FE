@@ -35,6 +35,10 @@ import OrderDetailHistoryPage from "../pages/User/OrderDetailHistoryPage/OrderDe
 import NewsPageAdmin from "../pages/Admin/CRUDNews/NewsPage/NewsPage";
 import AddNews from "../pages/Admin/CRUDNews/AddNews/AddNews";
 import UpdateStatus from "../pages/Admin/CRUDOrderStatus/UpdateStatus/UpdateStatus";
+import ProductPageAdmin from "../pages/Admin/CRUDProduct/ProductPageAdmin/ProductPageAdmin";
+import OrderListPage from "../pages/Admin/CRUDOrderStatus/OrderListPage/OrderListPage"
+import OrderDetailPage from "../pages/Admin/CRUDOrderStatus/OrderDetailPage/OrderDetailPage";
+import UpdateContact from "../pages/Admin/CRUDContact/UpdateContact/UpdateContact"
 export const routes = [
   {
     path: "/",
@@ -297,6 +301,12 @@ export const routes = [
   {
     path: "/update-contact",
     page: UpdateContact,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/admin/products",
+    page: ProductPageAdmin,
     isShowHeader: true,
     isShowFooter: true,
   },
