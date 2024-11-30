@@ -35,6 +35,7 @@ import OrderDetailHistoryPage from "../pages/User/OrderDetailHistoryPage/OrderDe
 import NewsPageAdmin from "../pages/Admin/CRUDNews/NewsPage/NewsPage";
 import AddNews from "../pages/Admin/CRUDNews/AddNews/AddNews";
 import UpdateStatus from "../pages/Admin/CRUDOrderStatus/UpdateStatus/UpdateStatus";
+import OrderListPage from "../pages/Admin/CRUDOrderStatus/OrderListPage/OrderListPage";
 export const routes = [
   {
     path: "/",
@@ -248,9 +249,17 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+
   {
     path: "/admin/user-list",
     page: UserListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/admin/order-list",
+    page: OrderListPage,
     isShowHeader: true,
     isShowFooter: true,
   },
