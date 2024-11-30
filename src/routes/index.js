@@ -23,8 +23,7 @@ import OrderInformationPage from "../pages/User/OrderInformationPage/OrderInform
 import OrderHistoryPage from "../pages/User/OrderHistoryPage/OrderHistoryPage";
 import UserListPage from "../pages/Admin/CRUDUser/UserListPage/UserListPage";
 import PaymentPage from "../pages/User/PaymentPage/PaymentPage";
-import NewsPageAdmin from "../pages/Admin/CRUDNews/NewsPage/NewsPage";
-import AddNews from "../pages/Admin/CRUDNews/AddNews/AddNews";
+import OrderDetailHistoryPage from "../pages/User/OrderDetailHistoryPage/OrderDetailHistoryPage";
 export const routes = [
   {
     path: "/",
@@ -104,6 +103,13 @@ export const routes = [
   },
 
   {
+    path: "/order-detail-history/:orderId",
+    page: OrderDetailHistoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
     path: "/contact",
     page: ContactPage,
     isShowHeader: true,
@@ -123,7 +129,7 @@ export const routes = [
     isShowFooter: true,
   },
   {
-    path: "/view-product-detail",
+    path: "/view-product-detail/",
     page: ViewProductDetailPage,
     isShowHeader: true,
     isShowFooter: true,
@@ -185,18 +191,6 @@ export const routes = [
   {
     path: "/payment",
     page: PaymentPage,
-    isShowHeader: true,
-    isShowFooter: true,
-  },
-  {
-    path: "/admin/news",
-    page: NewsPageAdmin,
-    isShowHeader: true,
-    isShowFooter: true,
-  },
-  {
-    path: "/admin/news/add-news",
-    page: AddNews,
     isShowHeader: true,
     isShowFooter: true,
   },

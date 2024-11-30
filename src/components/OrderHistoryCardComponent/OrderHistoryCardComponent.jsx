@@ -3,8 +3,15 @@ import ProductRowComponent from "../ProductRowComponent/ProductRowComponent";
 import StatusComponent from "../StatusComponent/StatusComponent";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import "./OrderHistoryCardComponent.css";
+import { useNavigate } from "react-router-dom";
 
 const OrderHistoryCardComponent = ({ order }) => {
+  const navigate = useNavigate(); // Hook điều hướng
+
+  const handleViewDetails = () => {
+    navigate(`/order-detail-history/${order.id}`, { state: { order } }); // Chuyển hướng với dữ liệu
+  };
+
   const totalAmount = order.products.reduce((acc, product) => {
     return acc + parseInt(product.price) * parseInt(product.quantity); // Tổng tiền của tất cả sản phẩm
   }, 0);
@@ -27,7 +34,9 @@ const OrderHistoryCardComponent = ({ order }) => {
         ))}
       </div>
       <div className="order-footer d-flex justify-content-between align-items-center">
-        <ButtonComponent className="btn-detail">Chi tiết</ButtonComponent>
+        <ButtonComponent className="btn-detail" onClick={handleViewDetails}>
+          Chi tiết
+        </ButtonComponent>
         <div className="order-total d-flex text-center gap-5">
           <label>Tổng số tiền: </label>{" "}
           <div>{totalAmount.toLocaleString()} vnd</div>
