@@ -34,6 +34,7 @@ import PaymentPage from "../pages/User/PaymentPage/PaymentPage";
 import NewsPageAdmin from "../pages/Admin/CRUDNews/NewsPage/NewsPage";
 import AddNews from "../pages/Admin/CRUDNews/AddNews/AddNews";
 import UpdateStatus from "../pages/Admin/CRUDOrderStatus/UpdateStatus/UpdateStatus";
+import UpdateContact from "../pages/Admin/CRUDContact/UpdateContact/UpdateContact";
 export const routes = [
   {
     path: "/",
@@ -268,6 +269,12 @@ export const routes = [
   {
     path: "/admin/order-status/update",
     page: UpdateStatus,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/update-contact",
+    page: UpdateContact,
     isShowHeader: true,
     isShowFooter: true,
   },
