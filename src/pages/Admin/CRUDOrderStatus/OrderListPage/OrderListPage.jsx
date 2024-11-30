@@ -4,8 +4,10 @@ import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenu
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
 import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
+import { useNavigate } from "react-router-dom";
 const OrderListPage = () => {
   const [selectedRows, setSelectedRows] = useState([]);
+  const navigate = useNavigate();
 
   const orders = [
     {
@@ -15,6 +17,9 @@ const OrderListPage = () => {
       orderBookDate: "28/11/2024",
       orderDelivery: "30/11/2024",
       orderTotal: "300,000 vnd",
+      products: [
+        { name: "Tiramisu", size: "20 cm", price: "100,000", quantity: 1 },
+      ],
     },
     {
       id: 2,
@@ -23,33 +28,12 @@ const OrderListPage = () => {
       orderBookDate: "25/11/2024",
       orderDelivery: "27/11/2024",
       orderTotal: "500,000 vnd",
+      products: [
+        { name: "Bánh kem", size: "18 cm", price: "200,000", quantity: 2 },
+      ],
     },
-    {
-      id: 3,
-      orderId: "DH003",
-      orderStatus: "Đã hủy",
-      orderBookDate: "20/11/2024",
-      orderDelivery: "—",
-      orderTotal: "0 vnd",
-    },
-    {
-      id: 4,
-      orderId: "DH004",
-      orderStatus: "Đang giao",
-      orderBookDate: "27/11/2024",
-      orderDelivery: "Dự kiến 29/11/2024",
-      orderTotal: "450,000 vnd",
-    },
-    {
-      id: 5,
-      orderId: "DH005",
-      orderStatus: "Đang xử lý",
-      orderBookDate: "29/11/2024",
-      orderDelivery: "Dự kiến 01/12/2024",
-      orderTotal: "250,000 vnd",
-    },
+    // Thêm các đơn hàng khác
   ];
-
   const toggleSelectRow = (id) => {
     setSelectedRows((prev) =>
       prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
@@ -62,6 +46,17 @@ const OrderListPage = () => {
         ? []
         : orders.map((order) => order.id)
     );
+  };
+
+  const handleDetail = () => {
+    if (selectedRows.length === 1) {
+      const selectedOrder = orders.find(
+        (order) => order.id === selectedRows[0]
+      );
+      navigate("/admin/order-detail/", { state: selectedOrder }); // Điều hướng kèm dữ liệu
+    } else {
+      alert("Vui lòng chọn 1 đơn hàng để xem chi tiết!");
+    }
   };
 
   const isSelected = (id) => selectedRows.includes(id);
@@ -94,14 +89,17 @@ const OrderListPage = () => {
             <div className="order-list__action">
               <h2 className="order-list__title">Danh sách khuyến mãi</h2>
               <div className="btn__action">
-                <ButtonComponent className="btn btn-delete">
+                <ButtonComponent
+                  className="btn btn-detail"
+                  onClick={handleDetail}
+                >
                   Chi tiết
                 </ButtonComponent>
-                <ButtonComponent className="btn btn-edit">
+                <ButtonComponent className="btn btn-cancel">
                   Hủy đơn
                 </ButtonComponent>
-                <ButtonComponent className="btn btn-add">
-                  Cập nhật{" "}
+                <ButtonComponent className="btn btn-update">
+                  Cập nhật
                 </ButtonComponent>
               </div>
             </div>

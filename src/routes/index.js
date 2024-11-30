@@ -36,6 +36,7 @@ import NewsPageAdmin from "../pages/Admin/CRUDNews/NewsPage/NewsPage";
 import AddNews from "../pages/Admin/CRUDNews/AddNews/AddNews";
 import UpdateStatus from "../pages/Admin/CRUDOrderStatus/UpdateStatus/UpdateStatus";
 import OrderListPage from "../pages/Admin/CRUDOrderStatus/OrderListPage/OrderListPage";
+import OrderDetailPage from "../pages/Admin/CRUDOrderStatus/OrderDetailPage/OrderDetailPage";
 export const routes = [
   {
     path: "/",
@@ -260,6 +261,13 @@ export const routes = [
   {
     path: "/admin/order-list",
     page: OrderListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/admin/order-detail/",
+    page: OrderDetailPage,
     isShowHeader: true,
     isShowFooter: true,
   },
