@@ -31,10 +31,10 @@ import OrderInformationPage from "../pages/User/OrderInformationPage/OrderInform
 import OrderHistoryPage from "../pages/User/OrderHistoryPage/OrderHistoryPage";
 import UserListPage from "../pages/Admin/CRUDUser/UserListPage/UserListPage";
 import PaymentPage from "../pages/User/PaymentPage/PaymentPage";
+import OrderDetailHistoryPage from "../pages/User/OrderDetailHistoryPage/OrderDetailHistoryPage";
 import NewsPageAdmin from "../pages/Admin/CRUDNews/NewsPage/NewsPage";
 import AddNews from "../pages/Admin/CRUDNews/AddNews/AddNews";
 import UpdateStatus from "../pages/Admin/CRUDOrderStatus/UpdateStatus/UpdateStatus";
-import UpdateContact from "../pages/Admin/CRUDContact/UpdateContact/UpdateContact";
 export const routes = [
   {
     path: "/",
@@ -114,6 +114,13 @@ export const routes = [
   },
 
   {
+    path: "/order-detail-history/:orderId",
+    page: OrderDetailHistoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
     path: "/contact",
     page: ContactPage,
     isShowHeader: true,
@@ -133,7 +140,7 @@ export const routes = [
     isShowFooter: true,
   },
   {
-    path: "/view-product-detail",
+    path: "/view-product-detail/",
     page: ViewProductDetailPage,
     isShowHeader: true,
     isShowFooter: true,
@@ -202,14 +209,14 @@ export const routes = [
   },
 
   {
-    path: "/add-category",
+    path: "/admin/add-category",
     page: AddCategoryPage,
     isShowHeader: true,
     isShowFooter: true,
   },
 
   {
-    path: "/update-category",
+    path: "/admin/update-category",
     page: UpdateCategoryPage,
     isShowHeader: true,
     isShowFooter: true,
@@ -241,9 +248,24 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+
   {
-    path: "/user-list",
+    path: "/admin/user-list",
     page: UserListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/admin/order-list",
+    page: OrderListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/admin/order-detail/",
+    page: OrderDetailPage,
     isShowHeader: true,
     isShowFooter: true,
   },
