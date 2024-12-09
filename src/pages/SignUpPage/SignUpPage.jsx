@@ -1,11 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import ButtonFormComponent from "../../components/ButtonFormComponent/ButtonFormComponent";
 import FormComponent from "../../components/FormComponent/FormComponent";
 import "./SignUpPage.css";
 import img1 from "../../assets/img/hero_2.jpg";
 import img2 from "../../assets/img/AVOCADO.png";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
+  const [formData, setFormData] = useState({
+    familyName: "",
+    userName: "",
+    userPhone: "",
+    userEmail: "",
+    userPassword: "",
+    userConfirmPassword: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL_BACKEND}/user/sign-up`,
+        formData
+      );
+      console.log(response.data);
+      alert("Đăng ký thành công!");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert("Đăng ký thất bại!");
+    }
+  };
+
   return (
     <div className="container-xl container-signup">
       <div className="signup-container">
@@ -17,50 +50,58 @@ const SignUpPage = () => {
         {/* SignUp right */}
         <div className="signup__right">
           <h1 className="signup__title">ĐĂNG KÍ</h1>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FormComponent
-              id="familyNameInput"
+              name="familyName"
               label="FamilyName"
-              type="familyName"
+              type="text"
               placeholder="Họ"
-            ></FormComponent>
-
+              value={formData.familyName}
+              onChange={handleChange}
+            />
             <FormComponent
-              id="nameInput"
+              name="userName"
               label="Name"
-              type="name"
+              type="text"
               placeholder="Tên"
-            ></FormComponent>
-
+              value={formData.userName}
+              onChange={handleChange}
+            />
             <FormComponent
-              id="phoneInput"
+              name="userPhone"
               label="Phone"
               type="tel"
               placeholder="Số điện thoại"
-            ></FormComponent>
-
+              value={formData.userPhone}
+              onChange={handleChange}
+            />
             <FormComponent
-              id="emailInput"
-              label="Phone number"
+              name="userEmail"
+              label="Email"
               type="email"
               placeholder="Email"
-            ></FormComponent>
-
+              value={formData.userEmail}
+              onChange={handleChange}
+            />
             <FormComponent
-              id="passwordInput"
+              name="userPassword"
               label="Password"
               type="password"
               placeholder="Nhập mật khẩu"
-            ></FormComponent>
-
+              value={formData.userPassword}
+              onChange={handleChange}
+            />
             <FormComponent
-              id="confirmPasswordInput"
+              name="userConfirmPassword"
               label="ConfirmPassword"
-              type="confirmPassword"
+              type="password"
               placeholder="Xác nhận mật khẩu"
-            ></FormComponent>
-
-            <ButtonFormComponent>Đăng kí tài khoản</ButtonFormComponent>
+              value={formData.userConfirmPassword}
+              onChange={handleChange}
+            />
+            <ButtonFormComponent type="submit">
+              Đăng kí tài khoản
+            </ButtonFormComponent>
           </form>
           <div className="case__login">
             Bạn đã có tài khoản?
