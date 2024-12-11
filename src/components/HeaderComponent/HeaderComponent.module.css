@@ -1,9 +1,8 @@
 .bg-white {
   width: max-content;
-
 }
 
-.bg-shadow{
+.bg-shadow {
   box-shadow: 0px 0px 4px 0px var(--shadow);
 }
 
@@ -82,4 +81,8 @@ img {
   align-items: center;
   padding: 10px 0;
   margin: 15px 0 0;
+}
+
+.user__icon {
+  background-color: var(--green100);
 }

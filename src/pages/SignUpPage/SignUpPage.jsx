@@ -5,7 +5,12 @@ import FormComponent from "../../components/FormComponent/FormComponent";
 import "./SignUpPage.css";
 import img1 from "../../assets/img/hero_2.jpg";
 import img2 from "../../assets/img/AVOCADO.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import * as UserService from "../../services/UserService";
+import { useMutationHook } from "../../hooks/useMutationHook";
+import Loading from "../../components/LoadingComponent/Loading";
+
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +22,14 @@ const SignUpPage = () => {
     userConfirmPassword: "",
   });
 
+
+  const mutation = useMutationHook((data) => UserService.signupUser(data));
+  const { data, isLoading } = mutation;
+
+
   const navigate = useNavigate();
+
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,18 +37,33 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL_BACKEND}/user/sign-up`,
-        formData
-      );
-      console.log(response.data);
-      alert("Đăng ký thành công!");
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-      alert("Đăng ký thất bại!");
-    }
+    mutation.mutate({
+      familyName: formData.familyName,
+      userName: formData.userName,
+      userPhone: formData.userPhone,
+      userEmail: formData.userEmail,
+      userPassword: formData.userPassword,
+      userConfirmPassword: formData.userConfirmPassword,
+    });
+    // try {
+    //   const response = await axios.post(
+    //     `${process.env.REACT_APP_API_URL_BACKEND}/user/sign-up`,
+    //     formData
+    //   );
+    //   console.log(response.data);
+    //   alert("Đăng ký thành công!");
+    //   // Lưu thông tin người dùng vào context sau khi đăng ký thành công
+    //   // const userData = {
+    //   //   name: formData.userName,
+    //   //   avatar: "/path/to/avatar.jpg", // Có thể là ảnh đại diện mặc định hoặc lấy từ response nếu có
+    //   // };
+    //   // login(userData); // Cập nhật context với thông tin người dùng
+
+    //   navigate("/");
+    // } catch (error) {
+    //   console.error(error);
+    //   alert("Đăng ký thất bại!");
+    // }
   };
 
   return (
@@ -99,6 +126,16 @@ const SignUpPage = () => {
               value={formData.userConfirmPassword}
               onChange={handleChange}
             />
+            <span
+                style={{
+                  color: "red",
+                  display: "block",
+                  fontSize: "16px",
+                  marginTop: "10px",
+                }}
+              >
+                {data?.status === "ERR" && data?.message}
+              </span>
             <ButtonFormComponent type="submit">
               Đăng kí tài khoản
             </ButtonFormComponent>
@@ -106,9 +143,9 @@ const SignUpPage = () => {
           <div className="case__login">
             Bạn đã có tài khoản?
             <u>
-              <a className="btn__goto__login" href="./login">
+              <Link to="./login" className="btn__goto__login">
                 Đăng nhập
-              </a>
+              </Link>
             </u>
           </div>
         </div>

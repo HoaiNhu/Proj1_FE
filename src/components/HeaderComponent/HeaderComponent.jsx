@@ -4,7 +4,8 @@ import img from "../../assets/img/AVOCADO.png";
 import SearchBoxComponent from "../SearchBoxComponent/SearchBoxComponent";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
@@ -13,9 +14,14 @@ const HeaderComponent = () => {
   };
   const handleClickCart = () => {
     navigate("/cart");
-
   };
 
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/"); // Redirect to home page after logout
+  };
 
   return (
     <div className="bg-white sticky-top bg-shadow">
@@ -52,18 +58,39 @@ const HeaderComponent = () => {
                     fill="currentColor"
                   />
                 </svg>
-        
               </div>
               <div className={`col text-end ${styles.btn__container}`}>
-                <a href="/signup" className={styles.btn__signup}>
-                  Đăng kí
-                </a>
-                <div
-                  onClick={handleNavigationLogin}
-                  className={styles.btn__signup}
-                >
-                  <ButtonComponent>Đăng nhập</ButtonComponent>
-                </div>
+                {user ? (
+                  <div onClick={handleLogout} className={styles.user__icon}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 40 40"
+                      fill="none"
+                    >
+                      <g clipPath="url(#clip0_1306_736)">
+                        <path
+                          d="M31.1719 30.0156C29.4453 27.0156 26.2031 25 22.5 25H17.5C13.7969 25 10.5547 27.0156 8.82812 30.0156C11.5781 33.0781 15.5625 35 20 35C24.4375 35 28.4219 33.0703 31.1719 30.0156ZM0 20C0 14.6957 2.10714 9.60859 5.85786 5.85786C9.60859 2.10714 14.6957 0 20 0C25.3043 0 30.3914 2.10714 34.1421 5.85786C37.8929 9.60859 40 14.6957 40 20C40 25.3043 37.8929 30.3914 34.1421 34.1421C30.3914 37.8929 25.3043 40 20 40C14.6957 40 9.60859 37.8929 5.85786 34.1421C2.10714 30.3914 0 25.3043 0 20Z"
+                          fill="currentColor"
+                        />
+                      </g>
+                    </svg>
+                    <span>{user.name}</span>
+                  </div>
+                ) : (
+                  <div className="d-flex gap-2">
+                    <Link to="/signup" className={styles.btn__signup}>
+                      Đăng kí
+                    </Link>
+                    <div className={styles.btn__signup}>
+                      <ButtonComponent onClick={handleNavigationLogin}>
+                        Đăng nhập
+                      </ButtonComponent>
+                    </div>
+                  </div>
+                )}
+                
               </div>
             </div>
 

@@ -18,3 +18,10 @@
   background-color: #3a060e; /* Màu nền khi hover */
   color: #b1e321;
 }
+
+.btn__form.disabled {
+  background-color: var(--grey); /* Màu nền khi disabled */
+  color: var(--brown30); /* Màu chữ khi disabled */
+  cursor: not-allowed; /* Không cho nhấn */
+  opacity: 0.7;
+}

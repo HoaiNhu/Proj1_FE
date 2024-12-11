@@ -6,6 +6,7 @@ const FormComponent = ({
   style = {},
   value,
   onChange,
+  error,
   ...props
 }) => {
   return (
@@ -20,6 +21,7 @@ const FormComponent = ({
         onChange={onChange}
         {...props}
       />
+      
     </div>
   );
 };

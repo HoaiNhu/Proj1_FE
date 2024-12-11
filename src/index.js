@@ -11,6 +11,7 @@ import "./assets/css/reset.css";
 import "./assets/css/style.css";
 import "./index.css";
 import { store } from "./redux/store";
+import { AuthProvider } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));
