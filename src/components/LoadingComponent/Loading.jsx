@@ -1,29 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-const Loading = ({ children, isLoading, delay = 200 }) => {
-  const [showSpinner, setShowSpinner] = useState(false);
-
-  useEffect(() => {
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowSpinner(true);
-      }, delay);
-      return () => clearTimeout(timer);
-    } else {
-      setShowSpinner(false);
-    }
-  }, [isLoading, delay]);
+const Loading = ({ isLoading }) => {
+  if (!isLoading) return null; // Không hiển thị gì nếu không đang loading
 
   return (
-    <>
-      {isLoading && showSpinner ? (
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      ) : (
-        children
-      )}
-    </>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)", // Màn che mờ
+        zIndex: 9999,
+      }}
+    >
+      <div className="spinner-border text-light" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    </div>
   );
 };
 

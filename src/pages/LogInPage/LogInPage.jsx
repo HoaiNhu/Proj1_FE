@@ -17,13 +17,16 @@ const LogInPage = () => {
     userPassword: "",
   });
 
+  const [showLoading, setShowLoading] = useState(false); // Thêm trạng thái riêng
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
   const handleForgotPassword = () => {
     navigate("/forgot-password");
   };
 
   const mutation = useMutationHook((data) => UserService.loginUser(data));
-  const { data, isLoading } = mutation;
+  const { data } = mutation;
 
   // Check if all fields are filled to enable the button
   const isFormValid =
@@ -38,29 +41,34 @@ const LogInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    mutation.mutate({
-      userEmail: formData.userEmail,
-      userPassword: formData.userPassword,
-    });
+    // console.log("Form submitted, showing loading...");
+    setShowLoading(true); // Hiện loading
+    // setErrorMessage("");
+    mutation.mutate(
+      {
+        userEmail: formData.userEmail,
+        userPassword: formData.userPassword,
+      },
+      {
+        onSuccess: (data) => {
+          setErrorMessage(""); // Xóa lỗi nếu thành công
+          setTimeout(() => {
+            setShowLoading(false); // Ẩn loading sau 0.5s
+            navigate("/"); // Điều hướng nếu thành công
+          }, 500);
+        },
+        onError: (error) => {
+          // console.error("Login failed: ", error);
+          // Trích xuất thông báo lỗi chi tiết
+          const errorMessage =
+            error.message?.message || error.message || "Đăng nhập thất bại.";
+          setErrorMessage(errorMessage); // Lưu thông báo lỗi vào trạng thái
+          setTimeout(() => setShowLoading(false), 500); // Ẩn loading nếu lỗi
+        },
+      }
+    );
     // console.log("userEmail: ", formData.userEmail, " ", "userPassword: ", formData.userPassword);
 
-    // try {
-    //   const response = await axios.post(
-    //     `${process.env.REACT_APP_API_URL_BACKEND}/user/log-in`,
-    //     formData
-    //   );
-    //   if (response.data.success) {
-    //     alert("Đăng nhập thành công!");
-    //     setTimeout(() => {
-    //       navigate("/"); // Chuyển đến trang chủ
-    //     }, 1000);
-    //   } else {
-    //     alert(response.data.message || "Đăng nhập thất bại!");
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("Đăng nhập thất bại! Vui lòng thử lại.");
-    // }
   };
 
   return (
@@ -74,7 +82,9 @@ const LogInPage = () => {
         {/* logIn left */}
         <div className="login__left">
           <h1 className="login__title">ĐĂNG NHẬP</h1>
-          <Loading isLoading={isLoading} delay={500}>
+          {/* Hiển thị spinner loading */}
+          <Loading isLoading={showLoading} />
+          {!showLoading && (
             <form onSubmit={handleSubmit}>
               <FormComponent
                 id="emailInput"
@@ -95,18 +105,19 @@ const LogInPage = () => {
                 onChange={handleChange}
               />
               {/* hiện thông báo lỗi */}
-              <span
-                style={{
-                  color: "red",
-                  display: "block",
-                  fontSize: "16px",
-                  marginTop: "10px",
-                }}
-              >
-                {data?.status === "ERR" && data?.message}
-                
-              </span>
-              console.log(status);
+              {errorMessage && (
+                <span
+                  style={{
+                    color: "red",
+                    display: "block",
+                    fontSize: "16px",
+                    marginTop: "10px",
+                  }}
+                >
+                  {errorMessage}
+                </span>
+              )}
+
               {/* Thêm phần checkbox */}
               <div className="login__extend">
                 <label className="remember__password">
@@ -124,7 +135,7 @@ const LogInPage = () => {
                 Đăng nhập
               </ButtonFormComponent>
             </form>
-          </Loading>
+          )}
           <div className="case__signup">
             Bạn chưa có tài khoản?
             <u>

@@ -11,7 +11,6 @@ import * as UserService from "../../services/UserService";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
 
-
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     familyName: "",
@@ -22,10 +21,11 @@ const SignUpPage = () => {
     userConfirmPassword: "",
   });
 
+  const [showLoading, setShowLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const mutation = useMutationHook((data) => UserService.signupUser(data));
-  const { data, isLoading } = mutation;
-
+  const { data } = mutation;
 
   const navigate = useNavigate();
 
@@ -37,33 +37,56 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    mutation.mutate({
-      familyName: formData.familyName,
-      userName: formData.userName,
-      userPhone: formData.userPhone,
-      userEmail: formData.userEmail,
-      userPassword: formData.userPassword,
-      userConfirmPassword: formData.userConfirmPassword,
-    });
-    // try {
-    //   const response = await axios.post(
-    //     `${process.env.REACT_APP_API_URL_BACKEND}/user/sign-up`,
-    //     formData
-    //   );
-    //   console.log(response.data);
-    //   alert("Đăng ký thành công!");
-    //   // Lưu thông tin người dùng vào context sau khi đăng ký thành công
-    //   // const userData = {
-    //   //   name: formData.userName,
-    //   //   avatar: "/path/to/avatar.jpg", // Có thể là ảnh đại diện mặc định hoặc lấy từ response nếu có
-    //   // };
-    //   // login(userData); // Cập nhật context với thông tin người dùng
+    mutation.mutate(
+      {
+        familyName: formData.familyName,
+        userName: formData.userName,
+        userPhone: formData.userPhone,
+        userEmail: formData.userEmail,
+        userPassword: formData.userPassword,
+        userConfirmPassword: formData.userConfirmPassword,
+      },
+      {
+        onSuccess: (response) => {
+          if (response?.status === "OK") {
+            setTimeout(() => {
+              setShowLoading(false);
+              login(response.data); // Chỉ đăng nhập khi thành công
+              navigate("/");
+            }, 500);
+          } else {
+            setErrorMessage(response.message || "Đăng ký thất bại.");
+            setShowLoading(false);
+          }
+        },
+        onError: (error) => {
+          const errorMessage =
+            error.message?.message || error.message || "Đăng ký thất bại.";
+          setErrorMessage(errorMessage);
+          setShowLoading(false);
+        },
+      }
+    );
+  };
 
-    //   navigate("/");
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("Đăng ký thất bại!");
-    // }
+  // Hàm kiểm tra dữ liệu hợp lệ
+  const isValid = () => {
+    const {
+      familyName,
+      userName,
+      userPhone,
+      userEmail,
+      userPassword,
+      userConfirmPassword,
+    } = formData;
+    return (
+      familyName.trim() !== "" &&
+      userName.trim() !== "" &&
+      userPhone.trim() !== "" &&
+      userEmail.trim() !== "" &&
+      userPassword.trim() !== "" &&
+      userPassword === userConfirmPassword
+    );
   };
 
   return (
@@ -77,69 +100,76 @@ const SignUpPage = () => {
         {/* SignUp right */}
         <div className="signup__right">
           <h1 className="signup__title">ĐĂNG KÍ</h1>
-          <form onSubmit={handleSubmit}>
-            <FormComponent
-              name="familyName"
-              label="FamilyName"
-              type="text"
-              placeholder="Họ"
-              value={formData.familyName}
-              onChange={handleChange}
-            />
-            <FormComponent
-              name="userName"
-              label="Name"
-              type="text"
-              placeholder="Tên"
-              value={formData.userName}
-              onChange={handleChange}
-            />
-            <FormComponent
-              name="userPhone"
-              label="Phone"
-              type="tel"
-              placeholder="Số điện thoại"
-              value={formData.userPhone}
-              onChange={handleChange}
-            />
-            <FormComponent
-              name="userEmail"
-              label="Email"
-              type="email"
-              placeholder="Email"
-              value={formData.userEmail}
-              onChange={handleChange}
-            />
-            <FormComponent
-              name="userPassword"
-              label="Password"
-              type="password"
-              placeholder="Nhập mật khẩu"
-              value={formData.userPassword}
-              onChange={handleChange}
-            />
-            <FormComponent
-              name="userConfirmPassword"
-              label="ConfirmPassword"
-              type="password"
-              placeholder="Xác nhận mật khẩu"
-              value={formData.userConfirmPassword}
-              onChange={handleChange}
-            />
-            <span
-                style={{
-                  color: "red",
-                  display: "block",
-                  fontSize: "16px",
-                  marginTop: "10px",
-                }}
-              >
-                {data?.status === "ERR" && data?.message}
-              </span>
-            <ButtonFormComponent type="submit">
-              Đăng kí tài khoản
-            </ButtonFormComponent>
-          </form>
+          <Loading isLoading={showLoading} />
+          {!showLoading && (
+            <form onSubmit={handleSubmit}>
+              <FormComponent
+                name="familyName"
+                label="FamilyName"
+                type="text"
+                placeholder="Họ"
+                value={formData.familyName}
+                onChange={handleChange}
+              />
+              <FormComponent
+                name="userName"
+                label="Name"
+                type="text"
+                placeholder="Tên"
+                value={formData.userName}
+                onChange={handleChange}
+              />
+              <FormComponent
+                name="userPhone"
+                label="Phone"
+                type="tel"
+                placeholder="Số điện thoại"
+                value={formData.userPhone}
+                onChange={handleChange}
+              />
+              <FormComponent
+                name="userEmail"
+                label="Email"
+                type="email"
+                placeholder="Email"
+                value={formData.userEmail}
+                onChange={handleChange}
+              />
+              <FormComponent
+                name="userPassword"
+                label="Password"
+                type="password"
+                placeholder="Nhập mật khẩu"
+                value={formData.userPassword}
+                onChange={handleChange}
+              />
+              <FormComponent
+                name="userConfirmPassword"
+                label="ConfirmPassword"
+                type="password"
+                placeholder="Xác nhận mật khẩu"
+                value={formData.userConfirmPassword}
+                onChange={handleChange}
+              />
+              {errorMessage && (
+                <span
+                  style={{
+                    color: "red",
+                    display: "block",
+                    fontSize: "16px",
+                    marginTop: "10px",
+                  }}
+                >
+                  {typeof errorMessage === "object"
+                    ? JSON.stringify(errorMessage)
+                    : errorMessage}
+                </span>
+              )}
+              <ButtonFormComponent type="submit" disabled={!isValid()}>
+                Đăng kí tài khoản
+              </ButtonFormComponent>
+            </form>
+          )}
           <div className="case__login">
             Bạn đã có tài khoản?
             <u>
