@@ -213,7 +213,7 @@ export const routes = [
   },
 
   {
-    path: "/admin/add-category",
+    path: "/add-category",
     page: AddCategoryPage,
     isShowHeader: true,
     isShowFooter: true,

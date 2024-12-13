@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./AddProductPage.css";
 import FormComponent from "../../../../components/FormComponent/FormComponent";
 import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
@@ -20,13 +21,40 @@ const AddProductPage = () => {
   };
 
   const handleImageChange = (e) => {
-    setProduct({ ...product, image: e.target.files[0] });
+    setProduct({ ...product, productImage: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Product data:", product);
-    // Thực hiện logic gửi sản phẩm (ví dụ: gọi API)
+
+    const formData = new FormData();
+    formData.append("productName", product.productName);
+    formData.append("productPrice", product.productPrice);
+    formData.append("productCategory", product.productCategory);
+    formData.append("productSize", product.productSize);
+    formData.append("productDescription", product.productDescription);
+    if (product.productImage) {
+      formData.append("productImage", product.productImage);
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/product/create-product",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            // "Authorization": "Bearer your-access-token" // Uncomment if needed
+          },
+        }
+      );
+
+      console.log("Product added successfully:", response.data);
+      alert("Thêm sản phẩm thành công!");
+    } catch (error) {
+      console.error("Error adding product:", error.response?.data || error.message);
+      alert("Thêm sản phẩm thất bại!");
+    }
   };
 
   return (
@@ -34,11 +62,11 @@ const AddProductPage = () => {
       <div className="container-xl add-product">
         <h1 className="add-product__title">Thêm sản phẩm</h1>
 
-        {/* add information */}
+        {/* Add information */}
         <div className="add-product__information">
-          {/* info top */}
+          {/* Info top */}
           <div className="info__top">
-            {/* infor left */}
+            {/* Info left */}
             <div className="info__left">
               <input
                 className="product__image"
@@ -63,7 +91,7 @@ const AddProductPage = () => {
               </div>
             </div>
 
-            {/* info right */}
+            {/* Info right */}
             <div className="info__right">
               <div className="product-name">
                 <label>Tên sản phẩm</label>
@@ -71,6 +99,9 @@ const AddProductPage = () => {
                   style={{ width: "36rem", height: "6rem" }}
                   className="choose-property"
                   placeholder="Nhập tên sản phẩm"
+                  name="productName"
+                  value={product.productName}
+                  onChange={handleInputChange}
                   required
                 ></FormComponent>
               </div>
@@ -81,6 +112,9 @@ const AddProductPage = () => {
                   style={{ width: "36rem", height: "6rem" }}
                   className="choose-property"
                   placeholder="Nhập giá sản phẩm"
+                  name="productPrice"
+                  value={product.productPrice}
+                  onChange={handleInputChange}
                   required
                 ></FormComponent>
               </div>
@@ -91,6 +125,9 @@ const AddProductPage = () => {
                   style={{ width: "36rem" }}
                   className="choose-property"
                   placeholder="Chọn"
+                  name="productCategory"
+                  value={product.productCategory}
+                  onChange={handleInputChange}
                   required
                 ></DropdownComponent>
               </div>
@@ -101,26 +138,32 @@ const AddProductPage = () => {
                   style={{ width: "36rem" }}
                   className="choose-property"
                   placeholder="Chọn"
+                  name="productSize"
+                  value={product.productSize}
+                  onChange={handleInputChange}
                   required
                 ></DropdownComponent>
               </div>
             </div>
           </div>
-          {/* info bot */}
+
+          {/* Info bot */}
           <div className="info__bot">
             <label htmlFor="description">Mô Tả</label>
             <textarea
               className="product-description"
-              // value={product.productDescription}
-              // onChange={handleInputChange}
+              name="productDescription"
+              value={product.productDescription}
+              onChange={handleInputChange}
               placeholder="Nhập mô tả sản phẩm"
               required
             />
           </div>
         </div>
-        {/* submit */}
+
+        {/* Submit */}
         <div className="btn-submit">
-          <ButtonComponent>Thêm</ButtonComponent>
+          <ButtonComponent onClick={handleSubmit}>Thêm</ButtonComponent>
           <ButtonComponent>Thoát</ButtonComponent>
         </div>
       </div>
