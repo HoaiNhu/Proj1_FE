@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ButtonFormComponent from "../../components/ButtonFormComponent/ButtonFormComponent";
 import FormComponent from "../../components/FormComponent/FormComponent";
@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import * as UserService from "../../services/UserService";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
+import Message from "../../components/MessageComponent/Message";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -20,16 +21,39 @@ const SignUpPage = () => {
     userPassword: "",
     userConfirmPassword: "",
   });
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [showLoading, setShowLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState(null);
 
   const mutation = useMutationHook((data) => UserService.signupUser(data));
-  const { data } = mutation;
+  const { data, isSuccess, isError } = mutation;
 
-  const navigate = useNavigate();
-
-  const { login } = useAuth();
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      setShowLoading(false);
+      setStatusMessage({
+        type: "Success",
+        message: "Đăng ký thành công! Đang chuyển đến trang đăng nhập...",
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } else if (mutation.isError) {
+      setShowLoading(false);
+      const errorMessage =
+        mutation.error?.message?.message ||
+        "Đăng ký thất bại. Vui lòng thử lại.";
+      setStatusMessage({
+        type: "Error",
+        message:
+          typeof errorMessage === "object"
+            ? JSON.stringify(errorMessage)
+            : errorMessage,
+      });
+    }
+  }, [mutation.isSuccess, mutation.isError, mutation.error, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,39 +61,10 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    mutation.mutate(
-      {
-        familyName: formData.familyName,
-        userName: formData.userName,
-        userPhone: formData.userPhone,
-        userEmail: formData.userEmail,
-        userPassword: formData.userPassword,
-        userConfirmPassword: formData.userConfirmPassword,
-      },
-      {
-        onSuccess: (response) => {
-          if (response?.status === "OK") {
-            setTimeout(() => {
-              setShowLoading(false);
-              login(response.data); // Chỉ đăng nhập khi thành công
-              navigate("/");
-            }, 500);
-          } else {
-            setErrorMessage(response.message || "Đăng ký thất bại.");
-            setShowLoading(false);
-          }
-        },
-        onError: (error) => {
-          const errorMessage =
-            error.message?.message || error.message || "Đăng ký thất bại.";
-          setErrorMessage(errorMessage);
-          setShowLoading(false);
-        },
-      }
-    );
+    setShowLoading(true);
+    mutation.mutate(formData);
   };
 
-  // Hàm kiểm tra dữ liệu hợp lệ
   const isValid = () => {
     const {
       familyName,
@@ -91,15 +86,22 @@ const SignUpPage = () => {
 
   return (
     <div className="container-xl container-signup">
+      {statusMessage && (
+        <Message
+          type={statusMessage.type}
+          message={statusMessage.message}
+          duration={3000}
+          onClose={() => setStatusMessage(null)}
+        />
+      )}
       <div className="signup-container">
-        {/* SignUp left */}
         <div className="signup-container__img">
           <img className="signup__img" src={img1} alt="Hình cái bánh" />
           <img className="signup__logo" src={img2} alt="Signup logo" />
         </div>
-        {/* SignUp right */}
         <div className="signup__right">
           <h1 className="signup__title">ĐĂNG KÍ</h1>
+
           <Loading isLoading={showLoading} />
           {!showLoading && (
             <form onSubmit={handleSubmit}>
@@ -151,20 +153,6 @@ const SignUpPage = () => {
                 value={formData.userConfirmPassword}
                 onChange={handleChange}
               />
-              {errorMessage && (
-                <span
-                  style={{
-                    color: "red",
-                    display: "block",
-                    fontSize: "16px",
-                    marginTop: "10px",
-                  }}
-                >
-                  {typeof errorMessage === "object"
-                    ? JSON.stringify(errorMessage)
-                    : errorMessage}
-                </span>
-              )}
               <ButtonFormComponent type="submit" disabled={!isValid()}>
                 Đăng kí tài khoản
               </ButtonFormComponent>

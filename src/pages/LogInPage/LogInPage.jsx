@@ -10,6 +10,10 @@ import { useMutation } from "@tanstack/react-query";
 import * as UserService from "../../services/UserService";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
+import Message from "../../components/MessageComponent/Message";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../../redux/slides/userSlide";
 
 const LogInPage = () => {
   const [formData, setFormData] = useState({
@@ -17,8 +21,11 @@ const LogInPage = () => {
     userPassword: "",
   });
 
+const dispatch = useDispatch()
+
   const [showLoading, setShowLoading] = useState(false); // Thêm trạng thái riêng
-  const [errorMessage, setErrorMessage] = useState("");
+  // const [errorMessage, setErrorMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState(null);
 
   const navigate = useNavigate();
   const handleForgotPassword = () => {
@@ -26,11 +33,54 @@ const LogInPage = () => {
   };
 
   const mutation = useMutationHook((data) => UserService.loginUser(data));
-  const { data } = mutation;
+  const { data, isSuccess, isError } = mutation;
+
+
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      setShowLoading(false);
+      setStatusMessage({
+        type: "Success",
+        message: "Đăng nhập thành công! Đang chuyển đến trang chủ...",
+      });
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+
+      localStorage.setItem("access_token", data?.access_token);
+      if (data?.access_token) {
+        const decoded = jwtDecode(data?.access_token);
+        console.log("decoded", decoded);
+        if (decoded?.id) {
+          handleGetDetailsUser(decoded?.id, data?.access_token);
+        }
+      }
+    } else if (mutation.isError) {
+      // setShowLoading(false);
+      const errorMessage =
+        mutation.error?.message?.message ||
+        "Đăng nhập thất bại. Vui lòng thử lại.";
+      setStatusMessage({
+        type: "Error",
+        message:
+          typeof errorMessage === "object"
+            ? JSON.stringify(errorMessage)
+            : errorMessage,
+      });
+      setTimeout(() => setShowLoading(false), 500); // Ẩn loading nếu lỗi
+    }
+  }, [mutation.isSuccess, mutation.isError, mutation.error, navigate]);
 
   // Check if all fields are filled to enable the button
   const isFormValid =
     formData.userEmail.trim() !== "" && formData.userPassword.trim() !== "";
+
+  const handleGetDetailsUser = async (id, token) => {
+    const res = await UserService.getDetailsUser(id, token);
+    // console.log("res", res);
+    dispatch(updateUser({...res?.data, access_token: token}))
+  };
 
   const handleChange = (e) => {
     setFormData((prevData) => ({
@@ -41,38 +91,20 @@ const LogInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("Form submitted, showing loading...");
-    setShowLoading(true); // Hiện loading
-    // setErrorMessage("");
-    mutation.mutate(
-      {
-        userEmail: formData.userEmail,
-        userPassword: formData.userPassword,
-      },
-      {
-        onSuccess: (data) => {
-          setErrorMessage(""); // Xóa lỗi nếu thành công
-          setTimeout(() => {
-            setShowLoading(false); // Ẩn loading sau 0.5s
-            navigate("/"); // Điều hướng nếu thành công
-          }, 500);
-        },
-        onError: (error) => {
-          // console.error("Login failed: ", error);
-          // Trích xuất thông báo lỗi chi tiết
-          const errorMessage =
-            error.message?.message || error.message || "Đăng nhập thất bại.";
-          setErrorMessage(errorMessage); // Lưu thông báo lỗi vào trạng thái
-          setTimeout(() => setShowLoading(false), 500); // Ẩn loading nếu lỗi
-        },
-      }
-    );
-    // console.log("userEmail: ", formData.userEmail, " ", "userPassword: ", formData.userPassword);
-
+    setShowLoading(true);
+    mutation.mutate(formData);
   };
 
   return (
     <div className="container-xl container-login">
+      {statusMessage && (
+        <Message
+          type={statusMessage.type}
+          message={statusMessage.message}
+          duration={3000}
+          onClose={() => setStatusMessage(null)}
+        />
+      )}
       <div className="login-container">
         {/* logIn right */}
         <div className="login-container__img">
@@ -105,7 +137,7 @@ const LogInPage = () => {
                 onChange={handleChange}
               />
               {/* hiện thông báo lỗi */}
-              {errorMessage && (
+              {/* {errorMessage && (
                 <span
                   style={{
                     color: "red",
@@ -116,7 +148,7 @@ const LogInPage = () => {
                 >
                   {errorMessage}
                 </span>
-              )}
+              )} */}
 
               {/* Thêm phần checkbox */}
               <div className="login__extend">

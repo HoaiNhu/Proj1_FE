@@ -6,6 +6,7 @@ import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useSelector } from "react-redux";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
@@ -16,10 +17,13 @@ const HeaderComponent = () => {
     navigate("/cart");
   };
 
-  const { user, logout } = useAuth();
+  // const { user, logout } = useAuth();
+
+  const user = useSelector((state) => state.user);
+  console.log("user", user);
 
   const handleLogout = () => {
-    logout();
+    // logout();
     navigate("/"); // Redirect to home page after logout
   };
 
@@ -60,7 +64,7 @@ const HeaderComponent = () => {
                 </svg>
               </div>
               <div className={`col text-end ${styles.btn__container}`}>
-                {user ? (
+                {user && user.isLoggedIn ? (
                   <div onClick={handleLogout} className={styles.user__icon}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +80,7 @@ const HeaderComponent = () => {
                         />
                       </g>
                     </svg>
-                    <span>{user.name}</span>
+                    <span>{user.userName || user.userEmail}</span>
                   </div>
                 ) : (
                   <div className="d-flex gap-2">
@@ -90,7 +94,6 @@ const HeaderComponent = () => {
                     </div>
                   </div>
                 )}
-                
               </div>
             </div>
 
