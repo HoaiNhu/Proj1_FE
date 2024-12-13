@@ -41,9 +41,8 @@ const LogInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("Form submitted, showing loading...");
     setShowLoading(true); // Hiện loading
-    // setErrorMessage("");
+  
     mutation.mutate(
       {
         userEmail: formData.userEmail,
@@ -51,6 +50,10 @@ const LogInPage = () => {
       },
       {
         onSuccess: (data) => {
+          // Giả sử data chứa token trả về từ server
+          if (data.token) {
+            localStorage.setItem("accessToken", data.token); // Lưu token vào localStorage
+          }
           setErrorMessage(""); // Xóa lỗi nếu thành công
           setTimeout(() => {
             setShowLoading(false); // Ẩn loading sau 0.5s
@@ -58,8 +61,6 @@ const LogInPage = () => {
           }, 500);
         },
         onError: (error) => {
-          // console.error("Login failed: ", error);
-          // Trích xuất thông báo lỗi chi tiết
           const errorMessage =
             error.message?.message || error.message || "Đăng nhập thất bại.";
           setErrorMessage(errorMessage); // Lưu thông báo lỗi vào trạng thái
@@ -67,9 +68,7 @@ const LogInPage = () => {
         },
       }
     );
-    // console.log("userEmail: ", formData.userEmail, " ", "userPassword: ", formData.userPassword);
-
-  };
+  };  
 
   return (
     <div className="container-xl container-login">
