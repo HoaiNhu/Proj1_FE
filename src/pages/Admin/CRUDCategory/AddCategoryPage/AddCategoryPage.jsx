@@ -18,7 +18,7 @@ const AddCategoryPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+   
     try {
       // Lấy access token từ localStorage
       const accessToken = localStorage.getItem("access_token");

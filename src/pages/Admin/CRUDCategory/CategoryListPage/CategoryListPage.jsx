@@ -48,6 +48,39 @@ const CategoryListPage = () => {
   // Kiểm tra xem một hàng có được chọn không
   const isSelected = (id) => selectedRows.includes(id);
 
+  const handleDeleteCategory = async (categoryId) => {
+    // Hiển thị hộp thoại xác nhận
+    const isConfirmed = window.confirm("Are you sure you want to delete this category?");
+    
+    if (isConfirmed) {
+  
+      try {
+        const response = await fetch(`/api/category/delete-category/${categoryId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        const data = await response.json(); 
+  
+        if (response.ok) {
+          alert("Category deleted successfully!");
+          // Cập nhật UI hoặc làm mới danh sách category nếu cần
+          setCategories(categories.filter((category) => category._id !== categoryId)); // Cập nhật lại danh sách
+        } else {
+          alert(`Error: ${data.message}`);
+        }
+      } catch (error) {
+        console.error("Error deleting category:", error);
+        alert("Something went wrong!");
+      }
+    } else {
+      // Nếu người dùng chọn "Cancel", không làm gì cả
+      console.log("Category deletion cancelled.");
+    }
+  };
+  
   return (
     <div>
       <div className="container-xl">
@@ -108,7 +141,10 @@ const CategoryListPage = () => {
                       <td>{category.categoryName}</td> {/* Hiển thị tên loại */}
                       <td>{new Date(category.createdAt).toLocaleDateString("vi-VN")}</td> {/* Hiển thị ngày tạo */}
                       <td>
-                        <button className="delete-btn">
+                        <button 
+                          className="delete-btn" 
+                          onClick={() => handleDeleteCategory(category._id) } // Gọi delete cho từng category
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="19"
