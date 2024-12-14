@@ -21,7 +21,8 @@ const AddCategoryPage = () => {
 
     try {
       // Lấy access token từ localStorage
-      const accessToken = localStorage.getItem("accessToken");
+      const accessToken = localStorage.getItem("access_token");
+      console.log(localStorage.getItem("access_token"));
 
       if (!accessToken) {
         alert("Bạn chưa đăng nhập. Vui lòng đăng nhập để thực hiện thao tác này.");
@@ -33,7 +34,7 @@ const AddCategoryPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // Thêm access token
+          Token: `Bearer ${accessToken}`, // Thêm access token
         },
         body: JSON.stringify(category),
       });
