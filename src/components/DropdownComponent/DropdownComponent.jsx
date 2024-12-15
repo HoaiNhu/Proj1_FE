@@ -1,27 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./DropdownComponent.css";
 
 const DropdownComponent = ({
-  children,
-  menuItems,
-  placeholder = "Chọn",
+  placeholder = "Chọn loại bánh",
   className = "",
   style = {},
   onSelect = () => {}, // Hàm callback khi chọn item
+  apiUrl, // URL API để lấy dữ liệu category
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false); // State để kiểm tra dropdown có mở không
   const [selectedItem, setSelectedItem] = useState(""); // Item được chọn
+  const [menuItems, setMenuItems] = useState([]); // Dữ liệu category từ API
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+
+  // Gọi API để lấy danh sách category
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error("Lỗi khi lấy dữ liệu category");
+        }
+        const data = await response.json();
+        setMenuItems(data); // Cập nhật danh sách category
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoading(false); // Tắt trạng thái loading
+      }
+    };
+
+    fetchCategories();
+  }, [apiUrl]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen); // Đổi trạng thái mở/đóng
   };
 
-  // const handleSelectItem = (item) => {
-  //   setSelectedItem(item); // Cập nhật item được chọn
-  //   onSelect(item); // Gọi hàm callback truyền từ ngoài
-  //   setIsOpen(false); // Đóng dropdown
-  // };
+  const handleSelectItem = (item) => {
+    setSelectedItem(item); // Cập nhật item được chọn
+    onSelect(item); // Gọi hàm callback truyền từ ngoài
+    setIsOpen(false); // Đóng dropdown
+  };
 
   return (
     <div className={`dropdown-container ${className}`} {...props}>
@@ -33,7 +54,6 @@ const DropdownComponent = ({
       >
         <div className="content__dropdown">
           {selectedItem || placeholder}
-          {/* Hiển thị placeholder hoặc item đã chọn */}
         </div>
         <div
           className={`icon__dropdown ${isOpen ? "rotate" : ""}`} // Thêm class rotate nếu mở dropdown
@@ -54,19 +74,25 @@ const DropdownComponent = ({
       </button>
 
       {/* Menu dropdown */}
-      {/* {isOpen && (
+      {isOpen && (
         <ul className="dropdown-menu">
-          {menuItems.map((item, index) => (
-            <li key={index} className="dropdown-item">
-              <a href="#" onClick={() => alert(`Selected: ${item}`)}>
-                {item}
-              </a>
-
-              // thay thẻ a ==> onClick={() => handleSelectItem(item)}
-            </li>
-          ))}
+          {loading ? (
+            <li className="dropdown-item">Đang tải...</li>
+          ) : menuItems.length > 0 ? (
+            menuItems.map((item, index) => (
+              <li
+                key={index}
+                className="dropdown-item"
+                onClick={() => handleSelectItem(item.name)} // Lấy tên category
+              >
+                {item.name} {/* Hiển thị tên category */}
+              </li>
+            ))
+          ) : (
+            <li className="dropdown-item">Không có dữ liệu</li>
+          )}
         </ul>
-      )} */}
+      )}
     </div>
   );
 };

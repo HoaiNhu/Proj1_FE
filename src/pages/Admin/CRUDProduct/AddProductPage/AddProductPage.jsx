@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import "./AddProductPage.css";
 import FormComponent from "../../../../components/FormComponent/FormComponent";
-import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 
 const AddProductPage = () => {
@@ -14,6 +12,39 @@ const AddProductPage = () => {
     productImage: null,
     productDescription: "",
   });
+
+  const [categories, setCategories] = useState([]); // State lưu danh sách category
+
+  // Fetch danh sách category khi component được mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/category/get-all-category", {
+          method: "GET", // Phương thức GET để lấy danh sách category
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
+        console.log("Categories data:", data);
+
+        // Kiểm tra và gán mảng categories từ data.data
+        if (Array.isArray(data.data)) {
+          setCategories(data.data); // Lưu danh sách category vào state
+        } else {
+          console.error("Categories data is not in expected format");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,21 +69,22 @@ const AddProductPage = () => {
     }
 
     try {
-      const response = await axios.post(
+      const response = await fetch(
         "http://localhost:3001/api/product/create-product",
-        formData,
         {
+          method: "POST",
           headers: {
-            "Content-Type": "multipart/form-data",
-            // "Authorization": "Bearer your-access-token" // Uncomment if needed
+            "Content-Type": "multipart/form-data", // Dành cho việc gửi tệp
           },
+          body: formData,
         }
       );
 
-      console.log("Product added successfully:", response.data);
+      const data = await response.json();
+      console.log("Product added successfully:", data);
       alert("Thêm sản phẩm thành công!");
     } catch (error) {
-      console.error("Error adding product:", error.response?.data || error.message);
+      console.error("Error adding product:", error);
       alert("Thêm sản phẩm thất bại!");
     }
   };
@@ -62,7 +94,6 @@ const AddProductPage = () => {
       <div className="container-xl add-product">
         <h1 className="add-product__title">Thêm sản phẩm</h1>
 
-        {/* Add information */}
         <div className="add-product__information">
           {/* Info top */}
           <div className="info__top">
@@ -74,7 +105,7 @@ const AddProductPage = () => {
                 onChange={handleImageChange}
                 accept="image/*"
                 required
-              ></input>
+              />
               <div className="icon__add-image">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +134,7 @@ const AddProductPage = () => {
                   value={product.productName}
                   onChange={handleInputChange}
                   required
-                ></FormComponent>
+                />
               </div>
 
               <div className="product-price">
@@ -116,38 +147,48 @@ const AddProductPage = () => {
                   value={product.productPrice}
                   onChange={handleInputChange}
                   required
-                ></FormComponent>
+                />
               </div>
 
               <div className="product-category">
                 <label>Chọn loại sản phẩm</label>
-                <DropdownComponent
-                  style={{ width: "36rem" }}
-                  className="choose-property"
-                  placeholder="Chọn"
+                <select
                   name="productCategory"
                   value={product.productCategory}
                   onChange={handleInputChange}
-                  required
-                ></DropdownComponent>
+                  className="choose-property"
+                  style={{ width: "36rem", height: "4rem" }}
+                >
+                  <option value="" disabled>Chọn loại sản phẩm</option>
+                  {Array.isArray(categories) && categories.length > 0 ? (
+                    categories.map((category) => (
+                      <option key={category._id} value={category.categoryName}>
+                        {category.categoryName}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Không có loại sản phẩm</option>
+                  )}
+                </select>
+
               </div>
 
               <div className="product-size">
                 <label>Chọn kích thước sản phẩm</label>
-                <DropdownComponent
+                <select
                   style={{ width: "36rem" }}
                   className="choose-property"
-                  placeholder="Chọn"
+                  placeholder="Nhập kích thước sản phẩm"
                   name="productSize"
-                  value={product.productSize}
                   onChange={handleInputChange}
                   required
-                ></DropdownComponent>
+                >
+                  <option>12cm</option>
+                </select>
               </div>
             </div>
           </div>
 
-          {/* Info bot */}
           <div className="info__bot">
             <label htmlFor="description">Mô Tả</label>
             <textarea
@@ -161,7 +202,6 @@ const AddProductPage = () => {
           </div>
         </div>
 
-        {/* Submit */}
         <div className="btn-submit">
           <ButtonComponent onClick={handleSubmit}>Thêm</ButtonComponent>
           <ButtonComponent>Thoát</ButtonComponent>
