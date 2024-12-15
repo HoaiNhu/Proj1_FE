@@ -74,18 +74,23 @@ const AddProductPage = () => {
         {
           method: "POST",
           headers: {
-            "Content-Type": "multipart/form-data", // Dành cho việc gửi tệp
+            //"Content-Type": "multipart/form-data", // Dành cho việc gửi tệp
           },
           body: formData,
         }
       );
 
-      const data = await response.json();
-      console.log("Product added successfully:", data);
-      alert("Thêm sản phẩm thành công!");
+      const result = await response.json();
+      if (response.ok) {
+        alert("Thêm bánh thành công!");
+        // Reset form
+        setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
+      } else {
+        alert(`Thêm bánh thất bại: ${result.message}`);
+      }
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("Thêm sản phẩm thất bại!");
+      alert("Đã xảy ra lỗi khi thêm bánh!");
+      console.error(error);
     }
   };
 
@@ -157,7 +162,8 @@ const AddProductPage = () => {
                   value={product.productCategory}
                   onChange={handleInputChange}
                   className="choose-property"
-                  style={{ width: "36rem", height: "4rem" }}
+                  style={{ width: "36rem", height: "6rem", border:"none", color:"grey", borderRadius:"50px", boxShadow:"0px 2px 4px 0px #203c1640", padding:"15px"}}
+                  placeholder="Chọn loại sản phẩm"
                 >
                   <option value="" disabled>Chọn loại sản phẩm</option>
                   {Array.isArray(categories) && categories.length > 0 ? (
@@ -175,16 +181,14 @@ const AddProductPage = () => {
 
               <div className="product-size">
                 <label>Chọn kích thước sản phẩm</label>
-                <select
-                  style={{ width: "36rem" }}
+                <FormComponent
+                  style={{ width: "36rem", height: "6rem" }}
                   className="choose-property"
                   placeholder="Nhập kích thước sản phẩm"
                   name="productSize"
                   onChange={handleInputChange}
                   required
-                >
-                  <option>12cm</option>
-                </select>
+                />
               </div>
             </div>
           </div>
