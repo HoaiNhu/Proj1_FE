@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const axiosJWT = axios.create()
+export const axiosJWT = axios.create();
 
 export const loginUser = async (data) => {
   try {
@@ -86,7 +86,8 @@ export const getDetailsUser = async (id, access_token) => {
 export const refreshToken = async () => {
   try {
     const res = await axios.post(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/refresh-token`, {},
+      `${process.env.REACT_APP_API_URL_BACKEND}/user/refresh-token`,
+      {},
       {
         // headers: {
         //   "Content-Type": "application/json",
@@ -94,6 +95,27 @@ export const refreshToken = async () => {
         // },
         withCredentials: true, //tự động lấy cookie
       }
+    );
+    return res.data; // Trả dữ liệu nếu thành công
+  } catch (error) {
+    // Nếu API trả về lỗi, ném lỗi với thông tin chi tiết
+    if (error.response) {
+      // API trả về response
+      throw {
+        // status: error.response.data?.status || "ERR",
+        message: error.response.data?.message || "Đã xảy ra lỗi.",
+      };
+    } else {
+      // Lỗi không có response (ví dụ lỗi mạng)
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};
+
+export const logoutUser = async () => {
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL_BACKEND}/user/log-out`
     );
     return res.data; // Trả dữ liệu nếu thành công
   } catch (error) {

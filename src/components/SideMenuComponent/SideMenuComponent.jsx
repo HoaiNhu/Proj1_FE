@@ -11,7 +11,9 @@ const SideMenuComponent = (props) => {
           role="group"
           aria-label="Vertical button group"
         >
-          <button className="btn__component">{props.children}</button>
+          <button className="btn__component" onClick={props.onClick}>
+            {props.children}
+          </button>
         </div>
       </div>
     </div>

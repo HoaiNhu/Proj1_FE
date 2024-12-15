@@ -6,6 +6,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import WebFont from "webfontloader";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-datepicker";
 import "./assets/css/reset.css";
 import "./assets/css/style.css";
