@@ -29,23 +29,29 @@ function App() {
     });
   }, []);
 
+  const handleDecoded = () => {
+    let storageData = localStorage.getItem("access_token");
+    // console.log("storageData", storageData);
+
+    let decoded = {};
+    if (storageData) {
+      try {
+        decoded = jwtDecode(storageData);
+        console.log("decoded", decoded);
+      } catch (error) {
+        console.error("Token không hợp lệ", error);
+      }
+    }
+    return { decoded, storageData };
+  };
+
   useEffect(() => {
     const { storageData, decoded } = handleDecoded();
-
+    console.log("decoded?.id", decoded?.id);
     if (decoded?.id) {
       handleGetDetailsUser(decoded?.id, storageData);
     }
   }, []);
-
-  const handleDecoded = () => {
-    let storageData = localStorage.getItem("access_token");
-    let decoded = {};
-    if (storageData && isJsonString(storageData)) {
-      storageData = JSON.parse(storageData);
-      decoded = jwtDecode(storageData);
-    }
-    return { decoded, storageData };
-  };
 
   //token hết hạn
   UserService.axiosJWT.interceptors.request.use(
@@ -54,8 +60,15 @@ function App() {
       const currentTime = new Date();
       const { decoded } = handleDecoded();
       if (decoded?.exp < currentTime.getTime() / 1000) {
-        const data = await UserService.refreshToken();
-        config.headers["token"] = `Bearer ${data?.access_token}`;
+        // console.log("decoded?.exp", decoded?.exp);
+
+        try {
+          const data = await UserService.refreshToken();
+          // localStorage.setItem("access_token", data?.access_token);
+          config.headers["token"] = `Bearer ${data?.access_token}`;
+        } catch (error) {
+          console.error("Lỗi khi làm mới token", error);
+        }
       }
       return config;
     },

@@ -21,7 +21,7 @@ const LogInPage = () => {
     userPassword: "",
   });
 
-const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const [showLoading, setShowLoading] = useState(false); // Thêm trạng thái riêng
   // const [errorMessage, setErrorMessage] = useState("");
@@ -35,8 +35,6 @@ const dispatch = useDispatch()
   const mutation = useMutationHook((data) => UserService.loginUser(data));
   const { data, isSuccess, isError } = mutation;
 
-
-
   useEffect(() => {
     if (mutation.isSuccess) {
       setShowLoading(false);
@@ -48,10 +46,15 @@ const dispatch = useDispatch()
         navigate("/");
       }, 1500);
 
-      localStorage.setItem("access_token", JSON.stringify(data?.access_token));
+      // console.log("data", data);
+
+      localStorage.setItem("access_token", data?.access_token);
+      // console.log("data?.access_token", data?.access_token);
+
       if (data?.access_token) {
         const decoded = jwtDecode(data?.access_token);
-        console.log("decoded", decoded);
+        // console.log("decoded", decoded);
+
         if (decoded?.id) {
           handleGetDetailsUser(decoded?.id, data?.access_token);
         }
@@ -79,7 +82,7 @@ const dispatch = useDispatch()
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserService.getDetailsUser(id, token);
     // console.log("res", res);
-    dispatch(updateUser({...res?.data, access_token: token}))
+    dispatch(updateUser({ ...res?.data, access_token: token }));
   };
 
   const handleChange = (e) => {
@@ -94,7 +97,7 @@ const dispatch = useDispatch()
     setShowLoading(true);
     mutation.mutate(formData);
   };
-     
+
   return (
     <div className="container-xl container-login">
       {statusMessage && (

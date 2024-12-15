@@ -86,7 +86,7 @@ export const getDetailsUser = async (id, access_token) => {
 export const refreshToken = async () => {
   try {
     const res = await axios.post(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/refresh-token`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/user/refresh-token`, {},
       {
         // headers: {
         //   "Content-Type": "application/json",
