@@ -32,6 +32,7 @@ img {
   gap: 8px;
   justify-content: flex-end;
   align-items: center;
+  cursor: pointer;
 }
 
 .btn__signup {
@@ -84,5 +85,6 @@ img {
 }
 
 .user__icon {
-  background-color: var(--green100);
+  background-color: var(--white);
+  gap: 10px;
 }

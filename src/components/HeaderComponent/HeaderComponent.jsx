@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./HeaderComponent.module.css";
 import img from "../../assets/img/AVOCADO.png";
 import SearchBoxComponent from "../SearchBoxComponent/SearchBoxComponent";
@@ -7,9 +7,18 @@ import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useSelector } from "react-redux";
+import { Popover, OverlayTrigger, Button } from "react-bootstrap";
+import SideMenuComponent from "../SideMenuComponent/SideMenuComponent";
+import * as UserService from "../../services/UserService";
+import { useDispatch } from "react-redux";
+import { resetUser } from "../../redux/slides/userSlide";
+import Loading from "../LoadingComponent/Loading";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [showLoading, setShowLoading] = useState(false);
+
   const handleNavigationLogin = () => {
     navigate("/login");
   };
@@ -20,12 +29,47 @@ const HeaderComponent = () => {
   // const { user, logout } = useAuth();
 
   const user = useSelector((state) => state.user);
-  console.log("user", user);
+  // console.log("user", user);
 
-  const handleLogout = () => {
-    // logout();
-    navigate("/"); // Redirect to home page after logout
+  const handleLogout = async () => {
+    setShowLoading(true);
+    await UserService.logoutUser();
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    // console.log(
+    //   "Access token after removal:",
+    //   localStorage.getItem("access-token")
+    // ); // Kiểm tra xem token đã bị xóa chưa
+    dispatch(resetUser());
+    setShowLoading(false);
   };
+
+  const handleUserInfo = () => {
+    navigate("/user-info"); // Navigate to user information page
+  };
+
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Body>
+        <div className="d-flex flex-column">
+          <SideMenuComponent
+            variant="link"
+            className="text-start"
+            onClick={handleUserInfo}
+          >
+            Thông tin
+          </SideMenuComponent>
+          <SideMenuComponent
+            variant="link"
+            className="text-start"
+            onClick={handleLogout}
+          >
+            Đăng xuất
+          </SideMenuComponent>
+        </div>
+      </Popover.Body>
+    </Popover>
+  );
 
   return (
     <div className="bg-white sticky-top bg-shadow">
@@ -64,24 +108,31 @@ const HeaderComponent = () => {
                 </svg>
               </div>
               <div className={`col text-end ${styles.btn__container}`}>
-                {user && user.isLoggedIn ? (
-                  <div onClick={handleLogout} className={styles.user__icon}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="40"
-                      height="40"
-                      viewBox="0 0 40 40"
-                      fill="none"
-                    >
-                      <g clipPath="url(#clip0_1306_736)">
-                        <path
-                          d="M31.1719 30.0156C29.4453 27.0156 26.2031 25 22.5 25H17.5C13.7969 25 10.5547 27.0156 8.82812 30.0156C11.5781 33.0781 15.5625 35 20 35C24.4375 35 28.4219 33.0703 31.1719 30.0156ZM0 20C0 14.6957 2.10714 9.60859 5.85786 5.85786C9.60859 2.10714 14.6957 0 20 0C25.3043 0 30.3914 2.10714 34.1421 5.85786C37.8929 9.60859 40 14.6957 40 20C40 25.3043 37.8929 30.3914 34.1421 34.1421C30.3914 37.8929 25.3043 40 20 40C14.6957 40 9.60859 37.8929 5.85786 34.1421C2.10714 30.3914 0 25.3043 0 20Z"
-                          fill="currentColor"
-                        />
-                      </g>
-                    </svg>
-                    <span>{user.userName || user.userEmail}</span>
-                  </div>
+                <Loading isLoading={showLoading} />
+                {!showLoading && user && user.isLoggedIn ? (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom"
+                    overlay={popover}
+                  >
+                    <div className={styles.user__icon}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        fill="none"
+                      >
+                        <g clipPath="url(#clip0_1306_736)">
+                          <path
+                            d="M31.1719 30.0156C29.4453 27.0156 26.2031 25 22.5 25H17.5C13.7969 25 10.5547 27.0156 8.82812 30.0156C11.5781 33.0781 15.5625 35 20 35C24.4375 35 28.4219 33.0703 31.1719 30.0156ZM0 20C0 14.6957 2.10714 9.60859 5.85786 5.85786C9.60859 2.10714 14.6957 0 20 0C25.3043 0 30.3914 2.10714 34.1421 5.85786C37.8929 9.60859 40 14.6957 40 20C40 25.3043 37.8929 30.3914 34.1421 34.1421C30.3914 37.8929 25.3043 40 20 40C14.6957 40 9.60859 37.8929 5.85786 34.1421C2.10714 30.3914 0 25.3043 0 20Z"
+                            fill="currentColor"
+                          />
+                        </g>
+                      </svg>
+                      <span>{user.userName || user.userEmail}</span>
+                    </div>
+                  </OverlayTrigger>
                 ) : (
                   <div className="d-flex gap-2">
                     <Link to="/signup" className={styles.btn__signup}>
