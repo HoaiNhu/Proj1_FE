@@ -31,7 +31,7 @@ const AddProductPage = () => {
         }
 
         const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-        console.log("Categories data:", data);
+        console.log("Categories data:", categories);
 
         // Kiểm tra và gán mảng categories từ data.data
         if (Array.isArray(data.data)) {
@@ -67,15 +67,17 @@ const AddProductPage = () => {
     if (product.productImage) {
       formData.append("productImage", product.productImage);
     }
+    console.log("Product Category ID:", product.productCategory);
+
 
     try {
       const response = await fetch(
         "http://localhost:3001/api/product/create-product",
         {
           method: "POST",
-          headers: {
-            //"Content-Type": "multipart/form-data", // Dành cho việc gửi tệp
-          },
+          // headers: {
+          //   //"Content-Type": "multipart/form-data", // Dành cho việc gửi tệp
+          // },
           body: formData,
         }
       );
@@ -168,7 +170,7 @@ const AddProductPage = () => {
                   <option value="" disabled>Chọn loại sản phẩm</option>
                   {Array.isArray(categories) && categories.length > 0 ? (
                     categories.map((category) => (
-                      <option key={category._id} value={category.categoryName}>
+                      <option key={category._id} value={category._id}>
                         {category.categoryName}
                       </option>
                     ))

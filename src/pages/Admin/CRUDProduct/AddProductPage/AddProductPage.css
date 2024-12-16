@@ -55,6 +55,13 @@ label {
   padding-bottom: 20px;
 }
 
+.product-code {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
 .product-price {
   display: flex;
   justify-content: space-between;
