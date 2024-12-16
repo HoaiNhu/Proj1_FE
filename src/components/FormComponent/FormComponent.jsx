@@ -17,11 +17,10 @@ const FormComponent = ({
         id={props.id}
         placeholder={props.placeholder}
         style={style}
-        value={props.value}
-        onChange={onChange}
+        value={value}
+        onChange={(e) => onChange && onChange(e.target.value)}
         {...props}
       />
-      
     </div>
   );
 };

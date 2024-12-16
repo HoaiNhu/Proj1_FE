@@ -13,11 +13,14 @@ import * as UserService from "../../services/UserService";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/Loading";
+import UserIconComponent from "../UserIconComponent/UserIconComponent";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showLoading, setShowLoading] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userImage, setUserImage] = useState("");
 
   const handleNavigationLogin = () => {
     navigate("/login");
@@ -44,6 +47,12 @@ const HeaderComponent = () => {
     setShowLoading(false);
   };
 
+  useEffect(() => {
+    setShowLoading(true);
+    setUserName(user?.userName);
+    setShowLoading(false);
+  }, [user?.userName, user?.userImage]);
+
   const handleUserInfo = () => {
     navigate("/user-info"); // Navigate to user information page
   };
@@ -57,7 +66,7 @@ const HeaderComponent = () => {
             className="text-start"
             onClick={handleUserInfo}
           >
-            Thông tin
+            Thông tin người dùng
           </SideMenuComponent>
           <SideMenuComponent
             variant="link"
@@ -109,28 +118,28 @@ const HeaderComponent = () => {
               </div>
               <div className={`col text-end ${styles.btn__container}`}>
                 <Loading isLoading={showLoading} />
-                {!showLoading && user && user.isLoggedIn ? (
+                {!showLoading && user?.isLoggedIn ? (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom"
                     overlay={popover}
                   >
                     <div className={styles.user__icon}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="40"
-                        height="40"
-                        viewBox="0 0 40 40"
-                        fill="none"
-                      >
-                        <g clipPath="url(#clip0_1306_736)">
-                          <path
-                            d="M31.1719 30.0156C29.4453 27.0156 26.2031 25 22.5 25H17.5C13.7969 25 10.5547 27.0156 8.82812 30.0156C11.5781 33.0781 15.5625 35 20 35C24.4375 35 28.4219 33.0703 31.1719 30.0156ZM0 20C0 14.6957 2.10714 9.60859 5.85786 5.85786C9.60859 2.10714 14.6957 0 20 0C25.3043 0 30.3914 2.10714 34.1421 5.85786C37.8929 9.60859 40 14.6957 40 20C40 25.3043 37.8929 30.3914 34.1421 34.1421C30.3914 37.8929 25.3043 40 20 40C14.6957 40 9.60859 37.8929 5.85786 34.1421C2.10714 30.3914 0 25.3043 0 20Z"
-                            fill="currentColor"
-                          />
-                        </g>
-                      </svg>
-                      <span>{user.userName || user.userEmail}</span>
+                      {userImage ? (
+                        <img
+                          src={userImage}
+                          alt="avatar"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <UserIconComponent />
+                      )}
+                      <span>{user.userName || user.userEmail || "User"}</span>
                     </div>
                   </OverlayTrigger>
                 ) : (
