@@ -6,13 +6,16 @@ import { Button, Col, Row, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from 'axios'; // For making API calls
 
-const CardProductAdmin = ({ type, img, title, price, productId }) => {
+const CardProductAdmin = ({ type, img, title, price, productId, onDelete, onUpdate }) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false); // State for showing confirmation modal
   const [loading, setLoading] = useState(false); // State for loading indicator
 
   const handleUpdateClick = () => {
     navigate("/update-product"); // Navigate to the update product page
+    if (onUpdate) {
+      onUpdate(); // Call the onUpdate function passed from the parent
+    }
   };
 
   const handleDeleteClick = () => {
@@ -26,7 +29,9 @@ const CardProductAdmin = ({ type, img, title, price, productId }) => {
       await axios.delete(`/api/product/delete-product/${productId}`); // Call the API to delete the product using productId
       setLoading(false); // Reset loading state after API response
       setShowModal(false); // Close the confirmation modal
-      // Optionally, you can refresh the page or update the list of products here
+      if (onDelete) {
+        onDelete(); // Call the onDelete function passed from the parent
+      }
     } catch (error) {
       setLoading(false);
       console.error("Error deleting product:", error);
