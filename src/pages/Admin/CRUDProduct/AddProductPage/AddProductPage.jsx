@@ -19,6 +19,7 @@ const AddProductPage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        
         const response = await fetch("http://localhost:3001/api/category/get-all-category", {
           method: "GET", // Phương thức GET để lấy danh sách category
           headers: {
@@ -67,26 +68,39 @@ const AddProductPage = () => {
     if (product.productImage) {
       formData.append("productImage", product.productImage);
     }
-    console.log("Product Category ID:", product.productCategory);
-
+    console.log("DataData", formData);
 
     try {
+
+      
+        // Lấy access token từ localStorage
+        const accessToken = localStorage.getItem("access_token");
+        console.log(localStorage.getItem("access_token"));
+  
+        if (!accessToken) {
+          alert("Bạn chưa đăng nhập. Vui lòng đăng nhập để thực hiện thao tác này.");
+          return;
+        }
       const response = await fetch(
         "http://localhost:3001/api/product/create-product",
         {
           method: "POST",
-          // headers: {
-          //   //"Content-Type": "multipart/form-data", // Dành cho việc gửi tệp
-          // },
+          headers: {
+            //"Content-Type": "multipart/form-data", // Dành cho việc gửi tệp
+            Token: `Bearer ${accessToken}`
+            
+          },
           body: formData,
         }
       );
 
+
       const result = await response.json();
-      if (response.ok) {
+      console.log(result);
+      if (result.status=="OK") {
         alert("Thêm bánh thành công!");
         // Reset form
-        setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
+        //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
       } else {
         alert(`Thêm bánh thất bại: ${result.message}`);
       }
@@ -181,13 +195,15 @@ const AddProductPage = () => {
 
               </div>
 
+              
               <div className="product-size">
-                <label>Chọn kích thước sản phẩm</label>
+                <label>Kích thước sản phẩm</label>
                 <FormComponent
                   style={{ width: "36rem", height: "6rem" }}
                   className="choose-property"
-                  placeholder="Nhập kích thước sản phẩm"
+                  placeholder="Nhập kích thướcthước sản phẩm"
                   name="productSize"
+                  value={product.productSize}
                   onChange={handleInputChange}
                   required
                 />
