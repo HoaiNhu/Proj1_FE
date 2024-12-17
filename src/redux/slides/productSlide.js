@@ -38,7 +38,8 @@ export const userSlice = createSlice({
             state.isLoggedIn = !!access_token; // Kiểm tra xem token có tồn tại hay không
         },
         resetproduct: (state) => {
-                state._id = "",
+            
+                state.id = "",
                 state.productName = "",
                 state.productPrice = "",
                 state.productCategory = "",
