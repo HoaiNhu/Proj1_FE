@@ -3,6 +3,7 @@ import ButtonComponent from "../../../../components/ButtonComponent/ButtonCompon
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import "./UserListPage.css";
 import img from "../../../../assets/img/avatar_1.jpg";
+import { useNavigate } from "react-router-dom";
 
 const UserListPage = () => {
   // Dữ liệu người dùng mẫu
@@ -45,24 +46,27 @@ const UserListPage = () => {
     },
   ];
 
+  const navigate= useNavigate();
+    const ClickInfor=()=>{navigate("/store-info")}
+    const ClickOrder=()=>{navigate("/order-list")}
+    const ClickDiscount=()=>{navigate("/discount-list")}
+    const ClickStatus=()=>{navigate("/status-list")}
+    const ClickCategory=()=>{navigate("/category-list")}
+    const ClickUser=()=>{navigate("/user-list")}
+    const ClickReprot=()=>{navigate("/report")}
+
   return (
     <div className="container-xl">
       <div className="user-list__info">
         {/* Menu bên trái */}
         <div className="side-menu__user">
-          {[
-            "Thông tin cửa hàng",
-            "Đơn hàng",
-            "Khuyến mãi",
-            "Trạng thái",
-            "Loại sản phẩm",
-            "Danh sách người dùng",
-            "Thống kê",
-          ].map((menu, index) => (
-            <SideMenuComponent key={index} className="btn-menu">
-              {menu}
-            </SideMenuComponent>
-          ))}
+        <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
+            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
+            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
+            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
         </div>
 
         {/* Nội dung chính */}

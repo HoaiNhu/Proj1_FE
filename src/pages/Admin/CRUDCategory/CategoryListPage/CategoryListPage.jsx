@@ -1,13 +1,38 @@
 import React, { useState, useEffect } from "react";
 import "./CategoryListPage.css";
+import { useNavigate } from "react-router-dom"; // Import useHistory để điều hướng
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
 
 const CategoryListPage = () => {
+  const navigate = useNavigate();
+  
   const [selectedRows, setSelectedRows] = useState([]);  // State lưu danh sách các hàng được chọn
   const [categories, setCategories] = useState([]); // State lưu danh sách categories
+  const AddCategory=()=>{
+      navigate("/add-category")
+  }
 
+  const handleEdit = () => {
+    if (selectedRows.length === 1) { // Đảm bảo chỉ có 1 category được chọn
+      const categoryId = selectedRows[0];
+  
+      // Tìm category dựa trên categoryId
+      const selectedCategory = categories.find((category) => category._id === categoryId);
+  
+      if (selectedCategory) {
+        const { categoryCode, categoryName } = selectedCategory; // Lấy mã và tên loại
+        navigate("/update-category", {
+          state: { categoryId, categoryCode, categoryName }, // Truyền toàn bộ dữ liệu cần thiết
+        });
+      } else {
+        alert("Category not found!");
+      }
+    } else {
+      alert("Please select exactly one category to edit.");
+    }
+  };
   // Fetch dữ liệu categories từ server
   useEffect(() => {
     const fetchCategories = async () => {
@@ -48,6 +73,51 @@ const CategoryListPage = () => {
   // Kiểm tra xem một hàng có được chọn không
   const isSelected = (id) => selectedRows.includes(id);
 
+  const handleDelete = async () => {
+    // Kiểm tra xem có category nào được chọn không
+    if (selectedRows.length === 0) {
+      alert("Please select at least one category to delete.");
+      return;
+    }
+  
+    // Hiển thị hộp thoại xác nhận
+    const isConfirmed = window.confirm("Are you sure you want to delete the selected categories?");
+    
+    if (isConfirmed) {
+      try {
+        // Gửi yêu cầu xóa từng category được chọn
+        for (let categoryId of selectedRows) {
+          const response = await fetch(`/api/category/delete-category/${categoryId}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+  
+          const data = await response.json();
+          
+          if (!response.ok) {
+            alert(`Error deleting category with ID ${categoryId}: ${data.message}`);
+            continue; // Nếu có lỗi với category này, chuyển sang category tiếp theo
+          }
+        }
+  
+        alert("Selected categories have been deleted successfully!");
+        
+        // Cập nhật lại danh sách categories sau khi xóa
+        setCategories(categories.filter((category) => !selectedRows.includes(category._id)));
+        setSelectedRows([]); // Clear selected rows
+  
+      } catch (error) {
+        console.error("Error deleting categories:", error);
+        alert("Something went wrong while deleting the categories.");
+      }
+    } else {
+      console.log("Category deletion cancelled.");
+    }
+  };
+  
+  
   const handleDeleteCategory = async (categoryId) => {
     // Hiển thị hộp thoại xác nhận
     const isConfirmed = window.confirm("Are you sure you want to delete this category?");
@@ -81,29 +151,36 @@ const CategoryListPage = () => {
     }
   };
   
+  const ClickInfor=()=>{navigate("/store-info")}
+  const ClickOrder=()=>{navigate("/order-list")}
+  const ClickDiscount=()=>{navigate("/discount-list")}
+  const ClickStatus=()=>{navigate("/status-list")}
+  const ClickCategory=()=>{navigate("/category-list")}
+  const ClickUser=()=>{navigate("/user-list")}
+  const ClickReprot=()=>{navigate("/report")}
   return (
     <div>
       <div className="container-xl">
         <div className="category-list__info">
           {/* Side Menu */}
           <div className="side-menu__category">
-            <SideMenuComponent className="btn-menu">Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Đơn hàng</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Trạng thái</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Loại sản phẩm</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Thống kê</SideMenuComponent>
+          <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
+            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
+            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
+            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
           </div>
           {/* Category List */}
           <div className="category-list__content">
             <div className="category-list__action">
               <h2 className="category-list__title">Loại bánh hiện có</h2>
               <div className="btn__action">
-                <ButtonComponent className="btn btn-delete">Chi tiết</ButtonComponent>
-                <ButtonComponent className="btn btn-delete">Xóa</ButtonComponent>
-                <ButtonComponent className="btn btn-add">Thêm</ButtonComponent>
-                <ButtonComponent className="btn btn-edit">Sửa</ButtonComponent>
+                {/* <ButtonComponent className="btn btn-delete">Chi tiết</ButtonComponent> */}
+                <ButtonComponent className="btn btn-delete" onClick={handleDelete}>Xóa</ButtonComponent>
+                <ButtonComponent className="btn btn-add" onClick={AddCategory}>Thêm</ButtonComponent>
+                <ButtonComponent className="btn btn-edit" onClick={handleEdit}>Sửa</ButtonComponent>
               </div>
             </div>
             {/* Table */}

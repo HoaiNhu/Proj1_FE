@@ -3,14 +3,17 @@ import FormComponent from "../../../../components/FormComponent/FormComponent";
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import "./AddCategoryPage.css";
-
+import { useNavigate } from "react-router-dom";
 
 const AddCategoryPage = () => {
+  
   const [category, setCategory] = useState({
     categoryCode: "",
     categoryName: "",
   });
-
+const ExitForm =()=>{
+  navigate("/category-list")
+}
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCategory({ ...category, [name]: value });
@@ -51,7 +54,18 @@ const AddCategoryPage = () => {
       alert("Đã xảy ra lỗi khi thêm loại bánh!");
       console.error(error);
     }
+    navigate("/category-list")
   };
+  const navigate= useNavigate();
+  const ClickInfor=()=>{navigate("/store-info")}
+  const ClickOrder=()=>{navigate("/order-list")}
+  const ClickDiscount=()=>{navigate("/discount-list")}
+  const ClickStatus=()=>{navigate("/status-list")}
+  const ClickCategory=()=>{navigate("/category-list")}
+  const ClickUser=()=>{navigate("/user-list")}
+  const ClickReprot=()=>{navigate("/reprot")}
+
+
 
   return (
     <div>
@@ -59,13 +73,13 @@ const AddCategoryPage = () => {
         <div className="add-category__container">
           {/* side menu */}
           <div className="side-menu__category">
-            <SideMenuComponent>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent>Trạng thái</SideMenuComponent>
-            <SideMenuComponent>Loại sản phẩm</SideMenuComponent>
-            <SideMenuComponent>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent>Thống kê</SideMenuComponent>
+            <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
+            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
+            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
+            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
           </div>
 
           <div className="add-category__content">
@@ -99,7 +113,7 @@ const AddCategoryPage = () => {
               {/* button */}
               <div className="btn__add-category">
                 <ButtonComponent onClick={handleSubmit}>Thêm</ButtonComponent>
-                <ButtonComponent>Thoát</ButtonComponent>
+                <ButtonComponent onClick={ExitForm}>Thoát</ButtonComponent>
               </div>
             </div>
           </div>

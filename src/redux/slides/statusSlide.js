@@ -38,7 +38,7 @@ export const userSlice = createSlice({
 
       state.isLoggedIn = false;
     },
-  },
+  },                   
 });
 
 // Action creators are generated for each case reducer function

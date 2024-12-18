@@ -220,7 +220,7 @@ export const routes = [
   },
 
   {
-    path: "/admin/update-category",
+    path: "/update-category",
     page: UpdateCategoryPage,
     isShowHeader: true,
     isShowFooter: true,
@@ -254,14 +254,14 @@ export const routes = [
   },
 
   {
-    path: "/admin/user-list",
+    path: "/user-list",
     page: UserListPage,
     isShowHeader: true,
     isShowFooter: true,
   },
 
   {
-    path: "/admin/order-list",
+    path: "/order-list",
     page: OrderListPage,
     isShowHeader: true,
     isShowFooter: true,

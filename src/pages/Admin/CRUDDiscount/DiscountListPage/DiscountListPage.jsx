@@ -3,7 +3,7 @@ import "./DiscountListPage.css";
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
-
+import { useNavigate } from "react-router-dom";
 const DiscountListPage = () => {
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -46,26 +46,35 @@ const DiscountListPage = () => {
   };
 
   const isSelected = (id) => selectedRows.includes(id);
-
+const navigate= useNavigate();
+  const ClickInfor=()=>{navigate("/store-info")}
+  const ClickOrder=()=>{navigate("/order-list")}
+  const ClickDiscount=()=>{navigate("/discount-list")}
+  const ClickStatus=()=>{navigate("/status-list")}
+  const ClickCategory=()=>{navigate("/category-list")}
+  const ClickUser=()=>{navigate("/user-list")}
+  const ClickReprot=()=>{navigate("/report")}
   return (
     <div>
       <div className="container-xl">
         <div className="discount-list__info">
           {/* side menu */}
           <div className="side-menu__discount">
-            <SideMenuComponent className="btn-menu">
+            <SideMenuComponent className="btn-menu" onClick={ClickInfor}>
               Thông tin cửa hàng
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Đơn hàng</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
+            <SideMenuComponent className="btn-menu" onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+            <SideMenuComponent className="btn-menu" onClick={ClickDiscount}>
               Khuyến mãi
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
+            <SideMenuComponent className="btn-menu" onClick={ClickStatus}>
               Trạng thái
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
+            <SideMenuComponent className="btn-menu" onClick={ClickCategory}>
               Loại sản phẩm{" "}
-            </SideMenuComponent>
+            </SideMenuComponent >
+            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
           </div>
           {/* discount list */}
           <div className="discount-list__content">

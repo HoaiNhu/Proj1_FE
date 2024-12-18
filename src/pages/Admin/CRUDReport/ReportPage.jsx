@@ -4,7 +4,7 @@ import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuCom
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import CheckboxComponent from "../../../components/CheckboxComponent/CheckboxComponent";
 import DropdownComponent from "../../../components/DropdownComponent/DropdownComponent";
-
+import { useNavigate } from "react-router-dom";
 const ReportPage = () => {
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -71,32 +71,27 @@ const ReportPage = () => {
   };
 
   const isSelected = (id) => selectedRows.includes(id);
-
+const navigate =useNavigate();
+  const ClickInfor=()=>{navigate("/store-info")}
+  const ClickOrder=()=>{navigate("/order-list")}
+  const ClickDiscount=()=>{navigate("/discount-list")}
+  const ClickStatus=()=>{navigate("/status-list")}
+  const ClickCategory=()=>{navigate("/category-list")}
+  const ClickUser=()=>{navigate("/user-list")}
+  const ClickReprot=()=>{navigate("/report")}
   return (
     <div>
       <div className="container-xl">
         <div className="report-list__info">
           {/* side menu */}
           <div className="side-menu__report">
-            <SideMenuComponent className="btn-menu">
-              Thông tin cửa hàng
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Đơn hàng</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Khuyến mãi
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Trạng thái
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Loại sản phẩm{" "}
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Danh sách người dùng
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Thống kê
-            </SideMenuComponent>
+          <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
+            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
+            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
+            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
           </div>
         
           <div className="report-list__content">

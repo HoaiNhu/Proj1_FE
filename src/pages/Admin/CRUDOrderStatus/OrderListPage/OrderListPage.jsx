@@ -60,29 +60,28 @@ const OrderListPage = () => {
   };
 
   const isSelected = (id) => selectedRows.includes(id);
+
+  //const navigate= useNavigate();
+      const ClickInfor=()=>{navigate("/store-info")}
+      const ClickOrder=()=>{navigate("/order-list")}
+      const ClickDiscount=()=>{navigate("/discount-list")}
+      const ClickStatus=()=>{navigate("/status-list")}
+      const ClickCategory=()=>{navigate("/category-list")}
+      const ClickUser=()=>{navigate("/user-list")}
+      const ClickReprot=()=>{navigate("/report")}
   return (
     <div>
       <div className="container-xl">
         <div className="order-list__info">
           {/* side menu */}
           <div className="side-menu__order">
-            <SideMenuComponent className="btn-menu">
-              Thông tin cửa hàng
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Đơn hàng</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Khuyến mãi
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Trạng thái
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Loại sản phẩm
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Danh sách người dùng
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Thống kê</SideMenuComponent>
+          <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
+            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
+            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
+            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
           </div>
           {/* order list */}
           <div className="order-list__content">

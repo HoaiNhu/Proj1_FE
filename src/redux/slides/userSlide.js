@@ -9,7 +9,6 @@ const initialState = {
   userAddress: "",
   userImage: "",
   access_token: "",
-
   isLoggedIn: false,
 };
 
