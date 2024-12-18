@@ -8,7 +8,7 @@ const ProductPageAdmin = () => {
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
 
   // Fetch danh sách sản phẩm khi component được mount
-  useEffect(() => {
+  
     const fetchProducts = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/product/get-all-product", {
@@ -30,9 +30,18 @@ const ProductPageAdmin = () => {
         console.error("Error fetching products:", error);
       }
     };
+  
+
+  // Hàm xử lý xóa sản phẩm
+  useEffect(() => {
     fetchProducts();
   }, []);
 
+  // Hàm để reload lại dữ liệu sản phẩm
+  const reloadProducts = () => {
+    fetchProducts();
+  };
+    
   return (
     <div>
       <div className="container-xl productadmin-container">
@@ -59,7 +68,7 @@ const ProductPageAdmin = () => {
                 products.map((product) => {
                   const imageUrl = product.productImage.startsWith("http")
                   ? product.productImage
-                  : `http://localhost:3001/api/product/image/${product.productImage.replace("\\", "/")}`;
+                  : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace("\\", "/")}`;
                 
                     console.log("Product image URL:", imageUrl);  // Debug URL ảnh
                   return (
@@ -72,7 +81,9 @@ const ProductPageAdmin = () => {
                       price={`${product.productPrice} VND`} // Hiển thị giá sản phẩm
                       productId={product._id}
                       //description={product.productDescription} // Mô tả sản phẩm
-                    />
+                      onDelete={reloadProducts} // Gọi reloadProducts sau khi xóa sản phẩm
+                      onUpdate={reloadProducts} // Gọi reloadProducts sau khi cập nhật sản phẩm
+                    /> 
                   );
                 })
 

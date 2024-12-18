@@ -19,22 +19,22 @@ const CardProductAdmin = ({ type, img, title, price, productId, onDelete, onUpda
   };
 
   const handleDeleteClick = () => {
-    setShowModal(true); // Show the confirmation modal
+    setShowModal(true); // Show modal when the delete button is clicked
   };
 
   // Function to handle confirmation and call delete API
   const handleDeleteConfirm = async () => {
     try {
-      setLoading(true); // Set loading state while waiting for the API response
-      await axios.delete(`/api/product/delete-product/${productId}`); // Call the API to delete the product using productId
-      setLoading(false); // Reset loading state after API response
-      setShowModal(false); // Close the confirmation modal
-      if (onDelete) {
-        onDelete(); // Call the onDelete function passed from the parent
-      }
-    } catch (error) {
+      setLoading(true);
+      console.log("Gọi API xóa sản phẩm với ID:", productId); // Log kiểm tra
+      await axios.delete(`/api/product/delete-product/${productId}`);
+      console.log("Xóa sản phẩm thành công!");
       setLoading(false);
-      console.error("Error deleting product:", error);
+      setShowModal(false); // Close the modal after successful deletion
+      if (onDelete) onDelete(); // Cập nhật lại giao diện nếu có
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm:", error);
+      setLoading(false);
     }
   };
 
@@ -114,7 +114,7 @@ const CardProductAdmin = ({ type, img, title, price, productId, onDelete, onUpda
                 </svg>
               </Button>
             </Col>
-         
+
             <Col>
               <TagPriceComponent style={{ marginTop: -40 }}>
                 {price}
