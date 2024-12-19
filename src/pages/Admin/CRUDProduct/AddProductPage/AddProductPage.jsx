@@ -4,18 +4,16 @@ import FormComponent from "../../../../components/FormComponent/FormComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import { data, error } from "jquery";
 import Compressor from 'compressorjs';
-import { createproduct } from "../../../../services/productServices";
-import {useMutationHook} from "../../../../hooks/useMutationHook";
+import { createProduct } from "../../../../services/productServices";
+import { useMutationHook } from "../../../../hooks/useMutationHook";
 import * as productService from "../../../../services/productServices";
 import Loading from "../../../../components/LoadingComponent/Loading";
 const AddProductPage = () => {
-
-
-  
+  const accessToken = localStorage.getItem("access_token");
   const [stateproduct, setstateProduct] = useState({
     productName: "",
     productPrice: "",
-    productImage:"",
+    productImage: null,
     productCategory: "",
     productSize: "",
     productDescription: "",
@@ -29,7 +27,7 @@ const AddProductPage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        
+
         const response = await fetch("http://localhost:3001/api/category/get-all-category", {
           method: "GET", // Phương thức GET để lấy danh sách category
           headers: {
@@ -57,7 +55,7 @@ const AddProductPage = () => {
     fetchCategories();
   }, []);
 
-  
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -66,74 +64,86 @@ const AddProductPage = () => {
 
   const handleOnChangeImg = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      new Compressor(file, {
-        quality: 0.6, // Chất lượng ảnh (0.6 là 60%)
-        maxWidth: 800, // Chiều rộng tối đa
-        maxHeight: 800, // Chiều cao tối đa
-        success(result) {
-          // Đọc file đã nén dưới dạng base64
-          const reader = new FileReader();
-          reader.onload = () => {
-            setstateProduct({...stateproduct, productImage : reader.result}); // Cập nhật state img bằng base64 URL
-          };
-          reader.readAsDataURL(result); // Đọc file đã nén như là base64
-        },
-        error(err) {
-          console.error(err);
-        }
-      });
-    }
+    setstateProduct({ ...stateproduct, productImage: file })
+    // // if (file) {
+    // //   new Compressor(file, {
+    // //     quality: 0.6, // Chất lượng ảnh (0.6 là 60%)
+    // //     maxWidth: 800, // Chiều rộng tối đa
+    // //     maxHeight: 800, // Chiều cao tối đa
+    // //     success(result) {
+    // //       // Đọc file đã nén dưới dạng base64
+    // //       const reader = new FileReader();
+    // //       reader.onload = () => {
+    // //         setstateProduct({...stateproduct, productImage : reader.result}); // Cập nhật state img bằng base64 URL
+    // //       };
+    // //       reader.readAsDataURL(result); // Đọc file đã nén như là base64
+    // //     },
+    // //     error(err) {
+    // //       console.error(err);
+    // //     }
+    //   });
+    // }
   };
 
   const mutation = useMutationHook(
     async (data) => {
-      const { 
-        productName,
-        productPrice,
-        productImage,
-        productCategory,
-        productSize,
-        productDescription
-       } = data;
-      const response = await productService.createproduct(
-        productName,
-        productPrice,
-        productImage,
-        productCategory,
-        productSize,
-        productDescription
-      );
+      // const { 
+      //   productName,
+      //   productPrice,
+      //   productImage,
+      //   productCategory,
+      //   productSize,
+      //   productDescription
+      //  } = data;
+
+      const response = await createProduct(data, accessToken);
+      console.log("RESKLT", response);
+      try {
+        const result = await response;
+        //console.log("RESKLT",result);
+        if (result.status == "OK") {
+          alert("Thêm bánh thành công!");
+          // Reset form
+          //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
+        } else {
+          alert(`Thêm bánh thất bại: ${result.message}`);
+        }
+      } catch (error) {
+        alert("Đã xảy ra lỗi khi thêm bánh!");
+        console.error(error);
+      }
       return response;
     }
   );
   const { data, isLoading, isSuccess, isError } = mutation;
 
-  const handleSubmit =  () => {
-    mutation.mutate(stateproduct)
-    
-    console.log("Result", JSON.stringify(stateproduct, null, 2));
+  const handleSubmit = () => {
+    console.log("state", stateproduct)
+    const formData = new FormData();
+    formData.append("productName", stateproduct.productName);
+    formData.append("productPrice", stateproduct.productPrice);
+    formData.append("productCategory", stateproduct.productCategory);
+    formData.append("productSize", stateproduct.productSize);
+    formData.append("productDescription", stateproduct.productDescription);
+    formData.append("productImage", stateproduct.productImage);
+    // Kiểm tra FormData
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
 
-    // e.preventDefault();
+    const response = mutation.mutate(formData)
+    // console.log("RESPONSE", response)
 
-    // const formData = new FormData();
-    // formData.append("productName", product.productName);
-    // formData.append("productPrice", product.productPrice);
-    // formData.append("productCategory", product.productCategory);
-    // formData.append("productSize", product.productSize);
-    // formData.append("productDescription", product.productDescription);
-    // if (product.productImage) {
-    //   formData.append("productImage", product.productImage);
-    // }
-    
+    // console.log("Result", JSON.stringify(stateproduct, null, 2));
 
-    // try {
+    //e.preventDefault();
 
-      
+
+
     //     // Lấy access token từ localStorage
     //     const accessToken = localStorage.getItem("access_token");
     //     console.log(localStorage.getItem("access_token"));
-  
+
     //     if (!accessToken) {
     //       alert("Bạn chưa đăng nhập. Vui lòng đăng nhập để thực hiện thao tác này.");
     //       return;
@@ -145,36 +155,23 @@ const AddProductPage = () => {
     //       headers: {
     //         //"Content-Type": "multipart/form-data", // Dành cho việc gửi tệp
     //         Token: `Bearer ${accessToken}`
-            
+
     //       },
     //       body: formData,
     //     }
     //   );
-      
-    
-    //   const result = await response.json();
-    //   console.log(result);
-    //   if (result.status=="OK") {
-    //     alert("Thêm bánh thành công!");
-    //     // Reset form
-    //     //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
-    //   } else {
-    //     alert(`Thêm bánh thất bại: ${result.message}`);
-    //   }
-    // } catch (error) {
-    //   alert("Đã xảy ra lỗi khi thêm bánh!");
-    //   console.error(error);
-    // }
+
+
   };
 
 
-  
+
 
   return (
     <div>
       <div className="container-xl add-product">
         <h1 className="add-product__title">Thêm sản phẩm</h1>
-        <Loading isLoading={isLoading}/>
+        <Loading isLoading={isLoading} />
         <div className="add-product__information">
           {/* Info top */}
           <div className="info__top">
@@ -183,12 +180,10 @@ const AddProductPage = () => {
               <input
                 className="product__image"
                 type="file"
-                onChange={handleOnChangeImg} 
+                onChange={handleOnChangeImg}
                 accept="image/*"
                 required
               />
-              
-              
               <div className="icon__add-image">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -203,10 +198,8 @@ const AddProductPage = () => {
                   />
                 </svg>
               </div>
-              
-              
             </div>
-            
+
 
             {/* Info right */}
             <div className="info__right">
@@ -243,7 +236,7 @@ const AddProductPage = () => {
                   value={stateproduct.productCategory}
                   onChange={handleInputChange}
                   className="choose-property"
-                  style={{ width: "36rem", height: "6rem", border:"none", color:"grey", borderRadius:"50px", boxShadow:"0px 2px 4px 0px #203c1640", padding:"15px"}}
+                  style={{ width: "36rem", height: "6rem", border: "none", color: "grey", borderRadius: "50px", boxShadow: "0px 2px 4px 0px #203c1640", padding: "15px" }}
                   placeholder="Chọn loại sản phẩm"
                 >
                   <option value="" disabled>Chọn loại sản phẩm</option>
@@ -260,7 +253,7 @@ const AddProductPage = () => {
 
               </div>
 
-              
+
               <div className="product-size">
                 <label>Kích thước sản phẩm</label>
                 <FormComponent
@@ -293,9 +286,9 @@ const AddProductPage = () => {
           <ButtonComponent onClick={handleSubmit}>Thêm</ButtonComponent>
           <ButtonComponent>Thoát</ButtonComponent>
         </div>
-     
+
       </div>
-      
+
     </div>
   );
 };

@@ -11,7 +11,7 @@ import {
   setDetailStatus,
 } from "../../../../redux/slides/statusSlide";
 import { deleteStatus, getAllStatus } from "../../../../services/StatusService";
-import { useNavigate } from "react-router-dom";
+
 import { isAdmin } from "../../../../utils";
 import Message from "../../../../components/MessageComponent/Message";
 import { useMutationHook } from "../../../../hooks/useMutationHook";
@@ -62,7 +62,7 @@ const StatusListPage = () => {
 
 
   // const isSelected = (id) => selectedRows.includes(id);
-const navigate= useNavigate();
+
   const ClickInfor=()=>{navigate("/store-info")}
   const ClickOrder=()=>{navigate("/order-list")}
   const ClickDiscount=()=>{navigate("/discount-list")}
@@ -183,7 +183,6 @@ const navigate= useNavigate();
     }
   };
 
->>>>>>> f7c4c971f228229fa2e003a6bd8f85c72ed3a038
   return (
     <div>
       <div className="container-xl">
@@ -198,7 +197,7 @@ const navigate= useNavigate();
         <div className="status-list__info">
           {/* side menu */}
           <div className="side-menu__status">
-<<<<<<< HEAD
+
           <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
             <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
             <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
@@ -206,7 +205,6 @@ const navigate= useNavigate();
             <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
             <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
             <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
-=======
             <SideMenuComponent className="btn-menu">
               Thông tin cửa hàng
             </SideMenuComponent>
@@ -224,7 +222,7 @@ const navigate= useNavigate();
               Danh sách người dùng
             </SideMenuComponent>
             <SideMenuComponent className="btn-menu">Thống kê</SideMenuComponent>
->>>>>>> f7c4c971f228229fa2e003a6bd8f85c72ed3a038
+
           </div>
           {/* status list */}
           <div className="status-list__content">
