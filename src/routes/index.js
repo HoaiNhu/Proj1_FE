@@ -39,6 +39,7 @@ import ProductPageAdmin from "../pages/Admin/CRUDProduct/ProductPageAdmin/Produc
 import OrderListPage from "../pages/Admin/CRUDOrderStatus/OrderListPage/OrderListPage";
 import OrderDetailPage from "../pages/Admin/CRUDOrderStatus/OrderDetailPage/OrderDetailPage";
 import UpdateContact from "../pages/Admin/CRUDContact/UpdateContact/UpdateContact";
+import AddUserPage from "../pages/Admin/CRUDUser/AddUserPage/AddUserPage";
 export const routes = [
   {
     path: "/",
@@ -256,6 +257,13 @@ export const routes = [
   {
     path: "/user-list",
     page: UserListPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/add-user",
+    page: AddUserPage,
     isShowHeader: true,
     isShowFooter: true,
   },

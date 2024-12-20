@@ -70,7 +70,8 @@ h2 {
 
 .btn__action {
   display: flex;
-  justify-content: right;
+  justify-content: left !important;
+  align-items: center;
 }
 /* ====================table================= */
 /* Container chứa bảng */
@@ -102,7 +103,7 @@ h2 {
 
 .promo-table th {
   font-weight: 600;
-  /* background-color: #f3f3f3; */
+  background-color: #fff;
   position: sticky; /* Sticky header */
   top: 0;
   z-index: 1; /* Header nổi trên nội dung */

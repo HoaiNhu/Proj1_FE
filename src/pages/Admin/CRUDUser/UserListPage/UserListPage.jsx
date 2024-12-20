@@ -1,72 +1,203 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import "./UserListPage.css";
 import img from "../../../../assets/img/avatar_1.jpg";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { isAdmin } from "../../../../utils";
+import { setAllUser, setDetailUser } from "../../../../redux/slides/userSlide";
+import Message from "../../../../components/MessageComponent/Message";
+import { useMutationHook } from "../../../../hooks/useMutationHook";
+import * as UserService from "../../../../services/UserService";
+import { getAllUser } from "../../../../services/UserService";
+import EditIconComponent from "../../../../components/EditIconComponent/EditIconComponent";
+import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
 
 const UserListPage = () => {
-  // Dữ liệu người dùng mẫu
-  const users = [
-    {
-      id: 1,
-      familyName: "Nguyễn",
-      name: "Văn A",
-      phone: "0912345678",
-      email: "vana@example.com",
-      password: "password123",
-      address: "123 Đường ABC, Quận 1, TP. HCM",
-      role: "Admin",
-      createdAt: "01/01/2025",
-      updateAt: "05/01/2025",
-    },
-    {
-      id: 2,
-      familyName: "Trần",
-      name: "Thị B",
-      phone: "0923456789",
-      email: "thib@example.com",
-      password: "password456",
-      address: "456 Đường DEF, Quận 2, TP. HCM",
-      role: "Khách hàng",
-      createdAt: "02/01/2025",
-      updateAt: "06/01/2025",
-    },
-    {
-      id: 3,
-      familyName: "Lê",
-      name: "Hữu C",
-      phone: "0934567890",
-      email: "huuc@example.com",
-      password: "password789",
-      address: "789 Đường GHI, Quận 3, TP. HCM",
-      role: "Nhân viên",
-      createdAt: "03/01/2025",
-      updateAt: "07/01/2025",
-    },
-  ];
+  const navigate = useNavigate();
+  const ClickInfo = () => {
+    navigate("/store-info");
+  };
+  const ClickOrder = () => {
+    navigate("/order-list");
+  };
+  const ClickDiscount = () => {
+    navigate("/discount-list");
+  };
+  const ClickStatus = () => {
+    navigate("/status-list");
+  };
+  const ClickCategory = () => {
+    navigate("/category-list");
+  };
+  const ClickUser = () => {
+    navigate("/user-list");
+  };
+  const ClickReport = () => {
+    navigate("/report");
+  };
 
-  const navigate= useNavigate();
-    const ClickInfor=()=>{navigate("/store-info")}
-    const ClickOrder=()=>{navigate("/order-list")}
-    const ClickDiscount=()=>{navigate("/discount-list")}
-    const ClickStatus=()=>{navigate("/status-list")}
-    const ClickCategory=()=>{navigate("/category-list")}
-    const ClickUser=()=>{navigate("/user-list")}
-    const ClickReprot=()=>{navigate("/report")}
+  const user = useSelector((state) => state.user.allUser || []);
+  const userCurrent = useSelector((state) => state.user || {});
+
+  const dispatch = useDispatch();
+  const accessToken = localStorage.getItem("access_token");
+
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [statusMessage, setStatusMessage] = useState(null);
+  const [showLoading, setShowLoading] = useState(false);
+
+  useEffect(() => {
+    if (!accessToken || !isAdmin(accessToken)) {
+      navigate("/login"); // Điều hướng về trang đăng nhập nếu không phải admin
+    }
+  }, [accessToken, navigate]);
+
+  const isSelected = (userEmail) => selectedRows.includes(userEmail);
+
+  const toggleSelectRow = (userEmail) => {
+    setSelectedRows((prev) =>
+      prev.includes(userEmail)
+        ? prev.filter((email) => email !== userEmail)
+        : [...prev, userEmail]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    setSelectedRows(
+      selectedRows.length === user.length
+        ? []
+        : user.map((item) => item.userEmail)
+    );
+  };
+
+  const fetchData = async () => {
+    setShowLoading(true);
+    try {
+      const response = await getAllUser(accessToken); // Gọi API để lấy danh sách status
+      // console.log("response", response);
+      dispatch(setAllUser(response.data)); // Lưu danh sách status vào Redux
+    } catch (error) {
+      console.error("Failed to fetch statuses", error.message);
+    } finally {
+      setShowLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [dispatch]);
+
+  const handleAddUser = () => {
+    navigate("/add-user", { state: { from: "/user-list" } });
+  };
+
+  const mutation = useMutationHook(UserService.getAllUser);
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      setStatusMessage({
+        type: "Success",
+        message: "Lấy danh sách trạng thái thành công!",
+      });
+    } else if (mutation.isError) {
+      const errorMessage =
+        mutation.error?.message.message || "Lỗi khi lấy danh sách trạng thái.";
+      setStatusMessage({
+        type: "Error",
+        message: errorMessage,
+      });
+    }
+  }, [mutation.isSuccess, mutation.isError, mutation.error]);
+
+  // const handleEditUser = () => {
+  //   if (selectedRows.length === 1) {
+  //     const selectedStatus = user.find(
+  //       (item) => item.userEmail === selectedRows[0]
+  //     );
+  //     dispatch(setDetailUser(selectedStatus)); // Lưu trạng thái vào Redux
+  //     navigate("/update-status"); // Điều hướng đến trang sửa
+  //   } else {
+  //     alert("Vui lòng chọn một người dùng để sửa.");
+  //   }
+  // };
+
+  const handleDeleteUser = async () => {
+    if (selectedRows.length === 0) {
+      alert("Vui lòng chọn ít nhất một người dùng để xóa.");
+      return;
+    }
+
+    if (window.confirm("Bạn có chắc chắn muốn xóa các người dùng đã chọn?")) {
+      try {
+        await Promise.all(
+          selectedRows.map(async (email) => {
+            const userToDelete = user.find((item) => item.userEmail === email);
+            console.log("User to delete:", userToDelete);
+            if (!userToDelete) {
+              throw new Error(
+                `Không tìm thấy người dùng với userEmail: ${email}`
+              );
+            }
+
+            // Gọi API xóa với `_id`
+            await UserService.deleteUser(userToDelete._id, accessToken);
+          })
+        );
+
+        const response = await getAllUser(accessToken);
+        dispatch(setAllUser(response.data));
+
+        setStatusMessage({
+          type: "Success",
+          message: "Xóa người dùng thành công!",
+        });
+
+        setSelectedRows([]);
+      } catch (error) {
+        console.error("Failed to delete users", error);
+
+        setStatusMessage({
+          type: "Error",
+          message:
+            typeof error.message === "string"
+              ? error.message
+              : JSON.stringify(error.message) || "Xóa người dùng thất bại.",
+        });
+      }
+    }
+  };
 
   return (
     <div className="container-xl">
+      {statusMessage && (
+        <Message
+          type={statusMessage.type}
+          message={statusMessage.message}
+          duration={3000}
+          onClose={() => setStatusMessage(null)}
+        />
+      )}
       <div className="user-list__info">
         {/* Menu bên trái */}
         <div className="side-menu__user">
-        <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
-            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
-            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
+          <SideMenuComponent onClick={ClickInfo}>
+            Thông tin cửa hàng
+          </SideMenuComponent>
+          <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+          <SideMenuComponent onClick={ClickDiscount}>
+            Khuyến mãi
+          </SideMenuComponent>
+          <SideMenuComponent onClick={ClickStatus}>
+            Trạng thái
+          </SideMenuComponent>
+          <SideMenuComponent onClick={ClickCategory}>
+            Loại sản phẩm
+          </SideMenuComponent>
+          <SideMenuComponent onClick={ClickUser}>
+            Danh sách người dùng
+          </SideMenuComponent>
+          <SideMenuComponent onClick={ClickReport}>Thống kê</SideMenuComponent>
         </div>
 
         {/* Nội dung chính */}
@@ -75,9 +206,17 @@ const UserListPage = () => {
           <div className="admin-top">
             <h2 className="user-list__title">Danh sách người dùng</h2>
             <div className="tag-admin">
-              <img className="admin-avatar" src={img} alt="avatar" />
+              <img
+                className="admin-avatar"
+                src={userCurrent.userImage || img}
+                alt="avatar"
+              />
               <div className="name-role">
-                <h3 className="admin-name">Nguyễn Văn A</h3>
+                <h3 className="admin-name">
+                  {(userCurrent.familyName || "") +
+                    " " +
+                    (userCurrent.userName || "")}
+                </h3>
                 <label className="role">Admin</label>
               </div>
             </div>
@@ -85,7 +224,9 @@ const UserListPage = () => {
 
           {/* Nút thêm */}
           <div className="btn__action">
-            <ButtonComponent className="btn btn-add">Thêm</ButtonComponent>
+            <ButtonComponent onClick={handleAddUser}>Thêm</ButtonComponent>
+            <ButtonComponent>Chi tiết</ButtonComponent>
+            <ButtonComponent onClick={handleDeleteUser}>Xóa</ButtonComponent>
           </div>
 
           {/* Bảng người dùng */}
@@ -93,12 +234,18 @@ const UserListPage = () => {
             <table className="promo-table">
               <thead>
                 <tr>
+                  <th>
+                    <CheckboxComponent
+                      isChecked={selectedRows.length === user.length}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
                   <th>STT</th>
                   <th>Họ</th>
                   <th>Tên</th>
                   <th>Số điện thoại</th>
                   <th>Email</th>
-                  <th>Mật khẩu</th>
+                  {/* <th>Mật khẩu</th> */}
                   <th>Địa chỉ</th>
                   <th>Vai trò</th>
                   <th>Ngày tạo</th>
@@ -107,32 +254,31 @@ const UserListPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user, index) => (
-                  <tr key={user.id}>
+                {user.map((user, index) => (
+                  <tr
+                    key={user.userEmail}
+                    className={isSelected(user.userEmail) ? "highlight" : ""}
+                  >
+                    <td>
+                      <CheckboxComponent
+                        isChecked={isSelected(user.userEmail)}
+                        onChange={() => toggleSelectRow(user.userEmail)}
+                      />
+                    </td>
+
                     <td>{index + 1}</td>
                     <td>{user.familyName}</td>
-                    <td>{user.name}</td>
-                    <td>{user.phone}</td>
-                    <td>{user.email}</td>
-                    <td>{user.password}</td>
-                    <td>{user.address}</td>
-                    <td>{user.role}</td>
+                    <td>{user.userName}</td>
+                    <td>{user.userPhone}</td>
+                    <td>{user.userEmail}</td>
+                    {/* <td>{user.userPassword}</td> */}
+                    <td>{user.userAddress}</td>
+                    <td>{user.isAdmin ? "Admin" : "Khách hàng"}</td>
                     <td>{user.createdAt}</td>
-                    <td>{user.updateAt}</td>
+                    <td>{user.updatedAt}</td>
                     <td>
                       {/* Hành động chỉnh sửa */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M14.06 9.02L14.98 9.94L5.92 19H5V18.08L14.06 9.02ZM17.66 3C17.41 3 17.15 3.1 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04C20.8027 6.94749 20.8762 6.8376 20.9264 6.71662C20.9766 6.59565 21.0024 6.46597 21.0024 6.335C21.0024 6.20403 20.9766 6.07435 20.9264 5.95338C20.8762 5.8324 20.8027 5.72251 20.71 5.63L18.37 3.29C18.17 3.09 17.92 3 17.66 3ZM14.06 6.19L3 17.25V21H6.75L17.81 9.94L14.06 6.19Z"
-                          fill="#3A060E"
-                        />
-                      </svg>
+                      {/* <EditIconComponent onClick={handleEditUser}/> */}
                     </td>
                   </tr>
                 ))}

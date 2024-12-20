@@ -40,6 +40,9 @@ export const userSlice = createSlice({
     setAllStatus: (state, action) => {
       state.allStatus = action.payload; // Lưu danh sách status từ API
     },
+    setDetailStatus: (state, action) => {
+      state.detailStatus = action.payload;
+    }, // Lưu chi tiết một status từ API
   },
 });
 

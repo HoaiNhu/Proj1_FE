@@ -1,3 +1,4 @@
+import React from "react";
 import FormComponent from "../../../../components/FormComponent/FormComponent";
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
@@ -10,7 +11,6 @@ import Message from "../../../../components/MessageComponent/Message";
 import * as StatusService from "../../../../services/StatusService";
 import { useMutationHook } from "../../../../hooks/useMutationHook";
 import { isAdmin } from "../../../../utils";
-
 
 const AddStatusPage = () => {
   // const [statusCode, setStatusCode] = useState("");

@@ -150,6 +150,7 @@ function UserInfoPage() {
     dispatch(updateUser({ ...res?.data, access_token: token }));
   };
 
+
   useEffect(() => {
     if (mutation.isSuccess) {
       setShowLoading(false);

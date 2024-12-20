@@ -10,6 +10,8 @@ const initialState = {
   userImage: "",
   access_token: "",
   isLoggedIn: false,
+  allUser: [], // Danh sách tất cả các status
+  detailUser: {}, // Chi tiết một status cụ thể
 };
 
 export const userSlice = createSlice({
@@ -50,10 +52,18 @@ export const userSlice = createSlice({
 
       state.isLoggedIn = false;
     },
+
+    setAllUser: (state, action) => {
+      state.allUser = action.payload; // Lưu danh sách user từ API
+    },
+    setDetailUser: (state, action) => {
+      state.detailUser = action.payload;
+    }, // Lưu chi tiết một user từ API
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { updateUser, resetUser } = userSlice.actions;
+export const { updateUser, resetUser, setAllUser, setDetailUser } =
+  userSlice.actions;
 
 export default userSlice.reducer;

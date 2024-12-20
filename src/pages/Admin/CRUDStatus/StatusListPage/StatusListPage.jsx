@@ -20,7 +20,7 @@ import * as StatusService from "../../../../services/StatusService";
 
 const StatusListPage = () => {
   const status = useSelector((state) => state.status.allStatus || []);
-  console.log("status", status);
+  // console.log("status", status);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
