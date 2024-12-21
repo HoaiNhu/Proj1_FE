@@ -54,11 +54,11 @@ const ProductsPage = () => {
           },
         });
         if (!response.ok) {
-          throw new Error("Failed to fetch categories");
+          throw new Error("Failed to fetch products");
         }
   
         const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-        console.log("Categories data:", categories);
+       
   
         // Kiểm tra và gán mảng categories từ data.data
         if (Array.isArray(data.data)) {
@@ -119,7 +119,8 @@ const ProductsPage = () => {
                       type={"primary"}
                       img={imageUrl} // Sử dụng URL ảnh đã xử lý
                       title={product.productName} // Hiển thị tên sản phẩm
-                      price={`${product.productPrice} VND`} // Hiển thị giá sản phẩm
+                      price={`${product.productPrice.toLocaleString('en-US')} VND`}
+
                       productId={product._id}
                       //description={product.productDescription} // Mô tả sản phẩm
                       // onDelete={reloadProducts} // Gọi reloadProducts sau khi xóa sản phẩm
@@ -134,10 +135,7 @@ const ProductsPage = () => {
                 <p>Không có sản phẩm nào</p>
               )}
             </div>
-            {/* button see more */}
-            <ButtonComponent className="btn__see-more">
-              Xem thêm
-            </ButtonComponent>
+           
           </div>
         </div>
       </div>

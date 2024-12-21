@@ -46,7 +46,6 @@ export const routes = [
     page: HomePage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
   },
 
   {
@@ -137,7 +136,6 @@ export const routes = [
     page: NewsPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
   },
 
   {
@@ -145,21 +143,20 @@ export const routes = [
     page: AddProductPage,
     isShowHeader: true,
     isShowFooter: true,
-    isPrivate: true,
+    isPrivate: true
   },
   {
     path: "/view-product-detail/",
     page: ViewProductDetailPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
   },
   {
     path: "/update-product",
     page: UpdateProductPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -167,7 +164,6 @@ export const routes = [
     page: BankingInfoPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
   },
 
   {
@@ -175,7 +171,7 @@ export const routes = [
     page: StoreInfoPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -183,7 +179,7 @@ export const routes = [
     page: DiscountListPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    
   },
 
   {
@@ -191,7 +187,7 @@ export const routes = [
     page: AddDiscountPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -199,7 +195,7 @@ export const routes = [
     page: StatusListPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -207,7 +203,7 @@ export const routes = [
     page: AddStatusPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -215,7 +211,7 @@ export const routes = [
     page: UpdateStatusPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -223,7 +219,7 @@ export const routes = [
     page: CategoryListPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -231,7 +227,7 @@ export const routes = [
     page: AddCategoryPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -239,7 +235,7 @@ export const routes = [
     page: UpdateCategoryPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -247,7 +243,8 @@ export const routes = [
     page: DetailCategoryPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
+    
   },
 
   {
@@ -255,7 +252,7 @@ export const routes = [
     page: ReportPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -263,14 +260,12 @@ export const routes = [
     page: CartPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
   },
   {
     path: "/order-information",
     page: OrderInformationPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
   },
 
   {
@@ -278,7 +273,7 @@ export const routes = [
     page: UserListPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
@@ -286,7 +281,6 @@ export const routes = [
     page: AddUserPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
   },
 
   {
@@ -294,7 +288,6 @@ export const routes = [
     page: OrderListPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
   },
 
   {
@@ -302,55 +295,54 @@ export const routes = [
     page: OrderDetailPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
 
   {
     path: "/payment",
     page: PaymentPage,
     isShowHeader: true,
-    // isShowFooter: true,
+    isShowFooter: true,
   },
   {
     path: "/admin/news",
     page: NewsPageAdmin,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
   {
     path: "/admin/news/add-news",
     page: AddNews,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
   {
     path: "/admin/order-status/update",
     page: UpdateStatus,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
   {
     path: "/update-contact",
     page: UpdateContact,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true
   },
   {
     path: "/admin/products",
     page: ProductPageAdmin,
     isShowHeader: true,
     isShowFooter: true,
-    isPrivate: true,
+    isPrivate: true
   },
   {
     path: "*",
     page: NotFoundPage,
     isShowHeader: false,
     isShowFooter: false,
-    // isPrivate: true,
   },
 ];

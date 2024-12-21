@@ -189,6 +189,7 @@ const UpdateProductPage = () => {
         {/* submit */}
         <div className="btn-submit">
           <ButtonComponent onClick={handleSubmit}>Lưu</ButtonComponent>
+          <ButtonComponent>Xóa</ButtonComponent>
           <ButtonComponent>Thoát</ButtonComponent>
         </div>
       </div>
