@@ -169,7 +169,7 @@ const HeaderComponent = () => {
                   Giới thiệu
                 </ButtonNoBGComponent>
                 <ButtonNoBGComponent to="/contact">Liên hệ</ButtonNoBGComponent>
-                <ButtonNoBGComponent to="/others">Khác</ButtonNoBGComponent>
+               
               </div>
             </div>
           </div>
