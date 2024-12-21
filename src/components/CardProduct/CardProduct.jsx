@@ -13,15 +13,15 @@ const CardProduct = ({ type, img, title, price }) => {
       }}
       className={type === "primary" ? styles.primary : styles.secondary}
     >
-      <Card.Img
+       <Card.Img
         src={img}
-        className={type === "primary" ? styles.primary : styles.secondary}
+        alt={title}
         style={{
           borderTopLeftRadius: "15px",
           borderTopRightRadius: "15px",
-          objectFit: "cover",
-          height: "auto",
-          width: "auto",
+          objectFit: "cover", // Ensure image covers the container
+          height: "200px", // Fixed height for image
+          width: "100%", // Image takes full width
         }}
       />
       <Card.Body>
