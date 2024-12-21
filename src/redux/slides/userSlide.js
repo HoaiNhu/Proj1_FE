@@ -12,6 +12,7 @@ const initialState = {
   isLoggedIn: false,
   allUser: [], // Danh sách tất cả các status
   detailUser: {}, // Chi tiết một status cụ thể
+  isAdmin: false,
 };
 
 export const userSlice = createSlice({
@@ -28,6 +29,7 @@ export const userSlice = createSlice({
         userAddress = "",
         userImage = "",
         access_token = "",
+        isAdmin,
       } = action?.payload;
       // console.log("action", action.payload);
       state.id = _id;
@@ -39,6 +41,7 @@ export const userSlice = createSlice({
       state.userImage = userImage;
       state.access_token = access_token;
       state.isLoggedIn = !!access_token;
+      state.isAdmin = isAdmin;
     },
     resetUser: (state) => {
       state.id = "";
@@ -49,7 +52,7 @@ export const userSlice = createSlice({
       state.userAddress = "";
       state.userImage = "";
       state.access_token = "";
-
+      state.isAdmin = false;
       state.isLoggedIn = false;
     },
 

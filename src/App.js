@@ -1,6 +1,6 @@
 import "@glints/poppins";
 import axios from "axios";
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import WebFont from "webfontloader";
@@ -18,10 +18,15 @@ import { isJsonString } from "./utils";
 import { jwtDecode } from "jwt-decode";
 import { updateUser } from "./redux/slides/userSlide";
 import * as UserService from "./services/UserService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Loading from "./components/LoadingComponent/Loading";
 
 function App() {
   const dispatch = useDispatch();
+  const [showLoading, setShowLoading] = useState(false);
+  const user = useSelector((state) => state.user);
+  console.log("user", user);
+
   useEffect(() => {
     WebFont.load({
       google: {
@@ -47,11 +52,13 @@ function App() {
   };
 
   useEffect(() => {
+    setShowLoading(true);
     const { storageData, decoded } = handleDecoded();
     console.log("decoded?.id", decoded?.id);
     if (decoded?.id) {
       handleGetDetailsUser(decoded?.id, storageData);
     }
+    setShowLoading(false);
   }, []);
 
   //token hết hạn
@@ -89,47 +96,59 @@ function App() {
   //   fetchApi();
   // }, []);
 
-  console.log(
-    "REACT_APP_API_URL_BACKEND: ",
-    process.env.REACT_APP_API_URL_BACKEND
-  );
+  // console.log(
+  //   "REACT_APP_API_URL_BACKEND: ",
+  //   process.env.REACT_APP_API_URL_BACKEND
+  // );
 
-  const fetchApi = async () => {
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/get-all-user`
-    );
-    return res.data;
-  };
+  // const fetchApi = async () => {
+  //   const res = await axios.get(
+  //     `${process.env.REACT_APP_API_URL_BACKEND}/user/get-all-user`
+  //   );
+  //   return res.data;
+  // };
 
-  const query = useQuery({ queryKey: ["todos"], queryFn: fetchApi });
-  console.log("query: ", query);
+  // const query = useQuery({ queryKey: ["todos"], queryFn: fetchApi });
+  // console.log("query: ", query);
 
   return (
     <div style={{ fontFamily: "poppins" }}>
-      <Router>
-        <AuthProvider>
-          <Routes>
-            {routes.map((route) => {
-              const Page = route.page;
-              const Header = route.isShowHeader ? DefaultComponent : Fragment;
-              const Footer = route.isShowFooter ? FooterComponent : Fragment;
-              return (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={
-                    <div>
-                      <Header />
-                      <Page />
-                      <Footer />
-                    </div>
-                  }
-                />
-              );
-            })}
-          </Routes>
-        </AuthProvider>
-      </Router>
+      <Loading isLoading={showLoading} />
+        {/* {!showLoading && ( */} 
+          <Router>
+            <AuthProvider>
+              <Routes>
+                {routes.map((route) => {
+                  const Page = route.page;
+                  const isCheckAuth = !route.isPrivate || user.isAdmin;
+                  // console.log(`Route: ${route.path}, isCheckAuth: ${isCheckAuth}`);
+
+                  const Header = route.isShowHeader
+                    ? DefaultComponent
+                    : Fragment;
+                  const Footer = route.isShowFooter
+                    ? FooterComponent
+                    : Fragment;
+                  return (
+                    <Route
+                      key={route.path}
+                      path={isCheckAuth ? route.path : undefined}
+                      // path={route.path}
+                      element={
+                        <div>
+                          <Header />
+                          <Page />
+                          <Footer />
+                        </div>
+                      }
+                    />
+                  );
+                })}
+              </Routes>
+            </AuthProvider>
+          </Router>
+        {/* )}
+      </Loading> */}
     </div>
   );
 }
