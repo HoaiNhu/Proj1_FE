@@ -171,11 +171,11 @@ export const routes = [
   },
 
   {
-    path: "/store-info",
+    path: "/admin/store-info",
     page: StoreInfoPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true,
   },
 
   {
