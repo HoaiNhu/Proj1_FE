@@ -114,41 +114,37 @@ function App() {
   return (
     <div style={{ fontFamily: "poppins" }}>
       <Loading isLoading={showLoading} />
-        {/* {!showLoading && ( */} 
-          <Router>
-            <AuthProvider>
-              <Routes>
-                {routes.map((route) => {
-                  const Page = route.page;
-                  const isCheckAuth = !route.isPrivate || user.isAdmin;
-                  // console.log(`Route: ${route.path}, isCheckAuth: ${isCheckAuth}`);
+      {!showLoading && (
+        <Router>
+          <AuthProvider>
+            <Routes>
+              {routes.map((route) => {
+                const Page = route.page;
+                const isCheckAuth = !route.isPrivate || user.isAdmin;
+                // console.log(`Route: ${route.path}, isCheckAuth: ${isCheckAuth}`);
 
-                  const Header = route.isShowHeader
-                    ? DefaultComponent
-                    : Fragment;
-                  const Footer = route.isShowFooter
-                    ? FooterComponent
-                    : Fragment;
-                  return (
-                    <Route
-                      key={route.path}
-                      path={isCheckAuth ? route.path : undefined}
-                      // path={route.path}
-                      element={
-                        <div>
-                          <Header />
-                          <Page />
-                          <Footer />
-                        </div>
-                      }
-                    />
-                  );
-                })}
-              </Routes>
-            </AuthProvider>
-          </Router>
-        {/* )}
-      </Loading> */}
+                const Header = route.isShowHeader ? DefaultComponent : Fragment;
+                const Footer = route.isShowFooter ? FooterComponent : Fragment;
+                return (
+                  <Route
+                    key={route.path}
+                    path={isCheckAuth ? route.path : undefined}
+                    // path={route.path}
+                    element={
+                      <div>
+                        <Header />
+                        <Page />
+                        <Footer />
+                      </div>
+                    }
+                  />
+                );
+              })}
+            </Routes>
+          </AuthProvider>
+        </Router>
+      )}
+      {/* </Loading> */}
     </div>
   );
 }

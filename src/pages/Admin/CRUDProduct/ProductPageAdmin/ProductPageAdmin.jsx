@@ -6,6 +6,7 @@ import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenu
 import * as productService from "../../../../services/productServices";
 import axios from 'axios'; // For making API calls
 import {Button,Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 
 const ProductPageAdmin = () => {
@@ -14,8 +15,8 @@ const ProductPageAdmin = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null); // Lưu ID sản phẩm cần xóa
   const [loading, setLoading] = useState(false);
+  const user= useSelector((state)=> state.user)
   ///======lay danh sach category=====
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
