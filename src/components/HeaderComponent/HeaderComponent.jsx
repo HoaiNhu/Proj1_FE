@@ -160,36 +160,46 @@ const HeaderComponent = () => {
             {/* nav bottom */}
             <div className={`row ${styles.nav__bot}`}>
               <div className={styles.nav__content}>
-                <ButtonNoBGComponent to="/">Trang chủ</ButtonNoBGComponent>
-                <ButtonNoBGComponent to="/products">
-                  Sản phẩm
-                </ButtonNoBGComponent>
-                <ButtonNoBGComponent to="/news">Tin tức</ButtonNoBGComponent>
-                <ButtonNoBGComponent to="/introduce">
-                  Giới thiệu
-                </ButtonNoBGComponent>
-                <ButtonNoBGComponent to="/contact">Liên hệ</ButtonNoBGComponent>
+                {/* nav admin */}
+                {user?.isAdmin ? (
+                  <>
+                    <ButtonNoBGComponent to="/">Trang chủ</ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/admin/products">
+                      Sản phẩm
+                    </ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/admin/news">
+                      Tin tức
+                    </ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/introduce">
+                      Giới thiệu
+                    </ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/admin/introduce">
+                      Liên hệ
+                    </ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/admin/store-info">
+                      Quản lí
+                    </ButtonNoBGComponent>
+                  </>
+                ) : (
+                  // nav user
+                  <>
+                    <ButtonNoBGComponent to="/">Trang chủ</ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/products">
+                      Sản phẩm
+                    </ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/news">
+                      Tin tức
+                    </ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/introduce">
+                      Giới thiệu
+                    </ButtonNoBGComponent>
+                    <ButtonNoBGComponent to="/contact">
+                      Liên hệ
+                    </ButtonNoBGComponent>
+                  </>
+                )}
               </div>
             </div>
-
-            {/* nav admin */}
-            {user?.isAdmin && (
-              <div className={`row ${styles.nav__bot}`}>
-                <div className={styles.nav__content}>
-                  <ButtonNoBGComponent to="/">Trang chủ</ButtonNoBGComponent>
-                  <ButtonNoBGComponent to="/admin/products">
-                    Sản phẩm
-                  </ButtonNoBGComponent>
-                  <ButtonNoBGComponent to="/admin/news">Tin tức</ButtonNoBGComponent>
-                  <ButtonNoBGComponent to="/admin/introduce">
-                    Giới thiệu
-                  </ButtonNoBGComponent>
-                  <ButtonNoBGComponent to="/contact">
-                    Liên hệ
-                  </ButtonNoBGComponent>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
