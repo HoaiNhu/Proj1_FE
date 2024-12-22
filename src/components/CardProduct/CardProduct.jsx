@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slides/cartSlide";
 import { useState } from "react";
 
-const CardProduct = ({ type, img, title, price, id }) => {
+const CardProduct = ({ id, type, img, title, price }) => {
   const dispatch = useDispatch();
 
   //Hiệu ứng sản phẩm bay dô vỏ hàng
@@ -49,7 +49,7 @@ const CardProduct = ({ type, img, title, price, id }) => {
 
     // Dispatch the action to add to cart
 
-    console.log("Product ID:", id); // Kiểm tra ID
+    console.log("Received ID in CardProduct:", id); // Kiểm tra ID
     dispatch(addToCart({ id, img, title, price }));
   };
 

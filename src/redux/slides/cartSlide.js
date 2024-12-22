@@ -24,7 +24,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      console.log("Action payload:", action.payload);
+      // console.log("Action payload:", action.payload);
       const existingProduct = state.products.find(
         (product) => product.id === action.payload.id
       );
@@ -35,10 +35,17 @@ const cartSlice = createSlice({
       } else {
         // Nếu sản phẩm chưa tồn tại, thêm vào giỏ với số lượng ban đầu
         state.products.push({
-          ...action.payload,
+          // ...action.payload,
+          // quantity: action.payload.quantity || 1,
+          id: action.payload.id, // Lưu id
+          img: action.payload.img,
+          title: action.payload.title,
+          price: action.payload.price,
           quantity: action.payload.quantity || 1,
         });
       }
+
+      saveToLocalStorage(state);
     },
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;

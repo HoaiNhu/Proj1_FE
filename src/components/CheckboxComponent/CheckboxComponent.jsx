@@ -9,8 +9,9 @@ const CheckboxComponent = ({ isChecked, onChange }) => {
       viewBox="0 0 40 40"
       fill="none"
       onClick={onChange}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", transition: "all 0.3s ease" }}
     >
+      {/* Vòng tròn hoặc nền */}
       <g filter="url(#filter0_d)">
         <rect
           x="8.5"
@@ -18,9 +19,37 @@ const CheckboxComponent = ({ isChecked, onChange }) => {
           width="22.6"
           height="22.6"
           rx="5"
-          fill={isChecked ? "#5a2d0c" : "#D9D9D9"}
+          fill={isChecked ? "#5a2d0c" : "#D9D9D9"} // Đổi màu khi chọn
+          style={{ transition: "fill 0.3s ease" }}
         />
       </g>
+
+      {/* Dấu tích */}
+      {isChecked && (
+        <path
+          d="M14 20l4 4 8-8"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            transition: "stroke-dasharray 0.3s ease",
+            strokeDasharray: "0 24",
+            animation: "dash 0.5s forwards",
+          }}
+        />
+      )}
+
+      {/* Animation cho dấu tích */}
+      <style>
+        {`
+          @keyframes dash {
+            to {
+              stroke-dasharray: 24 0;
+            }
+          }
+        `}
+      </style>
     </svg>
   );
 };

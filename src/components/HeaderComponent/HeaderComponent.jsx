@@ -19,27 +19,30 @@ import CartIconComponent from "../CartIconComponent/CartIconComponent";
 const HeaderComponent = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const [showLoading, setShowLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [userImage, setUserImage] = useState("");
-  
+
   const handleNavigationLogin = () => {
     navigate("/login");
   };
   const handleClickCart = () => {
     navigate("/cart");
   };
-  
+
   // const { user, logout } = useAuth();
-  
+
   const user = useSelector((state) => state.user);
   // console.log("user", user);
 
   //Lấy số lượng sản phẩm trong giỏ
   const cartItems = useSelector((state) => state.cart.products);
-  const cartQuantity = cartItems.length; // Tính tổng số lượng sản phẩm
-  
+  const cartQuantity = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  ); // Tính tổng số lượng sản phẩm
+
   const handleLogout = async () => {
     setShowLoading(true);
     await UserService.logoutUser();
@@ -111,7 +114,9 @@ const HeaderComponent = () => {
                   <div className={styles.cart__icon__wrapper}>
                     <CartIconComponent onClick={handleClickCart} />
                     {cartQuantity > 0 && (
-                      <span className={styles.cart__quantity}>{cartQuantity}</span>
+                      <span className={styles.cart__quantity}>
+                        {cartQuantity}
+                      </span>
                     )}
                   </div>
                 )}

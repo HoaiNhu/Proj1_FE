@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./CartPage.css";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useNavigate } from "react-router-dom";
@@ -45,27 +45,42 @@ const CartPage = () => {
 
   // const totalAmount = calculateTotal();
 
-  //   const isSelected = (products.title) => selectedRows.includes(statusCode);
+  //Chọn sản phẩm muốn mua
 
-  //   const toggleSelectRow = (statusCode) => {
-  //     setSelectedRows((prev) =>
-  //       prev.includes(statusCode)
-  //         ? prev.filter((code) => code !== statusCode)
-  //         : [...prev, statusCode]
-  //     );
-  //   };
+  const isSelected = (productId) => selectedProducts.includes(productId);
+  const [selectedProducts, setSelectedProducts] = useState([]); //lưu sản phẩm được chọn
+  // Hàm toggle chọn/deselect sản phẩm
+  const toggleSelectRow = (productId) => {
+    setSelectedProducts((prev) => {
+      const updated = prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId];
+      console.log("Updated selected products:", updated);
+      return updated;
+    });
+  };
 
-  //   const toggleSelectAll = () => {
-  //     setSelectedRows(
-  //       selectedRows.length === status.length
-  //         ? []
-  //         : status.map((item) => item.statusCode)
-  //     );
-  //   };
+  // Hàm xử lý khi nhấn "Mua ngay"
+  const handleBuyNow = () => {
+    const selectedProductDetails = products.filter((product) =>
+      selectedProducts.includes(product.id)
+    );
+
+    navigate("/order-information", { state: { selectedProductDetails } });
+  };
+
+  // Hàm toggle chọn/deselect tất cả
+  const toggleSelectAll = () => {
+    setSelectedProducts(
+      selectedProducts.length === products.length
+        ? [] // Bỏ chọn tất cả
+        : products.map((product) => product.id) // Chọn tất cả
+    );
+  };
 
   // Hàm xử lý xóa sản phẩm
-  const handleRemoveProduct = (productId) => {
-    dispatch(removeFromCart({ id: productId }));
+  const handleRemoveProduct = (id) => {
+    dispatch(removeFromCart({ id }));
   };
 
   return (
@@ -85,7 +100,10 @@ const CartPage = () => {
           <thead>
             <tr className="HeaderHolder">
               <th>
-                <CheckboxComponent />
+                <CheckboxComponent
+                  isChecked={selectedProducts.length === products.length}
+                  onChange={toggleSelectAll}
+                />
               </th>
               <th className="ProductInforHear">Thông tin sản phẩm</th>
               <th className="PriceHeader">Đơn giá</th>
@@ -98,7 +116,13 @@ const CartPage = () => {
             {products.map((product) => (
               <tr key={product.id} className="LineProduct">
                 <td>
-                  <CheckboxComponent />
+                  <CheckboxComponent
+                    isChecked={isSelected(product.id)} // Kiểm tra nếu sản phẩm được chọn
+                    onChange={() => {
+                      console.log("Checkbox clicked for:", product.id);
+                      toggleSelectRow(product.id);
+                    }} // Toggle chọn sản phẩm
+                  />
                 </td>
                 <td className="ProductInfor">
                   <ProductInfor
@@ -146,7 +170,8 @@ const CartPage = () => {
             </button>
             <ButtonComponent
               className="Buy_btn"
-              onClick={() => handleNavigate("/order-information")}
+              onClick={handleBuyNow}
+              disabled={selectedProducts.length === 0}
             >
               Mua ngay
             </ButtonComponent>
