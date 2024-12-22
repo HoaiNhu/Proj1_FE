@@ -151,13 +151,13 @@ const CategoryListPage = () => {
     }
   };
   
-  const ClickInfor=()=>{navigate("/store-info")}
+  const ClickInfor=()=>{navigate("/admin/store-info")}
   const ClickOrder=()=>{navigate("/order-list")}
   const ClickDiscount=()=>{navigate("/discount-list")}
-  const ClickStatus=()=>{navigate("/status-list")}
-  const ClickCategory=()=>{navigate("/category-list")}
-  const ClickUser=()=>{navigate("/user-list")}
-  const ClickReprot=()=>{navigate("/report")}
+  const ClickStatus=()=>{navigate("/admin/status-list")}
+  const ClickCategory=()=>{navigate("/admin/category-list")}
+  const ClickUser=()=>{navigate("/admin/user-list")}
+  const ClickReprot=()=>{navigate("/admin/report")}
   return (
     <div>
       <div className="container-xl">

@@ -16,27 +16,13 @@ import CheckboxComponent from "../../../../components/CheckboxComponent/Checkbox
 
 const UserListPage = () => {
   const navigate = useNavigate();
-  const ClickInfo = () => {
-    navigate("/store-info");
-  };
-  const ClickOrder = () => {
-    navigate("/order-list");
-  };
-  const ClickDiscount = () => {
-    navigate("/discount-list");
-  };
-  const ClickStatus = () => {
-    navigate("/status-list");
-  };
-  const ClickCategory = () => {
-    navigate("/category-list");
-  };
-  const ClickUser = () => {
-    navigate("/user-list");
-  };
-  const ClickReport = () => {
-    navigate("/report");
-  };
+  const ClickInfor=()=>{navigate("/admin/store-info")}
+  const ClickOrder=()=>{navigate("/order-list")}
+  const ClickDiscount=()=>{navigate("/discount-list")}
+  const ClickStatus=()=>{navigate("/admin/status-list")}
+  const ClickCategory=()=>{navigate("/admin/category-list")}
+  const ClickUser=()=>{navigate("/admin/user-list")}
+  const ClickReprot=()=>{navigate("/admin/report")}
 
   const user = useSelector((state) => state.user.allUser || []);
   const userCurrent = useSelector((state) => state.user || {});
@@ -181,7 +167,7 @@ const UserListPage = () => {
       <div className="user-list__info">
         {/* Menu bên trái */}
         <div className="side-menu__user">
-          <SideMenuComponent onClick={ClickInfo}>
+          <SideMenuComponent onClick={ClickInfor}>
             Thông tin cửa hàng
           </SideMenuComponent>
           <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
@@ -197,7 +183,7 @@ const UserListPage = () => {
           <SideMenuComponent onClick={ClickUser}>
             Danh sách người dùng
           </SideMenuComponent>
-          <SideMenuComponent onClick={ClickReport}>Thống kê</SideMenuComponent>
+          <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
         </div>
 
         {/* Nội dung chính */}
