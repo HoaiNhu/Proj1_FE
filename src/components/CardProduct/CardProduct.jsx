@@ -48,6 +48,8 @@ const CardProduct = ({ type, img, title, price, id }) => {
     }
 
     // Dispatch the action to add to cart
+
+    console.log("Product ID:", id); // Kiểm tra ID
     dispatch(addToCart({ id, img, title, price }));
   };
 

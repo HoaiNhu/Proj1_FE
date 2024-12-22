@@ -85,6 +85,7 @@ const ProductsPage = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
   return (
     <div>
       <div className="container-xl product-container">
@@ -120,7 +121,7 @@ const ProductsPage = () => {
                         "\\",
                         "/"
                       )}`;
-
+                  console.log("Product ID in ProductsPage:", product._id);
                   //console.log("Product image URL:", imageUrl);  // Debug URL ảnh
                   return (
                     <CardProduct
