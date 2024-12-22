@@ -2,7 +2,55 @@ import Card from "react-bootstrap/Card";
 import styles from "./Card.module.css";
 import TagPriceComponent from "../TagPriceComponent/TagPriceComponent";
 import { Button, Col, Row } from "react-bootstrap";
-const CardProduct = ({ type, img, title, price }) => {
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/slides/cartSlide";
+import { useState } from "react";
+
+const CardProduct = ({ type, img, title, price, id }) => {
+  const dispatch = useDispatch();
+
+  //Hiệu ứng sản phẩm bay dô vỏ hàng
+  const handleAddToCart = (e) => {
+    const productElement = e.currentTarget.closest(".card");
+    const navIcon = document.querySelector(".nav__icon");
+
+    if (productElement && navIcon) {
+      // Get positions
+      const productRect = productElement.getBoundingClientRect();
+      const navIconRect = navIcon.getBoundingClientRect();
+
+      // Create a clone of the product image
+      const clone = productElement.cloneNode(true);
+      clone.style.position = "fixed";
+      clone.style.top = `${productRect.top}px`;
+      clone.style.left = `${productRect.left}px`;
+      clone.style.width = `${productRect.width}px`;
+      clone.style.height = `${productRect.height}px`;
+      clone.style.zIndex = 1000;
+      clone.style.transition = "all 1.5s cubic-bezier(0.22, 1, 0.36, 1)";
+
+      // Append clone to body
+      document.body.appendChild(clone);
+
+      // Trigger animation
+      requestAnimationFrame(() => {
+        clone.style.transform = `translate(
+          ${navIconRect.left - productRect.left}px,
+          ${navIconRect.top - productRect.top}px
+        ) scale(0.1)`;
+        clone.style.opacity = "0.5";
+      });
+
+      // Cleanup after animation
+      clone.addEventListener("transitionend", () => {
+        clone.remove();
+      });
+    }
+
+    // Dispatch the action to add to cart
+    dispatch(addToCart({ id, img, title, price }));
+  };
+
   return (
     <Card
       style={{
@@ -13,7 +61,7 @@ const CardProduct = ({ type, img, title, price }) => {
       }}
       className={type === "primary" ? styles.primary : styles.secondary}
     >
-       <Card.Img
+      <Card.Img
         src={img}
         alt={title}
         style={{
@@ -58,6 +106,7 @@ const CardProduct = ({ type, img, title, price }) => {
           <Row>
             <Col>
               <Button
+                onClick={handleAddToCart}
                 style={{
                   width: 55,
                   paddingLeft: 17,
@@ -106,6 +155,18 @@ const CardProduct = ({ type, img, title, price }) => {
           </Row>
         </div>
       )}
+
+      {/* Hiệu ứng sản phẩm bay */}
+      {/* {isFlying && (
+        <div
+          className="flying-product"
+          style={{
+            ...flyStyle,
+          }}
+        >
+          <img src={img} alt={title} />
+        </div>
+      )} */}
     </Card>
   );
 };

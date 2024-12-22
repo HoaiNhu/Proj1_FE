@@ -2,6 +2,12 @@
   width: max-content;
 }
 
+.sticky-top {
+  position: sticky !important;
+  top: 0;
+  z-index: 1020;
+}
+
 .bg-shadow {
   box-shadow: 0px 0px 4px 0px var(--shadow);
 }
@@ -90,4 +96,25 @@ img {
   align-items: center;
   background-color: var(--white);
   gap: 10px;
+}
+
+.cart__icon__wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.cart__quantity {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--green100);
+  color: var(--brown100);
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 6px 6px;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1;
+  /* transition: 0.3s; */
 }

@@ -11,7 +11,7 @@ const initialState = {
   detailStatus: {}, // Chi tiết một status cụ thể
 };
 
-export const userSlice = createSlice({
+export const statusSlice = createSlice({
   name: "status",
   initialState,
   reducers: {
@@ -48,6 +48,6 @@ export const userSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { updateStatus, resetStatus, setAllStatus, setDetailStatus } =
-  userSlice.actions;
+  statusSlice.actions;
 
-export default userSlice.reducer;
+export default statusSlice.reducer;

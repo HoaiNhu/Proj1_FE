@@ -1,164 +1,160 @@
-import React from 'react'
-import './CartPage.css'
-import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent"
-import { useNavigate} from "react-router-dom";
-import ProductInfor from '../../../components/ProductInfor/ProductInfor';
-import imageProduct from "../../../assets/img/hero_3.jpg"
-import QuantityBtn from '../../../components/QuantityBtn/QuantityBtn';
-import DeleteBtn from '../../../components/DeleteBtn/DeleteBtn';
-import CheckboxComponent from '../../../components/CheckboxComponent/CheckboxComponent';
+import React from "react";
+import "./CartPage.css";
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
+import { useNavigate } from "react-router-dom";
+import ProductInfor from "../../../components/ProductInfor/ProductInfor";
+import imageProduct from "../../../assets/img/hero_3.jpg";
+import QuantityBtn from "../../../components/QuantityBtn/QuantityBtn";
+import DeleteBtn from "../../../components/DeleteBtn/DeleteBtn";
+import CheckboxComponent from "../../../components/CheckboxComponent/CheckboxComponent";
+import BackIconComponent from "../../../components/BackIconComponent/BackIconComponent";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  removeFromCart,
+  updateQuantity,
+} from "../../../redux/slides/cartSlide";
 const CartPage = () => {
-    const navigate = useNavigate()
-    const handleClick = () => {
-        navigate("/products");
-      };
-    const ClickBuyNow=()=>{
-        navigate('/order-information')
-    }
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
 
-    return (
-        <div className="container-xl cart-container">
-            <div className='titleHolderCart'>
-                <div>
-                    <button className='back_btn' onClick={handleClick}>
-                        <svg className='back_icon' xmlns="http://www.w3.org/2000/svg"
-                            width="40" height="40" viewBox="0 0 40 40" fill="none" color='#3a060e'>
-                            <path d="M6.66675 20L5.95964 19.2929L5.25253 20L5.95964 20.7071L6.66675 20ZM31.6667 21C32.219 21 32.6667 20.5523 32.6667 20C32.6667 19.4477 32.219 19 31.6667 19V21ZM15.9596 9.29289L5.95964 19.2929L7.37385 20.7071L17.3739 10.7071L15.9596 9.29289ZM5.95964 20.7071L15.9596 30.7071L17.3739 29.2929L7.37385 19.2929L5.95964 20.7071ZM6.66675 21H31.6667V19H6.66675V21Z" fill="#33363F" />
-                        </svg>
-                    </button>
-                </div>
-                <div>
-                    <h1 className='titleCart'>Giỏ hàng</h1>
-                </div>
-            </div>
-            <div className='product_area'>
-                <table>
-                    <thead>
-                        <tr>
-                            <div className='HeaderHolder'>
-                           <div className='HeaderInfor'>
-                            <th className='ProductInforHear'>Thông tin sản phẩm</th>
-                            </div>
-                            <div className='HeaderPrice'>
-                            <th className='PriceHeader'>Đơn giá</th>
-                            </div>
-                            <div className='HeaderQuantity'>
-                            <th className='QuantityHeader'>Số lượng</th>
-                            </div>
-                            <div className='HeaderMoney'>
-                            <th className='MoneyHeader'>Thành tiền</th>
-                            </div>
-                            </div>
-                        </tr>
-                        
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <div className='LineProduct'>
-                                <div>
-                                <CheckboxComponent></CheckboxComponent>
-                                </div>
-                                <div className='ProductInfor'>
-                                    <ProductInfor image={imageProduct} name={"Summer Orange Cream"} size={'24cm'}></ProductInfor>
-                                </div>
-                                <div className='PriceProduct'>
-                                    <p className='Price'>250,000 VND</p>
-                                </div>
-                                <div className='QuantityBtn'>
-                                    <QuantityBtn></QuantityBtn>
-                                </div>
-                                <div className='Money'>
-                                <p className='MoneyProduct'>250,000 VND</p>
-                                </div>
-                                <div className='DeleteBtn'>
-                                    <DeleteBtn></DeleteBtn>
-                                </div>
-                            </div>
-                        </tr>
-                        <tr>
-                            <div className='LineProduct'>
-                                <div>
-                                <CheckboxComponent></CheckboxComponent>
-                                </div>
-                                <div className='ProductInfor'>
-                                    <ProductInfor image={imageProduct} name={"Summer Orange Cream"} size={'24cm'}></ProductInfor>
-                                </div>
-                                <div className='PriceProduct'>
-                                    <p className='Price'>250,000 VND</p>
-                                </div>
-                                <div className='QuantityBtn'>
-                                    <QuantityBtn></QuantityBtn>
-                                </div>
-                                <div className='Money'>
-                                <p className='MoneyProduct'>250,000 VND</p>
-                                </div>
-                                <div className='DeleteBtn'>
-                                    <DeleteBtn></DeleteBtn>
-                                </div>
-                            </div>
-                        </tr>
-                        <tr>
-                            <div className='LineProduct'>
-                                <div>
-                                <CheckboxComponent></CheckboxComponent>
-                                </div>
-                                <div className='ProductInfor'>
-                                    <ProductInfor image={imageProduct} name={"Summer Orange Cream"} size={'24cm'}></ProductInfor>
-                                </div>
-                                <div className='PriceProduct'>
-                                    <p className='Price'>250,000 VND</p>
-                                </div>
-                                <div className='QuantityBtn'>
-                                    <QuantityBtn></QuantityBtn>
-                                </div>
-                                <div className='Money'>
-                                <p className='MoneyProduct'>250,000 VND</p>
-                                </div>
-                                <div className='DeleteBtn'>
-                                    <DeleteBtn></DeleteBtn>
-                                </div>
-                            </div>
-                        </tr>
-                        <tr>
-                            <div className='LineProduct'>
-                                <div>
-                                   <CheckboxComponent></CheckboxComponent>
-                                </div>
-                                <div className='ProductInfor'>
-                                    <ProductInfor image={imageProduct} name={"Summer Orange Cream"} size={'24cm'}></ProductInfor>
-                                </div>
-                                <div className='PriceProduct'>
-                                    <p className='Price'>250,000 VND</p>
-                                </div>
-                                <div className='QuantityBtn'>
-                                    <QuantityBtn></QuantityBtn>
-                                </div>
-                                <div className='Money'>
-                                <p className='MoneyProduct'>250,000 VND</p>
-                                </div>
-                                <div className='DeleteBtn'>
-                                    <DeleteBtn></DeleteBtn>
-                                </div>
-                            </div>
-                        </tr>
-                    </tbody>
-                </table>
+  const products = useSelector((state) => state.cart.products);
+  // console.log("products", products);
 
-                <div className='Btnarea'>
-                    <div className='total-holder'>
-                        <p className='tong'>Tổng tiền:</p>
-                        <p className='total'>750,000 VND</p>
-                    </div>
-                    <div className='Btnholder'>
-                        <button className='Buy_more'
-                            onClick={() => handleClick('/products')}>Mua thêm</button>
-                        <ButtonComponent className='Buy_btn' onClick={()=>ClickBuyNow('/order-information')}>Mua ngay</ButtonComponent>
-                    </div>
-                </div>
+  const calculatePrice = (price) => {
+    return parseFloat(price.replace(/[^0-9.-]+/g, ""));
+  };
 
-            </div>
+  const totalAmount = products.reduce((acc, product) => {
+    return acc + calculatePrice(product.price) * product.quantity;
+  }, 0);
+
+  //   const totalAmount = products.reduce((acc, product) => acc + product.price, 0);
+  // const calculateTotal = () => {
+  //   return products.reduce((total, product) => {
+  //     const quantity = product.quantity || 1; // Default to 1 if quantity is missing
+  //     // console.log("quantity", quantity);
+  //     const price = parseFloat(
+  //       product.price.toString().replace(/[^\d.-]/g, "")
+  //     ); // Remove 'VND' or other non-numeric chars
+  //     return total + price * quantity;
+  //   }, 0);
+  // };
+
+  // const totalAmount = calculateTotal();
+
+  //   const isSelected = (products.title) => selectedRows.includes(statusCode);
+
+  //   const toggleSelectRow = (statusCode) => {
+  //     setSelectedRows((prev) =>
+  //       prev.includes(statusCode)
+  //         ? prev.filter((code) => code !== statusCode)
+  //         : [...prev, statusCode]
+  //     );
+  //   };
+
+  //   const toggleSelectAll = () => {
+  //     setSelectedRows(
+  //       selectedRows.length === status.length
+  //         ? []
+  //         : status.map((item) => item.statusCode)
+  //     );
+  //   };
+
+  // Hàm xử lý xóa sản phẩm
+  const handleRemoveProduct = (productId) => {
+    dispatch(removeFromCart({ id: productId }));
+  };
+
+  return (
+    <div className="container-xl cart-container">
+      <div className="titleHolderCart">
+        <button
+          className="back_btn"
+          onClick={() => handleNavigate("/products")}
+        >
+          <BackIconComponent />
+        </button>
+        <h1 className="titleCart">Giỏ hàng</h1>
+      </div>
+
+      <div className="product_area">
+        <table>
+          <thead>
+            <tr className="HeaderHolder">
+              <th>
+                <CheckboxComponent />
+              </th>
+              <th className="ProductInforHear">Thông tin sản phẩm</th>
+              <th className="PriceHeader">Đơn giá</th>
+              <th className="QuantityHeader">Số lượng</th>
+              <th className="MoneyHeader">Thành tiền</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id} className="LineProduct">
+                <td>
+                  <CheckboxComponent />
+                </td>
+                <td className="ProductInfor">
+                  <ProductInfor
+                    image={product.img}
+                    name={product.title}
+                    size={product.size}
+                  />
+                </td>
+                <td className="PriceProduct">
+                  <p className="Price">{product.price}</p>
+                </td>
+                <td className="QuantityBtn">
+                  <QuantityBtn
+                    initialQuantity={product.quantity}
+                    productId={product.id}
+                  />
+                </td>
+                <td className="Money">
+                  <p className="MoneyProduct">
+                    {(
+                      calculatePrice(product.price) * product.quantity
+                    ).toLocaleString()}{" "}
+                    VND
+                  </p>
+                </td>
+                <td className="DeleteBtn">
+                  <DeleteBtn onClick={() => handleRemoveProduct(product.id)} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="Btnarea">
+          <div className="total-holder">
+            <p className="tong">Tổng tiền:</p>
+            <p className="total">{totalAmount.toLocaleString()} VND</p>
+          </div>
+          <div className="Btnholder">
+            <button
+              className="Buy_more"
+              onClick={() => handleNavigate("/products")}
+            >
+              Mua thêm
+            </button>
+            <ButtonComponent
+              className="Buy_btn"
+              onClick={() => handleNavigate("/order-information")}
+            >
+              Mua ngay
+            </ButtonComponent>
+          </div>
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default CartPage
+export default CartPage;
