@@ -61,9 +61,11 @@ const ProductsPage = () => {
       if (!response.ok) {
         throw new Error("Failed to fetch categories");
       }
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
 
       const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-      console.log("Categories data:", categories);
 
       // Kiểm tra và gán mảng categories từ data.data
       if (Array.isArray(data.data)) {
@@ -74,6 +76,9 @@ const ProductsPage = () => {
     } catch (error) {
       console.error("Error fetching products:", error);
     }
+
+    // const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
+    console.log("Categories data:", categories);
   };
 
   // Hàm xử lý xóa sản phẩm

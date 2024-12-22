@@ -6,6 +6,7 @@ import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenu
 import * as productService from "../../../../services/productServices";
 import axios from 'axios'; // For making API calls
 import {Button,Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 
 const ProductPageAdmin = () => {
@@ -14,8 +15,8 @@ const ProductPageAdmin = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null); // Lưu ID sản phẩm cần xóa
   const [loading, setLoading] = useState(false);
+  const user= useSelector((state)=> state.user)
   ///======lay danh sach category=====
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -109,23 +110,8 @@ const ProductPageAdmin = () => {
   };
 
   return (
-    <div>
-      {/* Modal xóa */}
-      <Modal show={showModal} onHide={handleDeleteCancel}
-       style={{zIndex:9999}}>
-        <Modal.Header closeButton>
-          <Modal.Title>Xác nhận xóa</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Bạn có chắc chắn muốn xóa sản phẩm này?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteCancel}>
-            Hủy
-          </Button>
-          <Button variant="danger" onClick={handleDeleteConfirm} disabled={loading}>
-            {loading ? "Đang xóa..." : "Xóa"}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+    
+      
       <div className="container-xl productadmin-container">
         <div className="productadmin">
           {/* productadmin top */}
@@ -167,12 +153,11 @@ const ProductPageAdmin = () => {
                       type={"primary"}
                       img={imageUrl} // Sử dụng URL ảnh đã xử lý
                       title={product.productName} // Hiển thị tên sản phẩm
-                      price={`${product.productPrice} VND`} // Hiển thị giá sản phẩm
+                      price={`${product.productPrice.toLocaleString('en-US')} VND`}
+
                       productId={product._id}
                       //description={product.productDescription} // Mô tả sản phẩm
-                      onDelete={reloadProducts} // Gọi reloadProducts sau khi xóa sản phẩm
-                      onUpdate={reloadProducts} // Gọi reloadProducts sau khi cập nhật sản phẩm
-                      onDeleteRequest={handleDeleteRequest}
+                     
                       
                     />
                   );
@@ -185,7 +170,7 @@ const ProductPageAdmin = () => {
           </div>
         </div>
       </div>
-    </div>
+    
   );
 };
 

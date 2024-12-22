@@ -170,10 +170,10 @@ const HeaderComponent = () => {
                     <ButtonNoBGComponent to="/admin/news">
                       Tin tức
                     </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/admin/introduce">
+                    <ButtonNoBGComponent to="/introduce">
                       Giới thiệu
                     </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/admin/contact">
+                    <ButtonNoBGComponent to="/admin/introduce">
                       Liên hệ
                     </ButtonNoBGComponent>
                     <ButtonNoBGComponent to="/admin/store-info">

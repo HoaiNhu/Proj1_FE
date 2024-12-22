@@ -20,7 +20,7 @@ const AddProductPage = () => {
   });
 
   const [categories, setCategories] = useState([]); // State lưu danh sách category
-
+  const [previewImage, setPreviewImage] = useState(null); // State để lưu URL của ảnh preview
   // Fetch danh sách category khi component được mount
 
 
@@ -65,6 +65,8 @@ const AddProductPage = () => {
   const handleOnChangeImg = (event) => {
     const file = event.target.files[0];
     setstateProduct({ ...stateproduct, productImage: file })
+    const previewUrl = URL.createObjectURL(file); // Tạo URL preview từ file
+    setPreviewImage(previewUrl); // Cập nhật state previewImage
     // // if (file) {
     // //   new Compressor(file, {
     // //     quality: 0.6, // Chất lượng ảnh (0.6 là 60%)
@@ -177,14 +179,29 @@ const AddProductPage = () => {
           <div className="info__top">
             {/* Info left */}
             <div className="info__left">
+           
               <input
-                className="product__image"
+                // className="product__image"
                 type="file"
                 onChange={handleOnChangeImg}
                 accept="image/*"
                 required
               />
-              <div className="icon__add-image">
+              <div className="product__image">
+              {previewImage && (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className="product-preview"
+                  style={{
+                    width: "36rem",
+                    height: "40rem",
+                    borderRadius: "15px"
+                  }}
+                />
+              )}
+              </div>
+              {/* <div className="icon__add-image">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="40"
@@ -197,7 +214,7 @@ const AddProductPage = () => {
                     fill="#3A060E"
                   />
                 </svg>
-              </div>
+              </div> */}
             </div>
 
 
