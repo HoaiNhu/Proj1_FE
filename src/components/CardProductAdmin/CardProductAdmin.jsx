@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import styles from "./CardProductAdmin.css";
 import TagPriceComponent from "../TagPriceComponent/TagPriceComponent";
 
-const CardProductAdmin = ({ type, img, title, price, productId, onUpdate}) => {
+const CardProductAdmin = ({ id,type, img, title, price, onUpdate}) => {
   const navigate = useNavigate();
 
 

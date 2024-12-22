@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "./UpdateProductPage.css";
 import FormComponent from "../../../../components/FormComponent/FormComponent";
 import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import SizeComponent from "../../../../components/SizeComponent/SizeComponent";
+import { useNavigate } from "react-router-dom";
+import * as productService from "../../../../services/productServices";
 
 const UpdateProductPage = () => {
+    const navigate = useNavigate();
+    const accessToken = localStorage.getItem("access_token");
   const { state: productData } = useLocation(); // Nhận dữ liệu từ `state`
   const [product, setProduct] = useState(
     productData || {
@@ -18,10 +22,48 @@ const UpdateProductPage = () => {
       productDescription: "",
     }
   );
+  const [categories, setCategories] = useState([]); // State lưu danh sách category
+
+   useEffect(() => {
+      const fetchCategories = async () => {
+        try {
+  
+          const response = await fetch("http://localhost:3001/api/category/get-all-category", {
+            method: "GET", // Phương thức GET để lấy danh sách category
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+  
+          if (!response.ok) {
+            throw new Error("Failed to fetch categories");
+          }
+  
+          const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
+          console.log("Categories data:", categories);
+  
+          // Kiểm tra và gán mảng categories từ data.data
+          if (Array.isArray(data.data)) {
+            setCategories(data.data); // Lưu danh sách category vào state
+  
+          } else {
+            console.error("Categories data is not in expected format");
+          }
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+        }
+      };
+      fetchCategories();
+    }, []);
 
   const [imagePreview, setImagePreview] = useState(
     product.productImage || null
   );
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProduct({ ...product, [e.target.name]: e.target.value });
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -40,7 +82,30 @@ const UpdateProductPage = () => {
     e.preventDefault();
     console.log("Product data:", product);
     // Thực hiện logic gửi sản phẩm (ví dụ: gọi API)
+
   };
+
+  //Xoa
+  
+  const handleDelete = async (productId, productImage) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+
+    if (confirmDelete) {
+      try {
+        // Call the API to delete the product and image
+        const response = await productService.deleteProduct(productId,accessToken)
+  
+        if (response.status === 200) {
+          alert("Product deleted successfully!");
+          navigate("/admin/products"); // Redirect to product list page
+        }
+      } catch (error) {
+        console.error("Error deleting product:", error);
+        alert("Failed to delete product");
+      }
+    }
+  };
+  
 
   return (
     <div>
@@ -114,46 +179,39 @@ const UpdateProductPage = () => {
 
               <div className="product-category">
                 <label className="label-category">Loại sản phẩm</label>
-                <DropdownComponent
+                <select
+                  name="productCategory"
                   value={product.productCategory}
-                  onChange={(value) =>
-                    setProduct({ ...product, productCategory: value })
-                  }
-                  style={{
-                    width: "44rem",
-                    height: "4.4rem",
-                    borderRadius: "50px",
-                  }}
-                ></DropdownComponent>
+                  onChange={handleInputChange}
+                  className="choose-property"
+                  style={{ width: "36rem", height: "6rem", border: "none", color: "grey", borderRadius: "50px", boxShadow: "0px 2px 4px 0px #203c1640", padding: "15px" }}
+                  placeholder="Chọn loại sản phẩm"
+                >
+                  <option value="" disabled>Chọn loại sản phẩm</option>
+                  {Array.isArray(categories) && categories.length > 0 ? (
+                    categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.categoryName}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Không có loại sản phẩm</option>
+                  )}
+                </select>
               </div>
 
               <div className="product-size">
                 <label className="label-size">Kích thước sản phẩm</label>
                 <div className="item__size">
                   <SizeComponent
-                    isSelected={product.productSize === "15cm"}
+                    isSelected={product.productSize}
                     onClick={() =>
-                      setProduct({ ...product, productSize: "15cm" })
+                      setProduct({ ...product, productSize: product.productSize})
                     }
                   >
-                    15cm
+                    {product.productSize}
                   </SizeComponent>
-                  <SizeComponent
-                    isSelected={product.productSize === "20cm"}
-                    onClick={() =>
-                      setProduct({ ...product, productSize: "20cm" })
-                    }
-                  >
-                    20cm
-                  </SizeComponent>
-                  <SizeComponent
-                    isSelected={product.productSize === "25cm"}
-                    onClick={() =>
-                      setProduct({ ...product, productSize: "25cm" })
-                    }
-                  >
-                    25cm
-                  </SizeComponent>
+                 
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="30"
@@ -189,8 +247,8 @@ const UpdateProductPage = () => {
         {/* submit */}
         <div className="btn-submit">
           <ButtonComponent onClick={handleSubmit}>Lưu</ButtonComponent>
-          <ButtonComponent>Xóa</ButtonComponent>
-          <ButtonComponent>Thoát</ButtonComponent>
+          <ButtonComponent onClick={() => handleDelete(product.productId, product.productImage)}>Xóa</ButtonComponent>
+          <ButtonComponent onClick={()=> navigate("/admin/products")}>Thoát</ButtonComponent>
         </div>
       </div>
     </div>

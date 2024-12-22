@@ -96,14 +96,39 @@ export const getAllproduct = async (access_token) => {
   }
 };
 
-export const updateproduct = async (data) => {
+export const updateproduct = async (id) => {
   try {
     const res = await axios.post(
-      `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product`,
-      data,
+      `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/${id}`,
+      
+      {
+        headers: {
+          "Content-Type": "multipart/form-data" ,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        // product: error.response.data?.product || "ERR",
+        message: error.response.data?.message || "Đã xảy ra lỗi.",
+      };
+    } else {
+      throw { product: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};
+
+export const deleteProduct = async (productId,access_token) => {
+  try {
+    const res = await axios.delete(
+      `${process.env.REACT_APP_API_URL_BACKEND}/product/delete-product/${productId}`,
+      
       {
         headers: {
           "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
         },
       }
     );
