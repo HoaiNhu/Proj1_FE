@@ -77,7 +77,7 @@ const ProductPageAdmin = () => {
 
 
   // Fetch danh sách sản phẩm khi component được mount
-  const fetchProducts = async (page = 0, limit = 9) => {
+  const fetchProducts = async (page = 0, limit) => {
     try {
 
       const response = await fetch(`http://localhost:3001/api/product/get-all-product?page=${page}&limit=${limit}`, {
@@ -135,7 +135,7 @@ const ProductPageAdmin = () => {
           <h1 className="productadmin__title">SẢN PHẨM</h1>
         </div>
         <div style={{ marginLeft: 1222 }}>
-          <AddBtn />
+          <AddBtn path={"/admin/add-product"} />
         </div>
         {/* productadmin bot */}
         <div className="productadmin__bot">
@@ -190,7 +190,7 @@ const ProductPageAdmin = () => {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={(page) => fetchProducts(page, 9)}
+            onPageChange={(page) => fetchProducts(page, 15)}
           />
         </div>
       </div>

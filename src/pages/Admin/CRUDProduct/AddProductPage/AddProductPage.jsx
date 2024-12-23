@@ -8,7 +8,10 @@ import { createProduct } from "../../../../services/productServices";
 import { useMutationHook } from "../../../../hooks/useMutationHook";
 import * as productService from "../../../../services/productServices";
 import Loading from "../../../../components/LoadingComponent/Loading";
+import { useNavigate } from "react-router-dom";
+
 const AddProductPage = () => {
+  const navigate= useNavigate();
   const accessToken = localStorage.getItem("access_token");
   const [stateproduct, setstateProduct] = useState({
     productName: "",
@@ -119,7 +122,8 @@ const AddProductPage = () => {
   );
   const { data, isLoading, isSuccess, isError } = mutation;
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     console.log("state", stateproduct)
     const formData = new FormData();
     formData.append("productName", stateproduct.productName);
@@ -301,7 +305,7 @@ const AddProductPage = () => {
 
         <div className="btn-submit">
           <ButtonComponent onClick={handleSubmit}>Thêm</ButtonComponent>
-          <ButtonComponent>Thoát</ButtonComponent>
+          <ButtonComponent onClick={()=> navigate("/admin/products")}>Thoát</ButtonComponent>
         </div>
 
       </div>

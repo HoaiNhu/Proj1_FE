@@ -4,17 +4,17 @@ import { data } from "jquery";
 
 export const axiosJWT = axios.create();
 
-// export const createproduct = async (data) => {
-//   const res = await axios.post(`${process.env.REACT_APP_API_URL_BACKEND}/product/create-product`, data)
+// export const createnews = async (data) => {
+//   const res = await axios.post(`${process.env.REACT_APP_API_URL_BACKEND}/news/create-news`, data)
   
 //   return res.data
 // };
 // 
-export const createProduct = async (data, access_token) => {
+export const createNews = async (data, access_token) => {
   console.log("DATA", data)
   try {
     const res = await axios.post(
-      `${process.env.REACT_APP_API_URL_BACKEND}/product/create-product`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/news/create-news`,
       data,
       {
         headers: {
@@ -42,10 +42,10 @@ export const createProduct = async (data, access_token) => {
 
 
 
-export const getDetailsproduct = async (id, access_token) => {
+export const getDetailsNews = async (id, access_token) => {
   try {
     const res = await axiosJWT.get(
-      `${process.env.REACT_APP_API_URL_BACKEND}/product/get-detail-product/${id}`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/news/get-detail-news/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -59,20 +59,20 @@ export const getDetailsproduct = async (id, access_token) => {
     if (error.response) {
       // API trả về response
       throw {
-        // product: error.response.data?.product || "ERR",
+        // news: error.response.data?.news || "ERR",
         message: error.response.data?.message || "Đã xảy ra lỗi.",
       };
     } else {
       // Lỗi không có response (ví dụ lỗi mạng)
-      throw { product: 500, message: "Không thể kết nối đến máy chủ." };
+      throw { news: 500, message: "Không thể kết nối đến máy chủ." };
     }
   }
 };
 
-export const getAllproduct = async (access_token) => {
+export const getAllNews = async (access_token) => {
   try {
     const res = await axiosJWT.get(
-      `${process.env.REACT_APP_API_URL_BACKEND}/product/get-all-product`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/news/get-all-news`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -86,28 +86,24 @@ export const getAllproduct = async (access_token) => {
     if (error.response) {
       // API trả về response
       throw {
-        // product: error.response.data?.product || "ERR",
+        // news: error.response.data?.news || "ERR",
         message: error.response.data?.message || "Đã xảy ra lỗi.",
       };
     } else {
       // Lỗi không có response (ví dụ lỗi mạng)
-      throw { product: 500, message: "Không thể kết nối đến máy chủ." };
+      throw { news: 500, message: "Không thể kết nối đến máy chủ." };
     }
   }
 };
 
-export const updateproduct = async (id, access_token, data) => {
+export const updateNews = async (id, access_token, data) => {
   try {
-    for (let pair of data.entries()) {
-      console.log("form",`${pair[0]}: ${pair[1]}`);
-      
-    }
     const res = await axios.put(
-      `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/${id}`,data,
+      `${process.env.REACT_APP_API_URL_BACKEND}/news/update-news/${id}`,data,
       
       {
         headers: {
-         // "Content-Type": "multipart/form-data" ,
+          "Content-Type": "multipart/form-data" ,
           token: `Bearer ${access_token}`,
         },
       }
@@ -116,19 +112,19 @@ export const updateproduct = async (id, access_token, data) => {
   } catch (error) {
     if (error.response) {
       throw {
-        // product: error.response.data?.product || "ERR",
+        // news: error.response.data?.news || "ERR",
         message: error.response.data?.message || "Đã xảy ra lỗi.",
       };
     } else {
-      throw { product: 500, message: "Không thể kết nối đến máy chủ." };
+      throw { news: 500, message: "Không thể kết nối đến máy chủ." };
     }
   }
 };
 
-export const deleteProduct = async (productId,access_token) => {
+export const deleteNews = async (newsId,access_token) => {
   try {
     const res = await axios.delete(
-      `${process.env.REACT_APP_API_URL_BACKEND}/product/delete-product/${productId}`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/news/delete-news/${newsId}`,
       
       {
         headers: {
@@ -141,11 +137,11 @@ export const deleteProduct = async (productId,access_token) => {
   } catch (error) {
     if (error.response) {
       throw {
-        // product: error.response.data?.product || "ERR",
+        // news: error.response.data?.news || "ERR",
         message: error.response.data?.message || "Đã xảy ra lỗi.",
       };
     } else {
-      throw { product: 500, message: "Không thể kết nối đến máy chủ." };
+      throw { news: 500, message: "Không thể kết nối đến máy chủ." };
     }
   }
 };

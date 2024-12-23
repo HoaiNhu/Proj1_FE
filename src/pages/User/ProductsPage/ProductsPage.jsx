@@ -11,6 +11,8 @@ const ProductsPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null); // Lưu ID sản phẩm cần xóa
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
+  const [totalPages, setTotalPages] = useState(0);   // Tổng số trang
   //======
 
   useEffect(() => {
@@ -47,27 +49,31 @@ const ProductsPage = () => {
   }, []);
 
   // Fetch danh sách sản phẩm khi component được mount
-  const fetchProducts = async () => {
+  const fetchProducts = async (page = 0, limit = 9,  filter = {}) => {
     try {
-      const response = await fetch(
-        "http://localhost:3001/api/product/get-all-product",
-        {
-          method: "GET", // Phương thức GET để lấy danh sách category
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch categories");
-      }
+
+        // Xây dựng query string từ filter và các tham số khác
+    const queryParams = new URLSearchParams({
+      page,
+      limit,
+      ...filter, // Thêm các điều kiện lọc vào query
+    }).toString();
+      const response = await fetch(`http://localhost:3001/api/product/get-all-product?${queryParams}`, {
+        method: "GET", // Phương thức GET để lấy danh sách category
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch products");
       }
 
       const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
+      console.log("Products:", data.data);
+      setCurrentPage(page);  // Cập nhật trang hiện tại
+      setTotalPages(Math.ceil(data.total / limit));  // Tính tổng số trang
 
-      // Kiểm tra và gán mảng categories từ data.data
+      // Kiểm tra và gán mảng products từ data.data
       if (Array.isArray(data.data)) {
         setProducts(data.data); // Lưu danh sách category vào state
       } else {
@@ -76,15 +82,37 @@ const ProductsPage = () => {
     } catch (error) {
       console.error("Error fetching products:", error);
     }
+  };
+   //Phan trang
+   const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+    const pages = Array.from({ length: totalPages }, (_, index) => index);
 
-    // const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-    console.log("Categories data:", categories);
+    return (
+      <div>
+        {pages.map((page) => (
+          <button className="pageNumber"
+            key={page}
+            onClick={() => onPageChange(page)}
+            style={{ fontWeight: currentPage === page ? "bold" : "normal" }}
+          >
+            {page + 1}
+          </button>
+        ))}
+      </div>
+    );
   };
 
-  // Hàm xử lý xóa sản phẩm
+
+  // Hàm xử lý reloadProduct
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  //Ham loc product theo category 
+  const handleCategoryClick = (categoryId) => {
+    fetchProducts(0, 9, { productCategory: categoryId });
+  };
+  
 
   return (
     <div>
@@ -101,7 +129,8 @@ const ProductsPage = () => {
             <div className="side-menu__category" onChange={useEffect}>
               {Array.isArray(categories) && categories.length > 0 ? (
                 categories.map((category) => (
-                  <SideMenuComponent key={category._id} value={category._id}>
+                  <SideMenuComponent key={category._id} value={category._id}
+                  onClick={() => handleCategoryClick(category._id)}>
                     {category.categoryName}
                   </SideMenuComponent>
                 ))
@@ -148,6 +177,13 @@ const ProductsPage = () => {
               Xem thêm
             </ButtonComponent> */}
           </div>
+        </div>
+        <div className="PageNumberHolder">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => fetchProducts(page, 9)}
+          />
         </div>
       </div>
     </div>

@@ -7,6 +7,8 @@ import ButtonComponent from "../../../../components/ButtonComponent/ButtonCompon
 import SizeComponent from "../../../../components/SizeComponent/SizeComponent";
 import { useNavigate } from "react-router-dom";
 import * as productService from "../../../../services/productServices";
+import { useMutationHook } from "../../../../hooks/useMutationHook";
+
 
 const UpdateProductPage = () => {
     const navigate = useNavigate();
@@ -78,26 +80,68 @@ const UpdateProductPage = () => {
     document.getElementById("imageInput").click(); // Kích hoạt input chọn file
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Product data:", product);
-    // Thực hiện logic gửi sản phẩm (ví dụ: gọi API)
+  
+   const mutation = useMutationHook(
+      async (data) => {
+        for (let pair of data.formData.entries()) {
+          console.log("form",`${pair[0]}: ${pair[1]}`);
+        }
+        console.log("DATA", data)
+        const response = await productService.updateproduct( data.id,accessToken,data.formData);
+        console.log("RESULT", response);
+        try {
+          const result = await response;
+         
+          if (result.status === "OK") {
+            alert("Cập nhật thành công!");
+            navigate('/admin/products')
+            // Reset form
+            //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
+          } else {
+            alert(`Thêm bánh thất bại: ${result.message}`);
+          }
+        } catch (error) {
+          alert("Đã xảy ra lỗi khi thêm bánh!");
+          console.error(error);
+        }
+        return response;
+      }
+    );
+    const { data, isLoading, isSuccess, isError } = mutation;
+  
+    const handleSubmit = () => {
+    
+      console.log("state", product)
+      const formData = new FormData();
+      formData.append("productName", product.productName);
+      formData.append("productPrice", product.productPrice);
+      formData.append("productCategory", product.productCategory);
+      formData.append("productSize", product.productSize);
+      formData.append("productDescription", product.productDescription);
+      formData.append("productImage", product.productImage);
+      // Kiểm tra FormData
+     
+      const data = { id: product.productId, formData: formData}
+  
+      const response = mutation.mutate(data)
+    };
+    
 
-  };
 
   //Xoa
   
-  const handleDelete = async (productId, productImage) => {
+  const handleDelete = async (productId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this product?");
 
     if (confirmDelete) {
       try {
         // Call the API to delete the product and image
         const response = await productService.deleteProduct(productId,accessToken)
-  
-        if (response.status === 200) {
+        console.log("RESPONSE", response)
+        if (response.status="OK") {
           alert("Product deleted successfully!");
-          navigate("/admin/products"); // Redirect to product list page
+         // Redirect to product list page
+         navigate("/admin/products")
         }
       } catch (error) {
         console.error("Error deleting product:", error);
@@ -134,6 +178,7 @@ const UpdateProductPage = () => {
                   id="imageInput"
                   className="product__image"
                   type="file"
+                  name="productImage"
                   onChange={handleImageChange}
                   accept="image/*"
                   style={{ display: "none" }}
@@ -160,20 +205,18 @@ const UpdateProductPage = () => {
               <div className="col product-name">
                 <label className="label-name">Tên sản phẩm</label>
                 <FormComponent
+                name="productName"
                   value={product.productName}
-                  onChange={(e) =>
-                    setProduct({ ...product, productName: e.target.value })
-                  }
+                  onChange={handleInputChange}
                 ></FormComponent>
               </div>
 
               <div className="product-price">
                 <label className="label-price">Giá sản phẩm</label>
                 <FormComponent
+                name="productPrice"
                   value={product.productPrice}
-                  onChange={(e) =>
-                    setProduct({ ...product, productPrice: e.target.value })
-                  }
+                  onChange={handleInputChange}
                 ></FormComponent>
               </div>
 
@@ -204,10 +247,10 @@ const UpdateProductPage = () => {
                 <label className="label-size">Kích thước sản phẩm</label>
                 <div className="item__size">
                   <SizeComponent
+                   name="productSize"
+                   value={product.productSize}
                     isSelected={product.productSize}
-                    onClick={() =>
-                      setProduct({ ...product, productSize: product.productSize})
-                    }
+                    onChange={handleInputChange}
                   >
                     {product.productSize}
                   </SizeComponent>
@@ -234,6 +277,7 @@ const UpdateProductPage = () => {
           <div className="info__bot">
             <label className="label-description">Mô Tả</label>
             <textarea
+            name="productDescription"
               className="product-description"
               value={product.productDescription}
               onChange={(e) =>
@@ -247,7 +291,7 @@ const UpdateProductPage = () => {
         {/* submit */}
         <div className="btn-submit">
           <ButtonComponent onClick={handleSubmit}>Lưu</ButtonComponent>
-          <ButtonComponent onClick={() => handleDelete(product.productId, product.productImage)}>Xóa</ButtonComponent>
+          <ButtonComponent onClick={() => handleDelete(product.productId)}>Xóa</ButtonComponent>
           <ButtonComponent onClick={()=> navigate("/admin/products")}>Thoát</ButtonComponent>
         </div>
       </div>
