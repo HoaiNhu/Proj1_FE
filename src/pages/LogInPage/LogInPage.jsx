@@ -51,7 +51,6 @@ const LogInPage = () => {
       localStorage.setItem("access_token", data?.access_token);
       // console.log("data?.access_token", data?.access_token);
 
-
       if (data?.access_token) {
         const decoded = jwtDecode(data?.access_token);
         // console.log("decoded", decoded);
@@ -86,13 +85,12 @@ const LogInPage = () => {
     dispatch(updateUser({ ...res?.data, access_token: token }));
   };
 
-  const handleChange = (e) => {
+  const handleChange = ({ name, value }) => {
     setFormData((prevData) => ({
       ...prevData,
-      [e.target.name]: e.target.value,
+      [name]: value, // Cập nhật theo name và value
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setShowLoading(true);
@@ -123,7 +121,7 @@ const LogInPage = () => {
           {!showLoading && (
             <form onSubmit={handleSubmit}>
               <FormComponent
-                id="emailInput"
+                // id="emailInput"
                 name="userEmail"
                 label="Email"
                 type="email"
@@ -132,7 +130,7 @@ const LogInPage = () => {
                 onChange={handleChange}
               />
               <FormComponent
-                id="passwordInput"
+                // id="passwordInput"
                 name="userPassword"
                 label="Password"
                 type="password"

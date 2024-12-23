@@ -33,25 +33,24 @@
   transform: rotate(180deg); /* Xoay icon khi mở dropdown */
 }
 
-/* .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    list-style: none;
-    margin: 0;
-    z-index: 100;
-  }
-  
-  .dropdown-item {
-    padding: 8px 20px;
-    cursor: pointer;
-  }
-  
-  .dropdown-item:hover {
-    background-color: #f1f1f1;
-  } */
+.dropdown-menu {
+  position: absolute; /* Để menu dropdown nằm trên các phần tử khác */
+  top: 100%; /* Đặt menu ngay dưới nút */
+  left: 0; /* Căn trái */
+  background-color: white; /* Màu nền cho menu */
+  border: 1px solid #ccc; /* Đường viền */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Đổ bóng */
+  z-index: 1000; /* Đảm bảo menu nằm trên các phần tử khác */
+  width: 100%; /* Chiều rộng menu */
+  max-height: 200px; /* Giới hạn chiều cao */
+  overflow-y: auto; /* Thêm thanh cuộn nếu cần */
+}
+
+.dropdown-item {
+  padding: 8px 20px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}

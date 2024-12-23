@@ -208,3 +208,14 @@ export const deleteUser = async (id, access_token) => {
     }
   }
 };
+
+export const fetchCities = async () => {
+  try {
+    const res = await axios.get("https://provinces.open-api.vn/api/?depth=2");
+    // console.log("res", res.data);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching cities:", error);
+    return [];
+  }
+};
