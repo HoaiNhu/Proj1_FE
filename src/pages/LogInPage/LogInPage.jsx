@@ -85,12 +85,27 @@ const LogInPage = () => {
     dispatch(updateUser({ ...res?.data, access_token: token }));
   };
 
-  const handleChange = ({ name, value }) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value, // Cập nhật theo name và value
-    }));
+  // const handleChange = ({ name, value }) => {
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value, // Cập nhật theo name và value
+  //   }));
+  // };
+
+  const handleUserEmailChange = (e) => {
+    const value = e.target.value;
+    if (typeof value === "string" && value.trim().length >= 0) {
+      setFormData((prevData) => ({ ...prevData, userEmail: value }));
+    }
   };
+
+  const handleUserPasswordChange = (e) => {
+    const value = e.target.value;
+    if (typeof value === "string" && value.trim().length >= 0) {
+      setFormData((prevData) => ({ ...prevData, userPassword: value }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setShowLoading(true);
@@ -127,7 +142,8 @@ const LogInPage = () => {
                 type="email"
                 placeholder="Nhập email"
                 value={formData.userEmail}
-                onChange={handleChange}
+                // onChange={handleChange}
+                onChange={handleUserEmailChange}
               />
               <FormComponent
                 // id="passwordInput"
@@ -136,7 +152,8 @@ const LogInPage = () => {
                 type="password"
                 placeholder="Nhập mật khẩu"
                 value={formData.userPassword}
-                onChange={handleChange}
+                // onChange={handleChange}
+                onChange={handleUserPasswordChange}
               />
               {/* hiện thông báo lỗi */}
               {/* {errorMessage && (

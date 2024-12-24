@@ -161,7 +161,7 @@ function UserInfoPage() {
     }
   };
 
-  const handleUserNameChange = (e) => {
+  const handleUserNameChange = (e) => { 
     const value = e.target.value;
     if (typeof value === "string" && value.trim().length > 0) {
       setUserName(value);
@@ -187,7 +187,7 @@ function UserInfoPage() {
 
   const handleUserAddressChange = (e) => {
     const value = e.target.value;
-    if (typeof value === "string" && value.trim().length > 0) {
+    if (typeof value === "string" && value.trim().length >= 0) {
       setAddress(value);
     }
   };

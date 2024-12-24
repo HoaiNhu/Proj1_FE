@@ -138,7 +138,7 @@
   margin-top: 20px;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 20px !important;
 }
 .HeaderInfor {
   margin-left: 104px;
@@ -156,10 +156,10 @@
   width: 200px;
   margin-left: -30px;
 }
-
+/* 
 .QuantityBtn {
   margin-left: -30px;
-}
+} */
 .Money {
   width: 200px;
   margin-left: -20px;

@@ -57,7 +57,6 @@
   width: 1200px;
   align-items: center;
   gap: 55px;
-  margin-top: 5px;
   padding: 20px;
   background: var(--White, #fff);
   box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
@@ -79,12 +78,6 @@
   margin-left: 20px;
 }
 
-.HeaderHolder {
-  display: flex;
-  margin-bottom: 20px;
-  margin-top: 20px;
-}
-
 .HeaderInfor {
   margin-left: 85px;
 }
@@ -103,7 +96,7 @@
 
 .PriceProduct {
   width: 200px;
-  margin-left: 10px;
+  /* margin-left: 10px; */
 }
 
 .ProductInfor {
@@ -121,10 +114,7 @@
   /* Font_Text_Big */
   font-family: Poppins;
   font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  width: 100px;
+  width: auto;
 }
 
 .thanhtien {
@@ -312,18 +302,16 @@
   font-size: 16px;
   color: #3a060e;
   border: none;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .chinhsach {
   color: #3a060e;
 
   /* Font_Text */
-  font-family: Poppins;
-  font-size: 16px;
+  font-size: 1.6rem;
   font-style: italic;
   font-weight: 400;
-  line-height: normal;
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-decoration-skip-ink: auto;
@@ -360,4 +348,92 @@
   font-weight: 600;
   line-height: 28px; /* 175% */
   margin-left: 66px;
+}
+
+/* General Table Styling */
+.product_area {
+  width: 1200px;
+  margin: 30px auto;
+  border-radius: 20px;
+  background: var(--White, #fff);
+  box-shadow: 0px 0px 4px rgba(32, 60, 22, 0.25);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.HeaderHolder {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.ProductInforHear,
+.PriceHeader,
+.QuantityHeader,
+.MoneyHeader {
+  color: #3a060e;
+  font-family: Poppins;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.LineProduct {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  /* border-radius: 0 0 20px 20px; */
+}
+
+.ProductInfor {
+  flex: 2;
+  margin-left: 10px;
+}
+
+.PriceProduct,
+.QuantityBtn,
+.Money {
+  flex: 1;
+  text-align: center;
+}
+
+.Price {
+  color: #3a060e;
+  font-family: Poppins;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.MoneyProduct {
+  color: #3a060e;
+  font-family: Poppins;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+tfoot tr {
+  background: #f9f9f9;
+}
+
+tfoot td {
+  padding: 10px 20px;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--brown100);
+}
+
+.total-price {
+  color: var(--brown100);
+  background-color: var(--green100);
+  border-radius: 0 0 20px 20px;
+}
+
+.text-end {
+  font-weight: 600;
+  font-size: 2rem;
 }
