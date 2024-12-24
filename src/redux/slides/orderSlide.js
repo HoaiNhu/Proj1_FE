@@ -41,7 +41,9 @@ const orderSlice = createSlice({
 
     // Xóa đơn hàng
     removeOrder: (state, action) => {
-      state.orders = state.orders.filter((order) => order._id !== action.payload);
+      state.orders = state.orders.filter(
+        (order) => order._id !== action.payload
+      );
       saveToLocalStorage(state); // Lưu vào localStorage
     },
 
@@ -56,12 +58,29 @@ const orderSlice = createSlice({
       state.orders = action.payload;
       saveToLocalStorage(state); // Lưu vào localStorage
     },
+
+    setOrderDetails: (state, action) => {
+      state.selectedProducts = action.payload.selectedProducts || [];
+      state.shippingAddress = action.payload.shippingAddress || {};
+      state.totalPrice = action.payload.totalPrice || 0;
+    },
+    clearOrder: (state) => {
+      state.selectedProducts = [];
+      state.shippingAddress = {};
+      state.totalPrice = 0;
+    },
   },
 });
 
 // Xuất các action
-export const { addOrder, updateOrderStatus, removeOrder, clearOrders, setOrders } =
-  orderSlice.actions;
+export const {
+  addOrder,
+  updateOrderStatus,
+  removeOrder,
+  clearOrders,
+  setOrders,
+  setOrderDetails,
+} = orderSlice.actions;
 
 // Xuất reducer
 export default orderSlice.reducer;
