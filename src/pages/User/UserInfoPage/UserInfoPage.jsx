@@ -15,12 +15,11 @@ import Loading from "../../../components/LoadingComponent/Loading";
 import Message from "../../../components/MessageComponent/Message";
 import { getBase64 } from "../../../utils";
 
-Modal.setAppElement("#root");
 
 function UserInfoPage() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  // console.log("user", user);
+  console.log("user", user);
 
   const [isEditing, setIsEditing] = useState(false);
   const [showLoading, setShowLoading] = useState(false); // Thêm trạng thái riêng
@@ -34,7 +33,7 @@ function UserInfoPage() {
   const [userAddress, setUserAddress] = useState(user?.userAddress);
   const [userImage, setUserImage] = useState(user?.userImage);
 
-  const [address, setAddress] = useState([]);
+  // const [address, setAddress] = useState(user?.userAddress);
   const [wards, setWards] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [cities, setCities] = useState([]);
@@ -113,23 +112,22 @@ function UserInfoPage() {
 
   const handleDistrictChange = (districtCode) => {
     setSelectedDistrict(districtCode);
-  
+
     const selectedDistrict = districts.find((d) => d.value === districtCode);
     console.log("Selected District:", selectedDistrict);
-  
+
     const newWards = selectedDistrict?.wards || [];
     console.log("New Wards:", newWards);
-  
+
     setWards(
       newWards.map((w) => ({
         label: w.name,
         value: w.code,
       }))
     );
-  
+
     setSelectedWard("");
   };
-  
 
   const handleWardChange = (wardCode) => {
     setSelectedWard(wardCode);
@@ -161,7 +159,7 @@ function UserInfoPage() {
     }
   };
 
-  const handleUserNameChange = (e) => { 
+  const handleUserNameChange = (e) => {
     const value = e.target.value;
     if (typeof value === "string" && value.trim().length > 0) {
       setUserName(value);
@@ -188,7 +186,7 @@ function UserInfoPage() {
   const handleUserAddressChange = (e) => {
     const value = e.target.value;
     if (typeof value === "string" && value.trim().length >= 0) {
-      setAddress(value);
+      setUserAddress(value);
     }
   };
 
@@ -255,12 +253,10 @@ function UserInfoPage() {
       userName,
       userPhone,
       userEmail,
-      userAddress: {
-        address: address,
-        city: selectedCity,
-        district: selectedDistrict,
-        ward: selectedWard,
-      },
+      userAddress,
+      userCity: selectedCity,
+      userDistrict: selectedDistrict,
+      userWard: selectedWard,
       userImage,
       access_token: user?.access_token,
     };
@@ -417,7 +413,7 @@ function UserInfoPage() {
                   <label>Địa chỉ</label>
                   <FormComponent
                     className="address"
-                    value={userAddress.address}
+                    value={userAddress}
                     style={{ width: "100%" }}
                     onChange={handleUserAddressChange}
                   ></FormComponent>

@@ -6,11 +6,16 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import BackIconComponent from "../../../components/BackIconComponent/BackIconComponent";
 import FormComponent from "../../../components/FormComponent/FormComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useMutationHook } from "../../../hooks/useMutationHook";
+import * as OrderService from "../../../services/OrderService";
+
 const OrderInformationPage = () => {
   const location = useLocation();
   const selectedProducts = location.state?.selectedProductDetails || [];
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const mutation = useMutationHook((data) => OrderService.createOrder(data));
   const shippingPrice = 30000; // Phí vận chuyển cố định
 
   const user = useSelector((state) => state.user); // Lấy thông tin user từ Redux
@@ -41,6 +46,7 @@ const OrderInformationPage = () => {
         totalPrice,
       },
     });
+    mutation.mutate(shippingAddress, user, selectedProducts);
   };
 
   const [shippingAddress, setShippingAddress] = useState({
@@ -71,7 +77,7 @@ const OrderInformationPage = () => {
     if (isLoggedIn) {
       setShippingAddress((prev) => ({
         ...prev,
-        familyName: user.familyName || "",
+        family: user.familyName || "",
         name: user.userName || "",
         address: user.userAddress || "",
         phone: user.userPhone || "",
@@ -79,23 +85,12 @@ const OrderInformationPage = () => {
     }
   }, [isLoggedIn, user]);
 
-  // Hàm cập nhật địa chỉ giao hàng
-  // const handleAddressChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setShippingAddress((prev) => ({ ...prev, [name]: value }));
-  // };
-
   const handleInputChange = (field) => (e) => {
     const value = e.target.value;
     if (typeof value === "string" && value.trim().length >= 0) {
       setShippingAddress((prev) => ({ ...prev, [field]: value }));
     }
   };
-
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target; // Lấy tên và giá trị từ input
-  //   setShippingAddress((prev) => ({ ...prev, [name]: value })); // Cập nhật trạng thái
-  // };
 
   return (
     <div className="container-xl cart-container">
@@ -247,9 +242,7 @@ const OrderInformationPage = () => {
               type="text"
               placeholder="Nhập địa chỉ giao hàng: Số nhà, hẻm, đường,..."
               style={{ width: "100%" }}
-              value={
-                shippingAddress.address?.address || user.userAddress?.address
-              }
+              value={shippingAddress.address || user.userAddress}
               onChange={handleInputChange("address")}
             ></FormComponent>
           </div>
