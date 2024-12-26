@@ -9,7 +9,7 @@ const SearchBoxComponent = () => {
       <input
         className={styles.search__component}
         type="search"
-        placeholder="Tìm kiếm"
+        placeholder="Nhập tên sản phẩm..."
         aria-label="Search"
       ></input>
     </div>

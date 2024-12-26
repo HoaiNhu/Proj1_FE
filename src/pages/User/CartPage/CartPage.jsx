@@ -24,6 +24,9 @@ const CartPage = () => {
   // console.log("products", products);
 
   const calculatePrice = (price) => {
+    if (typeof price !== 'string') {
+      price = String(price); // Nếu price không phải là chuỗi, chuyển nó thành chuỗi
+    }
     return parseFloat(price.replace(/[^0-9.-]+/g, ""));
   };
 

@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slides/cartSlide";
 import { useState } from "react";
 
-const CardProduct = ({ id, type, img, title, price }) => {
+const CardProduct = ({ id, type, img, title, price,onClick}) => {
   const dispatch = useDispatch();
 
   //Hiệu ứng sản phẩm bay dô vỏ hàng
@@ -64,6 +64,7 @@ const CardProduct = ({ id, type, img, title, price }) => {
       className={type === "primary" ? styles.primary : styles.secondary}
     >
       <Card.Img
+       onClick={() => onClick(id)}
         src={img}
         alt={title}
         style={{

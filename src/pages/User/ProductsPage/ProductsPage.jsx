@@ -4,6 +4,7 @@ import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuCom
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import img1 from "../../../assets/img/hero_3.jpg";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
+import { useNavigate } from "react-router-dom";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
@@ -13,8 +14,10 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0);   // Tổng số trang
-  //======
+  const navigate = useNavigate();
+  
 
+  //=========Danh muc san pham=======
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -49,15 +52,15 @@ const ProductsPage = () => {
   }, []);
 
   // Fetch danh sách sản phẩm khi component được mount
-  const fetchProducts = async (page = 0, limit = 9,  filter = {}) => {
+  const fetchProducts = async (page = 0, limit = 9, filter = {}) => {
     try {
 
-        // Xây dựng query string từ filter và các tham số khác
-    const queryParams = new URLSearchParams({
-      page,
-      limit,
-      ...filter, // Thêm các điều kiện lọc vào query
-    }).toString();
+      // Xây dựng query string từ filter và các tham số khác
+      const queryParams = new URLSearchParams({
+        page,
+        limit,
+        ...filter, // Thêm các điều kiện lọc vào query
+      }).toString();
       const response = await fetch(`http://localhost:3001/api/product/get-all-product?${queryParams}`, {
         method: "GET", // Phương thức GET để lấy danh sách category
         headers: {
@@ -83,8 +86,8 @@ const ProductsPage = () => {
       console.error("Error fetching products:", error);
     }
   };
-   //Phan trang
-   const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  //Phan trang
+  const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pages = Array.from({ length: totalPages }, (_, index) => index);
 
     return (
@@ -112,7 +115,21 @@ const ProductsPage = () => {
   const handleCategoryClick = (categoryId) => {
     fetchProducts(0, 9, { productCategory: categoryId });
   };
-  
+
+  const handleDetail = (productId) => {
+    const selectedProduct = products.find((product) => product._id === productId);
+
+    if (selectedProduct) {
+      const { productName, productSize, productImage, productCategory, productDescription, productPrice } = selectedProduct;
+      navigate("/view-product-detail", {
+        state: { productId, productName, productSize, productImage, productDescription, productCategory, productPrice },
+      });
+    } else {
+      alert("Product not found!");
+    }
+  };
+
+
 
   return (
     <div>
@@ -130,7 +147,7 @@ const ProductsPage = () => {
               {Array.isArray(categories) && categories.length > 0 ? (
                 categories.map((category) => (
                   <SideMenuComponent key={category._id} value={category._id}
-                  onClick={() => handleCategoryClick(category._id)}>
+                    onClick={() => handleCategoryClick(category._id)}>
                     {category.categoryName}
                   </SideMenuComponent>
                 ))
@@ -147,12 +164,13 @@ const ProductsPage = () => {
                   const imageUrl = product.productImage.startsWith("http")
                     ? product.productImage
                     : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace(
-                        "\\",
-                        "/"
-                      )}`;
+                      "\\",
+                      "/"
+                    )}`;
                   console.log("Product ID in ProductsPage:", product._id);
                   //console.log("Product image URL:", imageUrl);  // Debug URL ảnh
                   return (
+                   
                     <CardProduct
                       key={product._id} // Dùng _id làm key cho mỗi sản phẩm
                       className="col productadmin__item"
@@ -161,11 +179,9 @@ const ProductsPage = () => {
                       title={product.productName} // Hiển thị tên sản phẩm
                       price={`${product.productPrice} VND`} // Hiển thị giá sản phẩm
                       id={product._id}
-                      //description={product.productDescription} // Mô tả sản phẩm
-                      // onDelete={reloadProducts} // Gọi reloadProducts sau khi xóa sản phẩm
-                      // onUpdate={reloadProducts} // Gọi reloadProducts sau khi cập nhật sản phẩm
-                      // onDeleteRequest={handleDeleteRequest}
+                      onClick={() => handleDetail(product._id)}
                     />
+                    
                   );
                 })
               ) : (
