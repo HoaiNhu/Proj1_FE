@@ -11,3 +11,13 @@
     margin-left: -50px;
     box-shadow: none;
 }
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 3 cột */
+    gap: 20px; /* Khoảng cách giữa các CardNews */
+    margin-top: 50px;
+  }
+  
+  .news-grid-item {
+    width: 100%;
+  }

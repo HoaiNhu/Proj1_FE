@@ -106,7 +106,7 @@ const AddProductPage = () => {
       try {
         const result = await response;
         //console.log("RESKLT",result);
-        if (result.status == "OK") {
+        if (result.status === "OK") {
           alert("Thêm bánh thành công!");
           // Reset form
           //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });

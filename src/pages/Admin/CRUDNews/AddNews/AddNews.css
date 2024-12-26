@@ -112,6 +112,14 @@
     margin-left: 48px;
 }
 
+.news__image {
+    width: 36rem;
+    height: 40rem;
+    box-shadow: 0 0 4px 0 var(--shadow);
+    border-radius: 15px;
+    background: var(--grey9);
+    cursor: pointer;
+  }
 .CustomBtn-Exit {
     display: flex;
     width: 147px;

@@ -2,7 +2,7 @@ import Card from 'react-bootstrap/Card';
 import './CardNews.css'
 import LinesEllipsis from 'react-lines-ellipsis';
 import { CardSubtitle } from 'react-bootstrap';
-const CardNews = ({ img, title, detail }) => {
+const CardNews = ({ img, title, detail, id }) => {
   return (
     <Card className='CardNews'
       style={{

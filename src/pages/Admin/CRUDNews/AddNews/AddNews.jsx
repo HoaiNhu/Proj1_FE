@@ -1,21 +1,76 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './AddNews.css'
 import ButtonComponent from '../../../../components/ButtonComponent/ButtonComponent';
+import * as NewsService from '../../../../services/NewsService'
+import Loading from "../../../../components/LoadingComponent/Loading";
+import { useNavigate } from "react-router-dom";
+import { useMutationHook } from "../../../../hooks/useMutationHook";
+
 const AddNews = () => {
-    const [text, setText] = useState("");
+    const [previewImage, setPreviewImage] = useState(null); // State để lưu URL của ảnh preview
+    const accessToken = localStorage.getItem("access_token");
+    const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        setText(e.target.value);
-    };
-    const handleImageChange = (e) => {
-        setNews({ ...product, image: e.target.files[0] });
-    };
-
-    const [product, setNews] = useState({
-        newTitle: "",
+    const [stateNews, setstateNews] = useState({
+        newsTitle: "",
         newsContent: "",
-        newsImage: null,
+        newsImage: null
     });
+
+    //Thay doi content, title
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setstateNews({ ...stateNews, [e.target.name]: e.target.value });
+    };
+    //thay doi anh
+    const handleChangeImg = (event) => {
+        const file = event.target.files[0];
+        setstateNews({ ...stateNews, newsImage: file })
+        const previewUrl = URL.createObjectURL(file); // Tạo URL preview từ file
+        setPreviewImage(previewUrl); // Cập nhật state previewImage
+    };
+
+    const mutation = useMutationHook(
+        async (data) => {
+
+            const response = await NewsService.createNews(data, accessToken);
+            console.log("RESKLT", response);
+            try {
+                const result = await response;
+                //console.log("RESKLT",result);
+                if (result.status === "OK") {
+                    alert("Thêm tin tuc thành công!");
+                    // Reset form
+                    //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
+                } else {
+                    alert(`Thêm tin tuc thất bại: ${result.message}`);
+                }
+            } catch (error) {
+                alert("Đã xảy ra lỗi khi thêm bánh!");
+                console.error(error);
+            }
+            return response;
+        }
+    );
+    const { data, isLoading, isSuccess, isError } = mutation;
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("state", stateNews)
+        const formData = new FormData();
+        formData.append("newsTitle", stateNews.newsTitle);
+        formData.append("newsContent", stateNews.newsContent);
+        formData.append("newsImage", stateNews.newsImage);
+
+        // Kiểm tra FormData
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1]}`);
+        }
+
+        const response = mutation.mutate(formData)
+        navigate('/admin/news')
+    };
+
     return (
         <div className='container-xl'>
             <h1 className='AddNewsTitle'>Thêm tin tức</h1>
@@ -33,8 +88,15 @@ const AddNews = () => {
                 {/* =========LEFT======== */}
                 <div className='left-area'>
                     <div className='left-area-1'>
-                        <input placeholder='Nhập tiêu đề tin...'
-                            className='input-1'></input>
+                        <input
+                            style={{ width: "36rem", height: "6rem" }}
+                            className="input-1"
+                            placeholder="Nhập tiêu đề tin..."
+                            name="newsTitle"
+                            value={stateNews.newsTitle}
+                            onChange={handleInputChange}
+                            required
+                        />
                     </div>
                     <div className='left-area-2'>
                         <p className='contentP'>Nội dung tin:</p>
@@ -43,10 +105,11 @@ const AddNews = () => {
                         <textarea
                             className='input-2'
                             id="multiLineInput"
+                            name="newsContent"
                             rows="5" // Số dòng hiển thị
                             cols="30" // Số cột hiển thị
-                            value={text}
-                            onChange={handleChange}
+                            value={stateNews.newsContent}
+                            onChange={handleInputChange}
                             placeholder="Nhập nội dung tin..."
                         ></textarea>
                     </div>
@@ -54,13 +117,27 @@ const AddNews = () => {
                 {/* =========RIGHT========= */}
                 <div className="addImageNews">
                     <input
-                        className="news__image"
+                        // className="product__image"
                         type="file"
-                        onChange={handleImageChange}
+                        onChange={handleChangeImg}
                         accept="image/*"
                         required
-                    ></input>
-                    <div className="icon__add-image-news">
+                    />
+                    <div className="news__image">
+                        {previewImage && (
+                            <img
+                                src={previewImage}
+                                alt="Preview"
+                                className="product-preview"
+                                style={{
+                                    width: "36rem",
+                                    height: "40rem",
+                                    borderRadius: "15px"
+                                }}
+                            />
+                        )}
+                    </div>
+                    {/* <div className="icon__add-image-news">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="40"
@@ -73,15 +150,16 @@ const AddNews = () => {
                                 fill="#3A060E"
                             />
                         </svg>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className='Button-area-addNews'>
                 <div className='AddNewsBtn'>
-                    <ButtonComponent>Thêm tin tức</ButtonComponent>
+                    <ButtonComponent onClick={handleSubmit}>Thêm tin tức</ButtonComponent>
                 </div>
                 <div className='Exit-AddNews'>
-                    <ButtonComponent className='CustomBtn-Exit'>Thoát</ButtonComponent>
+                    <ButtonComponent className='CustomBtn-Exit'
+                        onClick={() => navigate("/admin/news")}>Thoát</ButtonComponent>
                 </div>
             </div>
         </div>
