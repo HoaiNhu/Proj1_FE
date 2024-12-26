@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ProductInfor from "../../../components/ProductInfor/ProductInfor";
 import imageProduct from "../../../assets/img/hero_3.jpg";
 import "./OrderInformation.css";
@@ -9,17 +9,27 @@ import FormComponent from "../../../components/FormComponent/FormComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutationHook } from "../../../hooks/useMutationHook";
 import * as OrderService from "../../../services/OrderService";
+import * as UserService from "../../../services/UserService";
 
 const OrderInformationPage = () => {
   const location = useLocation();
-  const selectedProducts = location.state?.selectedProductDetails || [];
+  // const selectedProducts = location.state?.selectedProductDetails || [];
+  const selectedProducts = Array.isArray(location.state?.selectedProductDetails)
+    ? location.state.selectedProductDetails
+    : [];
+  console.log("selectedProducts1", selectedProducts);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const mutation = useMutationHook((data) => OrderService.createOrder(data));
   const shippingPrice = 30000; // Phí vận chuyển cố định
 
   const user = useSelector((state) => state.user); // Lấy thông tin user từ Redux
+
   const isLoggedIn = !!user?.userEmail;
+  const [wards, setWards] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [cities, setCities] = useState([]);
 
   const handleClickBack = () => {
     navigate("/cart");
@@ -34,63 +44,143 @@ const OrderInformationPage = () => {
     //   alert("Vui lòng điền đầy đủ thông tin giao hàng.");
     //   return;
     // }
+    const orderData = {
+      orderItems: selectedProducts.map((product) => ({
+        product: product.id, // Gắn ID của sản phẩm vào trường `product`
+        quantity: product.quantity, // Số lượng
+        total:
+          parseFloat(product.price.replace(/[^0-9.-]+/g, "")) *
+          product.quantity, // Tính tổng tiền
+      })),
+      shippingAddress, // Thông tin giao hàng
+      paymentMethod: "Online Payment", // Phương thức thanh toán
+      userId: user?.id || null, // ID người dùng, nếu đăng nhập
+      deliveryDate, // Ngày giao hàng
+      deliveryTime, // Giờ giao hàng
+      orderNote, // Ghi chú đơn hàng
+      shippingPrice: 30000, // Phí vận chuyển cố định
+      status,
+      totalItemPrice,
+      totalPrice,
+    };
+
+    console.log("orderData", orderData);
+    mutation.mutate(orderData); // Gửi đến API
 
     // Điều hướng đến trang thanh toán
     navigate("/payment", {
       state: {
-        orderItems: selectedProducts,
-        shippingAddress,
-        paymentMethod: "Online Payment", // Phương thức thanh toán mặc định
+        ...orderData,
         totalItemPrice,
         shippingPrice,
         totalPrice,
       },
     });
-    mutation.mutate(shippingAddress, user, selectedProducts);
   };
 
   const [shippingAddress, setShippingAddress] = useState({
-    family: "",
-    name: "",
-    address: "",
-    ward: "",
-    district: "",
-    city: "",
-    phone: "",
-    note: "",
+    familyName: "",
+    userName: "",
+    userAddress: "",
+    userWard: "",
+    userDistrict: "",
+    userCity: "",
+    userPhone: "",
+    userEmail: "",
   });
-  console.log("selectedProducts", selectedProducts);
+  // console.log("selectedProducts", selectedProducts);
   console.log("user", user);
   console.log("shippingAddress", shippingAddress);
 
+  const [orderNote, setOrderNote] = useState(""); // Ghi chú đặt hàng
+  const [deliveryDate, setDeliveryDate] = useState(""); // Ngày giao hàng
+  const [deliveryTime, setDeliveryTime] = useState(""); // Giờ giao hàng
+  const [status, setStatus] = useState("PENDING"); // Trạng thái đơn hàng
+
   // Tổng tiền hàng
-  const totalItemPrice = selectedProducts.reduce(
-    (acc, product) =>
-      acc +
-      parseFloat(product.price.replace(/[^0-9.-]+/g, "")) * product.quantity,
-    0
+  const totalItemPrice = Array.isArray(selectedProducts)
+    ? selectedProducts.reduce((acc, product) => {
+        const price = parseFloat(product.price.replace(/[^0-9.-]+/g, ""));
+        return acc + price * product.quantity;
+      }, 0)
+    : 0;
+
+  console.log("totalItemPrice", totalItemPrice);
+
+  const totalPrice = useMemo(
+    () => totalItemPrice + shippingPrice,
+    [totalItemPrice]
   );
 
-  const totalPrice = totalItemPrice + shippingPrice; // Tổng thanh toán
+  console.log("totalPrice", totalPrice);
 
   useEffect(() => {
     if (isLoggedIn) {
       setShippingAddress((prev) => ({
         ...prev,
-        family: user.familyName || "",
-        name: user.userName || "",
-        address: user.userAddress || "",
-        phone: user.userPhone || "",
+        familyName: user.familyName || "",
+        userName: user.userName || "",
+        userAddress: user.userAddress || "",
+        userWard: user.userWard || "",
+        userDistrict: user.userDistrict || "",
+        userCity: user.userCity || "",
+        userPhone: user.userPhone || "",
+        userEmail: user.userEmail || "",
       }));
     }
   }, [isLoggedIn, user]);
-
   const handleInputChange = (field) => (e) => {
     const value = e.target.value;
     if (typeof value === "string" && value.trim().length >= 0) {
       setShippingAddress((prev) => ({ ...prev, [field]: value }));
     }
   };
+
+  useEffect(() => {
+    // Load cities
+    const fetchCities = async () => {
+      const data = await UserService.fetchCities();
+      setCities(data);
+    };
+    fetchCities();
+  }, []);
+
+  const handleCityChange = (e) => {
+    const cityCode = e.target.value;
+    const selectedCity = cities.find((city) => city.code === cityCode);
+    setDistricts(selectedCity?.districts || []);
+    setWards([]);
+    setShippingAddress((prev) => ({
+      ...prev,
+      userCity: cityCode,
+      userDistrict: "",
+      userWard: "",
+    }));
+  };
+
+  const handleDistrictChange = (e) => {
+    const districtCode = e.target.value;
+    const selectedDistrict = districts.find(
+      (district) => district.code === districtCode
+    );
+    setWards(selectedDistrict?.wards || []);
+    setShippingAddress((prev) => ({
+      ...prev,
+      userDistrict: districtCode,
+      userWard: "",
+    }));
+  };
+
+  const handleWardChange = (e) => {
+    setShippingAddress((prev) => ({ ...prev, userWard: e.target.value }));
+  };
+
+  // Hàm cập nhật ngày và giờ giao hàng
+  const handleDeliveryDateChange = (e) => setDeliveryDate(e.target.value);
+  const handleDeliveryTimeChange = (e) => setDeliveryTime(e.target.value);
+
+  // Hàm cập nhật ghi chú
+  const handleOrderNoteChange = (e) => setOrderNote(e.target.value);
 
   return (
     <div className="container-xl cart-container">
@@ -189,7 +279,7 @@ const OrderInformationPage = () => {
                   name="family"
                   type="text"
                   placeholder="Nhập họ"
-                  value={shippingAddress.family || user.familyName}
+                  value={shippingAddress.familyName || user.familyName}
                   onChange={handleInputChange("family")}
                 ></FormComponent>
               </div>
@@ -199,7 +289,7 @@ const OrderInformationPage = () => {
                   className="input-name"
                   type="text"
                   placeholder="Nhập tên"
-                  value={shippingAddress.name || user.userName}
+                  value={shippingAddress.userName || user.userName}
                   onChange={handleInputChange("name")}
                 ></FormComponent>
               </div>
@@ -219,7 +309,7 @@ const OrderInformationPage = () => {
                   className="input-phone"
                   type="text"
                   placeholder="Nhập số điện thoại"
-                  value={shippingAddress.phone || user.userPhone}
+                  value={shippingAddress.userPhone || user.userPhone}
                   onChange={handleInputChange("phone")}
                 ></FormComponent>
               </div>
@@ -229,7 +319,7 @@ const OrderInformationPage = () => {
                   className="input-email"
                   type="text"
                   placeholder="Nhập email"
-                  value={shippingAddress.email || user.userEmail}
+                  value={shippingAddress.userEmail || user.userEmail}
                   onChange={handleInputChange("address")}
                 ></FormComponent>
               </div>
@@ -248,30 +338,51 @@ const OrderInformationPage = () => {
           </div>
           <div className="comboBoxHolder">
             <div className="ProvinceHolder">
-              <select className="Province" name="Province">
-                <option value="" disabled selected>
+              <select
+                className="Province"
+                value={shippingAddress.userCity}
+                onChange={handleCityChange}
+              >
+                <option value="" disabled>
                   Chọn tỉnh
                 </option>
-                <option value={"Bến Tre"}>Bến Tre</option>
-                <option value={"Tiền Giang"}>Tiền Giang</option>
+                {cities.map((city) => (
+                  <option key={city.code} value={city.code}>
+                    {city.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="DistrictHolder">
-              <select className="District" name="District">
-                <option value="" disabled selected>
+              <select
+                className="District"
+                value={shippingAddress.userDistrict}
+                onChange={handleDistrictChange}
+              >
+                <option value="" disabled>
                   Chọn quận/huyện
                 </option>
-                <option value={"Bến Tre"}>Bến Tre</option>
-                <option value={"Tiền Giang"}>Tiền Giang</option>
+                {districts.map((district) => (
+                  <option key={district.code} value={district.code}>
+                    {district.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="VillageHolder">
-              <select className="Village" name="Village">
-                <option value="" disabled selected>
+              <select
+                className="Village"
+                value={shippingAddress.userWard}
+                onChange={handleWardChange}
+              >
+                <option value="" disabled>
                   Chọn phường/xã
                 </option>
-                <option value={"Bến Tre"}>Bến Tre</option>
-                <option value={"Tiền Giang"}>Tiền Giang</option>
+                {wards.map((ward) => (
+                  <option key={ward.code} value={ward.code}>
+                    {ward.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -283,11 +394,22 @@ const OrderInformationPage = () => {
           <div className="d-flex" style={{ gap: "50px", margin: "20px 0" }}>
             <div>
               <h3>Chọn giờ:</h3>
-              <input type="time" className="clock"></input>
+              <input
+                type="time"
+                className="clock"
+                value={deliveryTime}
+                onChange={handleDeliveryTimeChange}
+              ></input>
             </div>
             <div>
               <h3>Chọn ngày:</h3>
-              <input type="date" id="datePicker" className="Datepicker" />
+              <input
+                type="date"
+                id="datePicker"
+                className="Datepicker"
+                value={deliveryDate}
+                onChange={handleDeliveryDateChange}
+              />
             </div>
           </div>
         </div>
@@ -301,8 +423,8 @@ const OrderInformationPage = () => {
                 cols="50"
                 placeholder="Nhập ghi chú đơn hàng....."
                 className="inputNote"
-                value={shippingAddress.note}
-                onChange={handleInputChange("note")}
+                value={orderNote}
+                onChange={handleOrderNoteChange}
               ></textarea>
             </div>
           </div>

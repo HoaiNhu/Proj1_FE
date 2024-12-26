@@ -63,11 +63,13 @@ const orderSlice = createSlice({
       state.selectedProducts = action.payload.selectedProducts || [];
       state.shippingAddress = action.payload.shippingAddress || {};
       state.totalPrice = action.payload.totalPrice || 0;
+      saveToLocalStorage(state);
     },
     clearOrder: (state) => {
       state.selectedProducts = [];
       state.shippingAddress = {};
       state.totalPrice = 0;
+      saveToLocalStorage(state);
     },
   },
 });
