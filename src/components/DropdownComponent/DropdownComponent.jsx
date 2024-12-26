@@ -6,43 +6,38 @@ const DropdownComponent = ({
   className = "",
   style = {},
   onSelect = () => {}, // Hàm callback khi chọn item
-  apiUrl, // URL API để lấy dữ liệu category
+  options = [],
+  value = "",
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false); // State để kiểm tra dropdown có mở không
   const [selectedItem, setSelectedItem] = useState(""); // Item được chọn
-  const [menuItems, setMenuItems] = useState([]); // Dữ liệu category từ API
-  const [loading, setLoading] = useState(true); // Trạng thái loading
+  const [menuItems, setMenuItems] = useState(options); // Ưu tiên options nếu có
 
-  // Gọi API để lấy danh sách category
+  // Cập nhật menuItems khi options thay đổi
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error("Lỗi khi lấy dữ liệu category");
-        }
-        const data = await response.json();
-        setMenuItems(data); // Cập nhật danh sách category
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      } finally {
-        setLoading(false); // Tắt trạng thái loading
-      }
-    };
+    setMenuItems(options);
+    console.log("Options updated:", options);
+  }, [options]);
 
-    fetchCategories();
-  }, [apiUrl]);
+  useEffect(() => {
+    setSelectedItem(options.find((opt) => opt.value === value)?.label || "");
+  }, [value, options]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen); // Đổi trạng thái mở/đóng
+    console.log("Dropdown isOpen:", !isOpen);
   };
 
   const handleSelectItem = (item) => {
-    setSelectedItem(item); // Cập nhật item được chọn
-    onSelect(item); // Gọi hàm callback truyền từ ngoài
+    setSelectedItem(item.label || item.name); // Hiển thị `label` hoặc `name`
+    onSelect(item.value || item.name); // Truyền giá trị `value` hoặc `name`
     setIsOpen(false); // Đóng dropdown
   };
+
+  useEffect(() => {
+    console.log("Menu Items:", menuItems);
+  }, [menuItems]);
 
   return (
     <div className={`dropdown-container ${className}`} {...props}>
@@ -52,9 +47,7 @@ const DropdownComponent = ({
         aria-expanded={isOpen}
         style={style}
       >
-        <div className="content__dropdown">
-          {selectedItem || placeholder}
-        </div>
+        <div className="content__dropdown">{selectedItem || placeholder}</div>
         <div
           className={`icon__dropdown ${isOpen ? "rotate" : ""}`} // Thêm class rotate nếu mở dropdown
         >
@@ -76,16 +69,14 @@ const DropdownComponent = ({
       {/* Menu dropdown */}
       {isOpen && (
         <ul className="dropdown-menu">
-          {loading ? (
-            <li className="dropdown-item">Đang tải...</li>
-          ) : menuItems.length > 0 ? (
+          {menuItems.length > 0 ? (
             menuItems.map((item, index) => (
               <li
                 key={index}
                 className="dropdown-item"
-                onClick={() => handleSelectItem(item.name)} // Lấy tên category
+                onClick={() => handleSelectItem(item)}
               >
-                {item.name} {/* Hiển thị tên category */}
+                {item.label || item.name}
               </li>
             ))
           ) : (

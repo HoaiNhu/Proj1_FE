@@ -7,6 +7,9 @@ const initialState = {
   userPhone: "",
   userEmail: "",
   userAddress: "",
+  userWard: "",
+  userDistrict: "",
+  userCity: "",
   userImage: "",
   access_token: "",
   isLoggedIn: false,
@@ -27,6 +30,9 @@ export const userSlice = createSlice({
         userPhone = "",
         userEmail = "",
         userAddress = "",
+        userWard = "",
+        userDistrict = "",
+        userCity = "",
         userImage = "",
         access_token = "",
         isAdmin,
@@ -38,6 +44,9 @@ export const userSlice = createSlice({
       state.userPhone = userPhone;
       state.userEmail = userEmail;
       state.userAddress = userAddress;
+      state.userWard = userWard;
+      state.userDistrict = userDistrict;
+      state.userCity = userCity;
       state.userImage = userImage;
       state.access_token = access_token;
       state.isLoggedIn = !!access_token;
@@ -50,6 +59,9 @@ export const userSlice = createSlice({
       state.userPhone = "";
       state.userEmail = "";
       state.userAddress = "";
+      state.userWard = "";
+      state.userDistrict = "";
+      state.userCity = "";
       state.userImage = "";
       state.access_token = "";
       state.isAdmin = false;

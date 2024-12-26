@@ -15,12 +15,11 @@ import Loading from "../../../components/LoadingComponent/Loading";
 import Message from "../../../components/MessageComponent/Message";
 import { getBase64 } from "../../../utils";
 
-Modal.setAppElement("#root");
 
 function UserInfoPage() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  // console.log("user", user);
+  console.log("user", user);
 
   const [isEditing, setIsEditing] = useState(false);
   const [showLoading, setShowLoading] = useState(false); // Thêm trạng thái riêng
@@ -34,6 +33,107 @@ function UserInfoPage() {
   const [userAddress, setUserAddress] = useState(user?.userAddress);
   const [userImage, setUserImage] = useState(user?.userImage);
 
+  // const [address, setAddress] = useState(user?.userAddress);
+  const [wards, setWards] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  const [selectedWard, setSelectedWard] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+
+  // Lấy danh sách thành phố từ API
+  useEffect(() => {
+    const getCities = async () => {
+      const data = await UserService.fetchCities();
+      // console.log("Fetched Cities:", data);
+      setCities(data);
+    };
+    getCities();
+  }, []);
+
+  // const handleCityChange = (cityCode) => {
+  //   setSelectedCity(cityCode);
+  //   setDistricts(
+  //     cities.find((city) => city.code === cityCode)?.districts || []
+  //   );
+  //   setSelectedDistrict("");
+  //   setSelectedWard("");
+  // };
+
+  // const handleCityChange = (cityCode) => {
+  //   setSelectedCity(cityCode);
+  //   const selectedCity = cities.find((city) => city.code === cityCode);
+  //   setDistricts(selectedCity?.districts || []); // Cập nhật danh sách quận/huyện
+  //   setWards([]); // Reset danh sách phường/xã
+  //   setSelectedDistrict(""); // Reset quận/huyện
+  //   setSelectedWard(""); // Reset phường/xã
+  // };
+
+  const handleCityChange = (cityCode) => {
+    setSelectedCity(cityCode);
+
+    const selectedCity = cities.find((city) => city.code === cityCode);
+    console.log("Selected City:", selectedCity);
+
+    const newDistricts = selectedCity?.districts || [];
+    console.log("New Districts:", newDistricts);
+
+    setDistricts(
+      newDistricts.map((d) => ({
+        label: d.name,
+        value: d.code,
+        wards: d.wards,
+      }))
+    );
+
+    // Reset các dropdown khác
+    setSelectedDistrict("");
+    setWards([]);
+    setSelectedWard("");
+  };
+
+  // const handleDistrictChange = (districtCode) => {
+  //   setSelectedDistrict(districtCode);
+  //   setWards(
+  //     districts.find((district) => district.code === districtCode)?.wards || []
+  //   );
+  //   setSelectedWard("");
+  // };
+
+  // const handleDistrictChange = (districtCode) => {
+  //   setSelectedDistrict(districtCode);
+  //   const selectedDistrict = districts.find(
+  //     (district) => district.code === districtCode
+  //   );
+  //   setWards(selectedDistrict?.wards || []); // Cập nhật danh sách phường/xã
+  //   setSelectedWard(""); // Reset phường/xã
+  // };
+
+  const handleDistrictChange = (districtCode) => {
+    setSelectedDistrict(districtCode);
+
+    const selectedDistrict = districts.find((d) => d.value === districtCode);
+    console.log("Selected District:", selectedDistrict);
+
+    const newWards = selectedDistrict?.wards || [];
+    console.log("New Wards:", newWards);
+
+    setWards(
+      newWards.map((w) => ({
+        label: w.name,
+        value: w.code,
+      }))
+    );
+
+    setSelectedWard("");
+  };
+
+  const handleWardChange = (wardCode) => {
+    setSelectedWard(wardCode);
+  };
+
+  //update user
   const mutation = useMutationHook((data) => {
     const { id, access_token, ...rests } = data;
     UserService.updateUserInfo(id, rests, access_token);
@@ -52,21 +152,42 @@ function UserInfoPage() {
     }
   }, [user]);
 
-  const handleFamilyNameChange = (value) => {
-    setFamilyName(value);
-  };
-  const handleUserNameChange = (value) => {
-    setUserName(value);
-  };
-  const handleUserPhoneChange = (value) => {
-    setUserPhone(value);
-  };
-  const handleUserEmailChange = (value) => {
-    setUserEmail(value);
+  const handleFamilyNameChange = (e) => {
+    const value = e.target.value;
+    if (typeof value === "string" && value.trim().length > 0) {
+      setFamilyName(value);
+    }
   };
 
-  const handleUserAddressChange = (value) => {
-    setUserAddress(value);
+  const handleUserNameChange = (e) => {
+    const value = e.target.value;
+    if (typeof value === "string" && value.trim().length > 0) {
+      setUserName(value);
+    }
+  };
+
+  const handleUserPhoneChange = (e) => {
+    const value = e.target.value;
+    // Kiểm tra chỉ cho phép số và không vượt quá 10 ký tự
+    if (/^\d{0,10}$/.test(value)) {
+      setUserPhone(value);
+    }
+  };
+
+  const handleUserEmailChange = (e) => {
+    const value = e.target.value;
+    // Kiểm tra email có hợp lệ hay không
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(value)) {
+      setUserEmail(value);
+    }
+  };
+
+  const handleUserAddressChange = (e) => {
+    const value = e.target.value;
+    if (typeof value === "string" && value.trim().length >= 0) {
+      setUserAddress(value);
+    }
   };
 
   // const handleUserImageChange = async (event) => {
@@ -133,6 +254,9 @@ function UserInfoPage() {
       userPhone,
       userEmail,
       userAddress,
+      userCity: selectedCity,
+      userDistrict: selectedDistrict,
+      userWard: selectedWard,
       userImage,
       access_token: user?.access_token,
     };
@@ -149,7 +273,6 @@ function UserInfoPage() {
     // console.log("res", res);
     dispatch(updateUser({ ...res?.data, access_token: token }));
   };
-
 
   useEffect(() => {
     if (mutation.isSuccess) {
@@ -172,6 +295,22 @@ function UserInfoPage() {
       setTimeout(() => setShowLoading(false), 500); // Ẩn loading nếu lỗi
     }
   }, [mutation.isSuccess, mutation.isError, mutation.error]);
+
+  console.log(
+    "Cities options:",
+    cities.map((city) => ({ label: city.name, value: city.code }))
+  );
+  console.log(
+    "Districts options:",
+    districts.map((district) => ({
+      label: district.name,
+      value: district.code,
+    }))
+  );
+  console.log(
+    "Wards options:",
+    wards.map((ward) => ({ label: ward.name, value: ward.code }))
+  );
 
   return (
     <div>
@@ -280,9 +419,42 @@ function UserInfoPage() {
                   ></FormComponent>
 
                   <div className="form-row">
-                    <DropdownComponent placeholder="Chọn phường"></DropdownComponent>
-                    <DropdownComponent placeholder="Chọn quận"></DropdownComponent>
-                    <DropdownComponent placeholder="Chọn thành phố"></DropdownComponent>
+                    <DropdownComponent
+                      options={cities.map((city) => ({
+                        label: city.name,
+                        value: city.code,
+                      }))}
+                      placeholder="Chọn thành phố"
+                      value={selectedCity}
+                      onSelect={(selectedCity) =>
+                        handleCityChange(selectedCity)
+                      }
+                      // onSelect={handleCityChange}
+                    ></DropdownComponent>
+                    <DropdownComponent
+                      options={districts.map((district) => ({
+                        label: district.name,
+                        value: district.code,
+                      }))}
+                      placeholder="Chọn quận/huyện"
+                      value={selectedDistrict}
+                      onSelect={(selectedDistrict) =>
+                        handleDistrictChange(selectedDistrict)
+                      }
+                      // onSelect={handleDistrictChange}
+                    ></DropdownComponent>
+                    <DropdownComponent
+                      options={wards.map((ward) => ({
+                        label: ward.name,
+                        value: ward.code,
+                      }))}
+                      placeholder="Chọn phường/xã"
+                      value={selectedWard}
+                      onSelect={(selectedWard) =>
+                        handleWardChange(selectedWard)
+                      }
+                      // onSelect={handleWardChange}
+                    ></DropdownComponent>
                   </div>
                 </div>
 

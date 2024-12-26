@@ -1,197 +1,308 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductInfor from "../../../components/ProductInfor/ProductInfor";
 import imageProduct from "../../../assets/img/hero_3.jpg";
 import "./OrderInformation.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
+import BackIconComponent from "../../../components/BackIconComponent/BackIconComponent";
+import FormComponent from "../../../components/FormComponent/FormComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { useMutationHook } from "../../../hooks/useMutationHook";
+import * as OrderService from "../../../services/OrderService";
+
 const OrderInformationPage = () => {
   const location = useLocation();
   const selectedProducts = location.state?.selectedProductDetails || [];
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const mutation = useMutationHook((data) => OrderService.createOrder(data));
+  const shippingPrice = 30000; // Phí vận chuyển cố định
+
+  const user = useSelector((state) => state.user); // Lấy thông tin user từ Redux
+  const isLoggedIn = !!user?.userEmail;
+
   const handleClickBack = () => {
     navigate("/cart");
   };
   const handleClickNext = () => {
-    navigate("/payment");
+    // Kiểm tra thông tin giao hàng
+    // if (
+    //   !shippingAddress.family ||
+    //   !shippingAddress.name ||
+    //   !shippingAddress.phone
+    // ) {
+    //   alert("Vui lòng điền đầy đủ thông tin giao hàng.");
+    //   return;
+    // }
+
+    // Điều hướng đến trang thanh toán
+    navigate("/payment", {
+      state: {
+        orderItems: selectedProducts,
+        shippingAddress,
+        paymentMethod: "Online Payment", // Phương thức thanh toán mặc định
+        totalItemPrice,
+        shippingPrice,
+        totalPrice,
+      },
+    });
+    mutation.mutate(shippingAddress, user, selectedProducts);
   };
+
+  const [shippingAddress, setShippingAddress] = useState({
+    family: "",
+    name: "",
+    address: "",
+    ward: "",
+    district: "",
+    city: "",
+    phone: "",
+    note: "",
+  });
+  console.log("selectedProducts", selectedProducts);
+  console.log("user", user);
+  console.log("shippingAddress", shippingAddress);
+
+  // Tổng tiền hàng
+  const totalItemPrice = selectedProducts.reduce(
+    (acc, product) =>
+      acc +
+      parseFloat(product.price.replace(/[^0-9.-]+/g, "")) * product.quantity,
+    0
+  );
+
+  const totalPrice = totalItemPrice + shippingPrice; // Tổng thanh toán
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setShippingAddress((prev) => ({
+        ...prev,
+        family: user.familyName || "",
+        name: user.userName || "",
+        address: user.userAddress || "",
+        phone: user.userPhone || "",
+      }));
+    }
+  }, [isLoggedIn, user]);
+
+  const handleInputChange = (field) => (e) => {
+    const value = e.target.value;
+    if (typeof value === "string" && value.trim().length >= 0) {
+      setShippingAddress((prev) => ({ ...prev, [field]: value }));
+    }
+  };
+
   return (
     <div className="container-xl cart-container">
       <div className="titleHolder">
         <div>
-          <button className="back_btn" onClick={handleClickBack}>
-            <svg
-              className="back_icon"
-              xmlns="http://www.w3.org/2000/svg"
-              width="40"
-              height="40"
-              viewBox="0 0 40 40"
-              fill="none"
-              color="#3a060e"
-            >
-              <path
-                d="M6.66675 20L5.95964 19.2929L5.25253 20L5.95964 20.7071L6.66675 20ZM31.6667 21C32.219 21 32.6667 20.5523 32.6667 20C32.6667 19.4477 32.219 19 31.6667 19V21ZM15.9596 9.29289L5.95964 19.2929L7.37385 20.7071L17.3739 10.7071L15.9596 9.29289ZM5.95964 20.7071L15.9596 30.7071L17.3739 29.2929L7.37385 19.2929L5.95964 20.7071ZM6.66675 21H31.6667V19H6.66675V21Z"
-                fill="#33363F"
-              />
-            </svg>
-          </button>
+          <BackIconComponent className="back_btn" onClick={handleClickBack} />
         </div>
         <div>
           <h1 className="title"> Thông tin đơn hàng</h1>
         </div>
       </div>
-      <div className="order_area">
+      <div className="product_area">
         <table>
           <thead>
-            <tr>
-              <div className="HeaderHolder">
-                <div className="HeaderInfor">
-                  <th className="ProductInforHear">Thông tin sản phẩm</th>
-                </div>
-                <div className="HeaderPrice">
-                  <th className="PriceHeader">Đơn giá</th>
-                </div>
-                <div className="HeaderQuantity">
-                  <th className="QuantityHeader">Số lượng</th>
-                </div>
-                <div className="HeaderMoney">
-                  <th className="MoneyHeader">Thành tiền</th>
-                </div>
-              </div>
+            <tr className="HeaderHolder">
+              <th className="ProductInforHear">Thông tin sản phẩm</th>
+              <th className="PriceHeader">Đơn giá</th>
+              <th className="QuantityHeader">Số lượng</th>
+              <th className="MoneyHeader">Thành tiền</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <div className="LineProduct">
-                <div className="ProductInfor">
+            {selectedProducts.map((product) => (
+              <tr key={product.id} className="LineProduct">
+                <td className="ProductInfor">
                   <ProductInfor
-                    image={imageProduct}
-                    name={"Summer Orange Cream"}
-                    size={"24cm"}
-                  ></ProductInfor>
-                </div>
-                <div className="PriceProduct">
-                  <p className="Price">250,000 VND</p>
-                </div>
-                <div className="Quantity">
-                  <p>x1</p>
-                </div>
-                <div className="Money">
-                  <p className="MoneyProduct">250,000 VND</p>
-                </div>
-              </div>
-            </tr>
-            <tr>
-              <div className="LineProduct">
-                <div className="ProductInfor">
-                  <ProductInfor
-                    image={imageProduct}
-                    name={"Summer Orange Cream"}
-                    size={"24cm"}
-                  ></ProductInfor>
-                </div>
-                <div className="PriceProduct">
-                  <p className="Price">250,000 VND</p>
-                </div>
-                <div className="Quantity">
-                  <p>x1</p>
-                </div>
-                <div className="Money">
-                  <p className="MoneyProduct">250,000 VND</p>
-                </div>
-              </div>
-            </tr>
+                    image={product.img}
+                    name={product.title}
+                    size={product.size || "N/A"}
+                  />
+                </td>
+                <td className="PriceProduct">{product.price}</td>
+                <td className="QuantityBtn">x {product.quantity}</td>
+                <td className="Money">
+                  <p className="MoneyProduct">
+                    {(
+                      parseFloat(product.price.replace(/[^0-9.-]+/g, "")) *
+                      product.quantity
+                    ).toLocaleString()}{" "}
+                    VND
+                  </p>
+                </td>
+              </tr>
+            ))}
           </tbody>
           <tfoot>
-            <div className="TongtienHolder">
-              <p className="tongtien">Tổng tiền:</p>
-              <p className="thanhtien">500,000 VND</p>
-            </div>
+            <tr className="LineProduct">
+              <td colSpan="3">Phí vận chuyển:</td>
+              <td>{shippingPrice.toLocaleString()} VND</td>
+            </tr>
+            <tr
+              className="total-price d-flex align-items-center justify-content-between"
+              style={{ padding: "20px" }}
+            >
+              <td
+                colSpan="3"
+                className="text-end"
+                style={{ fontWeight: "bold", fontSize: "2rem" }}
+              >
+                Tổng tiền:
+              </td>
+              <td
+                className="text-end"
+                style={{ fontWeight: "bold", fontSize: "2rem" }}
+              >
+                {totalPrice.toLocaleString()} VND
+              </td>
+            </tr>
           </tfoot>
         </table>
       </div>
-      <div className="question">
+      <div className="question" style={{ margin: "10px 50px" }}>
         <p className="login-question">
           Bạn đã có tài khoản?{" "}
-          <a href="./login" target="_blank" className="login-link">
+          <Link to="./login" target="_blank" className="login-link">
             Đăng nhập
-          </a>
+          </Link>
         </p>
       </div>
 
       <div>
         {/* =====Dia chi giao hang===== */}
-        <div className="addressHolder">
-          <p className="DiaChi">Địa chỉ</p>
-          <div>
-            <input
-              className="input-address"
+        <div className="shipping-info">
+          <div className="input-name">
+            <div
+              style={{
+                display: "flex",
+                padding: "10px 50px",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <h2>Họ</h2>
+                <FormComponent
+                  className="input-familyName"
+                  name="family"
+                  type="text"
+                  placeholder="Nhập họ"
+                  value={shippingAddress.family || user.familyName}
+                  onChange={handleInputChange("family")}
+                ></FormComponent>
+              </div>
+              <div>
+                <h2>Tên</h2>
+                <FormComponent
+                  className="input-name"
+                  type="text"
+                  placeholder="Nhập tên"
+                  value={shippingAddress.name || user.userName}
+                  onChange={handleInputChange("name")}
+                ></FormComponent>
+              </div>
+            </div>
+          </div>
+          <div className="input-phone-email">
+            <div
+              style={{
+                display: "flex",
+                padding: "10px 50px",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <h2>Số điện thoại</h2>
+                <FormComponent
+                  className="input-phone"
+                  type="text"
+                  placeholder="Nhập số điện thoại"
+                  value={shippingAddress.phone || user.userPhone}
+                  onChange={handleInputChange("phone")}
+                ></FormComponent>
+              </div>
+              <div>
+                <h2>Email</h2>
+                <FormComponent
+                  className="input-email"
+                  type="text"
+                  placeholder="Nhập email"
+                  value={shippingAddress.email || user.userEmail}
+                  onChange={handleInputChange("address")}
+                ></FormComponent>
+              </div>
+            </div>
+          </div>
+          <div className="address" style={{ padding: "10px 50px" }}>
+            <h2>Địa chỉ</h2>
+            <FormComponent
+              // className="input-address"
               type="text"
               placeholder="Nhập địa chỉ giao hàng: Số nhà, hẻm, đường,..."
-            ></input>
+              style={{ width: "100%" }}
+              value={shippingAddress.address || user.userAddress}
+              onChange={handleInputChange("address")}
+            ></FormComponent>
           </div>
-        </div>
-        <div className="comboBoxHolder">
-          <div className="ProvinceHolder">
-            <select className="Province" name="Province">
-              <option value="" disabled selected>
-                Chọn tỉnh
-              </option>
-              <option value={"Bến Tre"}>Bến Tre</option>
-              <option value={"Tiền Giang"}>Tiền Giang</option>
-            </select>
-          </div>
-          <div className="DistrictHolder">
-            <select className="District" name="District">
-              <option value="" disabled selected>
-                Chọn quận/huyện
-              </option>
-              <option value={"Bến Tre"}>Bến Tre</option>
-              <option value={"Tiền Giang"}>Tiền Giang</option>
-            </select>
-          </div>
-          <div className="VillageHolder">
-            <select className="Village" name="Village">
-              <option value="" disabled selected>
-                Chọn phường/xã
-              </option>
-              <option value={"Bến Tre"}>Bến Tre</option>
-              <option value={"Tiền Giang"}>Tiền Giang</option>
-            </select>
+          <div className="comboBoxHolder">
+            <div className="ProvinceHolder">
+              <select className="Province" name="Province">
+                <option value="" disabled selected>
+                  Chọn tỉnh
+                </option>
+                <option value={"Bến Tre"}>Bến Tre</option>
+                <option value={"Tiền Giang"}>Tiền Giang</option>
+              </select>
+            </div>
+            <div className="DistrictHolder">
+              <select className="District" name="District">
+                <option value="" disabled selected>
+                  Chọn quận/huyện
+                </option>
+                <option value={"Bến Tre"}>Bến Tre</option>
+                <option value={"Tiền Giang"}>Tiền Giang</option>
+              </select>
+            </div>
+            <div className="VillageHolder">
+              <select className="Village" name="Village">
+                <option value="" disabled selected>
+                  Chọn phường/xã
+                </option>
+                <option value={"Bến Tre"}>Bến Tre</option>
+                <option value={"Tiền Giang"}>Tiền Giang</option>
+              </select>
+            </div>
           </div>
         </div>
 
         {/* =====Thoi gian giao hang==== */}
         <div className="DeliveryTimeHolder">
           <p className="ThoiGian">Thời gian giao hàng dự kiến:</p>
-          <div className="lableHolder">
-            <div className="labelTime">
-              <label className="ChonGio">Chọn giờ:</label>
-            </div>
-            <div className="lableDate">
-              <label className="ChonNgay">Chọn ngày:</label>
-            </div>
-          </div>
-          <div className="comboBoxHolder">
-            <div className="TimeHolder">
+          <div className="d-flex" style={{ gap: "50px", margin: "20px 0" }}>
+            <div>
+              <h3>Chọn giờ:</h3>
               <input type="time" className="clock"></input>
             </div>
-
-            <div className="DateHolder">
+            <div>
+              <h3>Chọn ngày:</h3>
               <input type="date" id="datePicker" className="Datepicker" />
             </div>
           </div>
         </div>
         {/* ============Ghi chu don hang======== */}
-        <div className="Note">
+        <div className="Note" style={{ margin: "50px 50px" }}>
           <div>
-            <label className="labelNote">Ghi chú đơn hàng:</label>
+            <h2>Ghi chú đơn hàng:</h2>
             <div>
               <textarea
                 rows="5"
                 cols="50"
                 placeholder="Nhập ghi chú đơn hàng....."
                 className="inputNote"
+                value={shippingAddress.note}
+                onChange={handleInputChange("note")}
               ></textarea>
             </div>
           </div>

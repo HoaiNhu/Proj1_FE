@@ -2,37 +2,10 @@ import axios from "axios";
 
 export const axiosJWT = axios.create();
 
-export const loginUser = async (data) => {
+export const createOrder = async (data) => {
   try {
     const res = await axios.post(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/log-in`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return res.data; // Trả dữ liệu nếu thành công
-  } catch (error) {
-    // Nếu API trả về lỗi, ném lỗi với thông tin chi tiết
-    if (error.response) {
-      // API trả về response
-      throw {
-        status: error.response.status,
-        message: error.response.data.message || "Đã xảy ra lỗi.",
-      };
-    } else {
-      // Lỗi không có response (ví dụ lỗi mạng)
-      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
-    }
-  }
-};
-
-export const signupUser = async (data) => {
-  try {
-    const res = await axios.post(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/sign-up`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/create-order`,
       data,
       {
         headers: {
@@ -56,14 +29,14 @@ export const signupUser = async (data) => {
   }
 };
 
-export const getDetailsUser = async (id, access_token) => {
+export const getDetailsOrder = async (id) => {
   try {
     const res = await axiosJWT.get(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/get-detail-user/${id}`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/get-detail-order/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
-          token: `Bearer ${access_token}`,
+        //   token: `Bearer ${access_token}`,
         },
       }
     );
@@ -83,65 +56,14 @@ export const getDetailsUser = async (id, access_token) => {
   }
 };
 
-export const refreshToken = async () => {
-  try {
-    const res = await axios.post(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/refresh-token`,
-      {},
-      {
-        // headers: {
-        //   "Content-Type": "application/json",
-        //   token: `Bearer ${access_token}`,
-        // },
-        withCredentials: true, //tự động lấy cookie
-      }
-    );
-    return res.data; // Trả dữ liệu nếu thành công
-  } catch (error) {
-    // Nếu API trả về lỗi, ném lỗi với thông tin chi tiết
-    if (error.response) {
-      // API trả về response
-      throw {
-        // status: error.response.data?.status || "ERR",
-        message: error.response.data?.message || "Đã xảy ra lỗi.",
-      };
-    } else {
-      // Lỗi không có response (ví dụ lỗi mạng)
-      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
-    }
-  }
-};
-
-export const logoutUser = async () => {
-  try {
-    const res = await axios.post(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/log-out`
-    );
-    return res.data; // Trả dữ liệu nếu thành công
-  } catch (error) {
-    // Nếu API trả về lỗi, ném lỗi với thông tin chi tiết
-    if (error.response) {
-      // API trả về response
-      throw {
-        // status: error.response.data?.status || "ERR",
-        message: error.response.data?.message || "Đã xảy ra lỗi.",
-      };
-    } else {
-      // Lỗi không có response (ví dụ lỗi mạng)
-      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
-    }
-  }
-};
-
-export const updateUserInfo = async (id, data, access_token) => {
+export const updateOrderInfo = async (id, data) => {
   try {
     const res = await axiosJWT.put(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/update-user/${id}`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/update-order/${id}`,
       data,
       {
         headers: {
           "Content-Type": "application/json",
-          token: `Bearer ${access_token}`,
         },
       }
     );
@@ -161,14 +83,14 @@ export const updateUserInfo = async (id, data, access_token) => {
   }
 };
 
-export const getAllUser = async (access_token) => {
+export const getAllOrder = async () => {
   try {
     const res = await axios.get(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/get-all-user`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/get-all-order`,
       {
         headers: {
           "Content-Type": "application/json",
-          token: `Bearer ${access_token}`,
+        //   token: `Bearer ${access_token}`,
         },
       }
     );
@@ -185,14 +107,14 @@ export const getAllUser = async (access_token) => {
   }
 };
 
-export const deleteUser = async (id, access_token) => {
+export const deleteOrder = async (id) => {
   try {
     const res = await axios.delete(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/delete-user/${id}`,
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/delete-order/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
-          token: `Bearer ${access_token}`,
+        //   token: `Bearer ${access_token}`,
         },
       }
     );

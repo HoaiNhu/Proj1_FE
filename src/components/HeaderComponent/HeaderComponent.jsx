@@ -48,6 +48,7 @@ const HeaderComponent = () => {
     await UserService.logoutUser();
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem("cart");
     // console.log(
     //   "Access token after removal:",
     //   localStorage.getItem("access-token")
