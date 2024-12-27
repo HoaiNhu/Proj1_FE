@@ -40,6 +40,8 @@ import OrderListPage from "../pages/Admin/CRUDOrderStatus/OrderListPage/OrderLis
 import OrderDetailPage from "../pages/Admin/CRUDOrderStatus/OrderDetailPage/OrderDetailPage";
 import UpdateContact from "../pages/Admin/CRUDContact/UpdateContact/UpdateContact";
 import AddUserPage from "../pages/Admin/CRUDUser/AddUserPage/AddUserPage";
+import NewsDetailPage from "../pages/User/NewsDetailPage/NewsDetailPage";
+
 export const routes = [
   {
     path: "/",
@@ -345,5 +347,11 @@ export const routes = [
     page: NotFoundPage,
     isShowHeader: false,
     isShowFooter: false,
+  },
+  {
+    path: "/news-detail",
+    page: NewsDetailPage,
+    isShowHeader: true,
+    isShowFooter: true,
   },
 ];

@@ -2,14 +2,15 @@ import Card from 'react-bootstrap/Card';
 import './CardNews.css'
 import LinesEllipsis from 'react-lines-ellipsis';
 import { CardSubtitle } from 'react-bootstrap';
-const CardNews = ({ img, title, detail, id }) => {
+const CardNews = ({ img, title, detail, id, onClick}) => {
   return (
     <Card className='CardNews'
       style={{
         width: "27rem",
         overflow: "hidden",
         borderRadius: 15
-      }} >
+      }} 
+      onClick={() => onClick(id)}>
       <Card.Img src={img}
         style={{
           borderTopLeftRadius: '15px',

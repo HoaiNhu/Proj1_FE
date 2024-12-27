@@ -13,8 +13,9 @@ const NewsPage = () => {
     const [news, setnews] = useState([]); // State lưu danh sách sản phẩm
     // const [categories, setCategories] = useState([]); // State lưu danh sách category
     // const [showModal, setShowModal] = useState(false);
-    const [selectednews, setSelectednews] = useState(null); // Lưu ID sản phẩm cần xóa
+    const [selectedNews, setSelectedNews] = useState(null); // Lưu ID sản phẩm cần xóa
     const [loading, setLoading] = useState(false);
+
   
     //Phan trang
     const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -50,7 +51,7 @@ const NewsPage = () => {
         }
   
         const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-        console.log("newss:", data.data);
+        console.log("news:", data.data);
         setCurrentPage(page);  // Cập nhật trang hiện tại
         setTotalPages(Math.ceil(data.total / limit));  // Tính tổng số trang
   
@@ -58,19 +59,34 @@ const NewsPage = () => {
         if (Array.isArray(data.data)) {
           setnews(data.data); // Lưu danh sách category vào state
         } else {
-          console.error("newss data is not in expected format");
+          console.error("news data is not in expected format");
         }
       } catch (error) {
         console.error("Error fetching newss:", error);
       }
     };
   
-  
-  
-  
+  //Lay danh sach news
     useEffect(() => {
       fetchnews();
     }, []);
+
+//Xem chi tiet
+    const handleDetail = (newsId) => {
+      console.log("ID NEWS", newsId)
+      const selectedNews = news.find((news) => news._id === newsId);
+  
+      if (selectedNews) {
+        const {  newsImage, newsTitle, newsContent } = selectedNews;
+        navigate("/news-detail", {
+          state: { newsImage, newsTitle, newsContent },
+        });
+      } else {
+        alert("News not found!");
+      }
+    };
+  
+
   return (
     <div>
       <div className="productadmin__top">
@@ -92,7 +108,7 @@ const NewsPage = () => {
               return (
 
                 <div key={news._id} className="news-grid-item">
-
+                  
                   <CardNews
                     // Dùng _id làm key cho mỗi sản phẩm
                     className="col productadmin__item"
@@ -100,17 +116,16 @@ const NewsPage = () => {
                     img={imageUrl} // Sử dụng URL ảnh đã xử lý
                     title={news.newsTitle} // Hiển thị tên sản phẩm
                     detail={news.newsContent}
-                    //onUpdate={() => handleUpdate(news._id)} 
-                    newsId={news._id}
-                  //description={news.newsDescription} // Mô tả sản phẩm
-
+                    id={news._id}
+                    onClick={handleDetail}
                   />
+                
                 </div>
               );
             })
 
           ) : (
-            <p>Không có sản phẩm nào</p>
+            <p>Không có tin tức nào</p>
           )}
 
 
