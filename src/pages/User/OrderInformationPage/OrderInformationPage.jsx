@@ -10,9 +10,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutationHook } from "../../../hooks/useMutationHook";
 import * as OrderService from "../../../services/OrderService";
 import * as UserService from "../../../services/UserService";
+import { addOrder, setOrderDetails } from "../../../redux/slides/orderSlide";
 
 const OrderInformationPage = () => {
   const location = useLocation();
+  // const orderData = location.state || {};
+  // dispatch(setOrderDetails(orderData));
+
   // const selectedProducts = location.state?.selectedProductDetails || [];
   const selectedProducts = Array.isArray(location.state?.selectedProductDetails)
     ? location.state.selectedProductDetails
@@ -34,16 +38,7 @@ const OrderInformationPage = () => {
   const handleClickBack = () => {
     navigate("/cart");
   };
-  const handleClickNext = () => {
-    // Kiểm tra thông tin giao hàng
-    // if (
-    //   !shippingAddress.family ||
-    //   !shippingAddress.name ||
-    //   !shippingAddress.phone
-    // ) {
-    //   alert("Vui lòng điền đầy đủ thông tin giao hàng.");
-    //   return;
-    // }
+  const handleClickNext = async () => {
     const orderData = {
       orderItems: selectedProducts.map((product) => ({
         product: product.id, // Gắn ID của sản phẩm vào trường `product`
@@ -65,17 +60,31 @@ const OrderInformationPage = () => {
     };
 
     console.log("orderData", orderData);
-    mutation.mutate(orderData); // Gửi đến API
 
-    // Điều hướng đến trang thanh toán
-    navigate("/payment", {
-      state: {
-        ...orderData,
-        totalItemPrice,
-        shippingPrice,
-        totalPrice,
-      },
-    });
+    try {
+      // Gửi đến API và lấy phản hồi
+      const response = await mutation.mutateAsync(orderData);
+
+      if (response?.data?._id) {
+        // Thêm orderId vào orderData
+        const fullOrderData = { ...orderData, orderId: response.data._id };
+
+        // Lưu vào localStorage thông tin đơn hàng
+        // localStorage.setItem("orderData", JSON.stringify(fullOrderData));
+
+        // Lưu vào Redux store
+        dispatch(addOrder(fullOrderData));
+
+        // Điều hướng đến trang thanh toán
+        navigate("/payment", {
+          state: { ...fullOrderData },
+        });
+      } else {
+        console.error("Failed to create order:", response);
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
   };
 
   const [shippingAddress, setShippingAddress] = useState({
@@ -129,6 +138,7 @@ const OrderInformationPage = () => {
       }));
     }
   }, [isLoggedIn, user]);
+
   const handleInputChange = (field) => (e) => {
     const value = e.target.value;
     if (typeof value === "string" && value.trim().length >= 0) {
@@ -279,8 +289,8 @@ const OrderInformationPage = () => {
                   name="family"
                   type="text"
                   placeholder="Nhập họ"
-                  value={shippingAddress.familyName || user.familyName}
-                  onChange={handleInputChange("family")}
+                  value={shippingAddress.familyName}
+                  onChange={handleInputChange("familyName")}
                 ></FormComponent>
               </div>
               <div>
@@ -289,8 +299,8 @@ const OrderInformationPage = () => {
                   className="input-name"
                   type="text"
                   placeholder="Nhập tên"
-                  value={shippingAddress.userName || user.userName}
-                  onChange={handleInputChange("name")}
+                  value={shippingAddress.userName}
+                  onChange={handleInputChange("userName")}
                 ></FormComponent>
               </div>
             </div>
@@ -309,8 +319,8 @@ const OrderInformationPage = () => {
                   className="input-phone"
                   type="text"
                   placeholder="Nhập số điện thoại"
-                  value={shippingAddress.userPhone || user.userPhone}
-                  onChange={handleInputChange("phone")}
+                  value={shippingAddress.userPhone}
+                  onChange={handleInputChange("userPhone")}
                 ></FormComponent>
               </div>
               <div>
@@ -319,8 +329,8 @@ const OrderInformationPage = () => {
                   className="input-email"
                   type="text"
                   placeholder="Nhập email"
-                  value={shippingAddress.userEmail || user.userEmail}
-                  onChange={handleInputChange("address")}
+                  value={shippingAddress.userEmail}
+                  onChange={handleInputChange("userEmail")}
                 ></FormComponent>
               </div>
             </div>
@@ -332,8 +342,8 @@ const OrderInformationPage = () => {
               type="text"
               placeholder="Nhập địa chỉ giao hàng: Số nhà, hẻm, đường,..."
               style={{ width: "100%" }}
-              value={shippingAddress.address || user.userAddress}
-              onChange={handleInputChange("address")}
+              value={shippingAddress.userAddress}
+              onChange={handleInputChange("userAddress")}
             ></FormComponent>
           </div>
           <div className="comboBoxHolder">
@@ -444,7 +454,7 @@ const OrderInformationPage = () => {
               </ButtonComponent>
             </div>
             <ButtonComponent className="Next_btn" onClick={handleClickNext}>
-              Tiếp theo
+              Thanh toán
             </ButtonComponent>
           </div>
         </div>

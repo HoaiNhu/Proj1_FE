@@ -49,8 +49,10 @@ export const productSlice = createSlice({
       state.access_token = "";
       state.isLoggedIn = false;
     },
+    setProducts: (state, action) => action.payload,
   },
 });
-export const { updateproduct, resetproduct } = productSlice.actions;
+export const { updateproduct, resetproduct, setProducts } =
+  productSlice.actions;
 
 export default productSlice.reducer;
