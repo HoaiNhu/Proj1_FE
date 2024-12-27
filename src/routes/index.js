@@ -41,6 +41,7 @@ import OrderDetailPage from "../pages/Admin/CRUDOrderStatus/OrderDetailPage/Orde
 import UpdateContact from "../pages/Admin/CRUDContact/UpdateContact/UpdateContact";
 import AddUserPage from "../pages/Admin/CRUDUser/AddUserPage/AddUserPage";
 import NewsDetailPage from "../pages/User/NewsDetailPage/NewsDetailPage";
+import SearchResultPage from "../pages/SearchResultPage/SearchResultPage";
 
 export const routes = [
   {
@@ -351,6 +352,12 @@ export const routes = [
   {
     path: "/news-detail",
     page: NewsDetailPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/search",
+    page: SearchResultPage,
     isShowHeader: true,
     isShowFooter: true,
   },

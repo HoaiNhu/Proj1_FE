@@ -63,6 +63,15 @@ const HeaderComponent = () => {
     setShowLoading(false);
   }, [user?.userName, user?.userImage]);
 
+  //Click Search
+  const handleSearch = (query) => {
+    if (!query.trim()) {
+      alert("Vui lòng nhập từ khóa để tìm kiếm!");
+      return;
+    }
+    navigate(`/search?search=${encodeURIComponent(query.trim())}`);
+  }
+
   const handleUserInfo = () => {
     navigate("/user-info"); // Navigate to user information page
   };
@@ -106,8 +115,11 @@ const HeaderComponent = () => {
                 </a>
               </div>
               <div className={`col ${styles.navbar__search__form}`}>
-                <SearchBoxComponent></SearchBoxComponent>
-                <ButtonComponent>Tìm kiếm</ButtonComponent>
+                <SearchBoxComponent
+                  onSearch={handleSearch}
+                  onButtonClick={(query) => handleSearch(query)}
+                />
+
               </div>
 
               <div className={`col ${styles.nav__cart}`}>
