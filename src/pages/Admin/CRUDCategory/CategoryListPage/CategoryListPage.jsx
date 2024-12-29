@@ -152,7 +152,7 @@ const CategoryListPage = () => {
   };
   
   const ClickInfor=()=>{navigate("/admin/store-info")}
-  const ClickOrder=()=>{navigate("/order-list")}
+  const ClickOrder=()=>{navigate("/admin/order-list")}
   const ClickDiscount=()=>{navigate("/discount-list")}
   const ClickStatus=()=>{navigate("/admin/status-list")}
   const ClickCategory=()=>{navigate("/admin/category-list")}

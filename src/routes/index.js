@@ -190,7 +190,7 @@ export const routes = [
     page: AddDiscountPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true,
   },
 
   {
@@ -198,7 +198,7 @@ export const routes = [
     page: StatusListPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true,
   },
 
   {
@@ -214,7 +214,7 @@ export const routes = [
     page: UpdateStatusPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true,
   },
 
   {
@@ -287,11 +287,11 @@ export const routes = [
   },
 
   {
-    path: "/order-list",
+    path: "/admin/order-list",
     page: OrderListPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true,
   },
 
   {
@@ -299,7 +299,7 @@ export const routes = [
     page: OrderDetailPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true,
   },
 
   {

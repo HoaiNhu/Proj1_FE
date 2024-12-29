@@ -7,27 +7,53 @@ import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent
 import logo from "../../../assets/img/AVOCADO.png";
 import { useNavigate } from "react-router-dom";
 const StoreInfoPage = () => {
-  const navigate =useNavigate();
-  const ClickInfor=()=>{navigate("/admin/store-info")}
-  const ClickOrder=()=>{navigate("/order-list")}
-  const ClickDiscount=()=>{navigate("/discount-list")}
-  const ClickStatus=()=>{navigate("/admin/status-list")}
-  const ClickCategory=()=>{navigate("/admin/category-list")}
-  const ClickUser=()=>{navigate("/admin/user-list")}
-  const ClickReprot=()=>{navigate("/admin/report")}
+  const navigate = useNavigate();
+  const ClickInfor = () => {
+    navigate("/admin/store-info");
+  };
+  const ClickOrder = () => {
+    navigate("/admin/order-list");
+  };
+  const ClickDiscount = () => {
+    navigate("/admin/discount-list");
+  };
+  const ClickStatus = () => {
+    navigate("/admin/status-list");
+  };
+  const ClickCategory = () => {
+    navigate("/admin/category-list");
+  };
+  const ClickUser = () => {
+    navigate("/admin/user-list");
+  };
+  const ClickReport = () => {
+    navigate("/admin/report");
+  };
   return (
     <div>
       <div className="container-xl">
         <div className="store-info__container">
           {/* side menu */}
           <div className="side-menu__discount">
-          <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
+            <SideMenuComponent onClick={ClickInfor}>
+              Thông tin cửa hàng
+            </SideMenuComponent>
             <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
-            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
-            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
+            <SideMenuComponent onClick={ClickDiscount}>
+              Khuyến mãi
+            </SideMenuComponent>
+            <SideMenuComponent onClick={ClickStatus}>
+              Trạng thái
+            </SideMenuComponent>
+            <SideMenuComponent onClick={ClickCategory}>
+              Loại sản phẩm
+            </SideMenuComponent>
+            <SideMenuComponent onClick={ClickUser}>
+              Danh sách người dùng
+            </SideMenuComponent>
+            <SideMenuComponent onClick={ClickReport}>
+              Thống kê
+            </SideMenuComponent>
           </div>
           {/* content */}
           <div className="store-info">
@@ -35,23 +61,23 @@ const StoreInfoPage = () => {
               {/* top */}
               <div className="row mb-5">
                 <div className="col">
-                  <label className="title">Logo</label>
+                  <label className="title-name">Logo</label>
                   <img className="logo__image-store" src={logo} alt="avocado" />
                 </div>
                 <div className="col name-phone">
                   <div className="store-name">
-                    <label className="title">Tên cửa hàng</label>
+                    <label className="title-name">Tên cửa hàng</label>
                     <FormComponent style={{ width: "100%" }}></FormComponent>
                   </div>
                   <div className="store-phone">
-                    <label className="title">Số điện thoại</label>
+                    <label className="title-name">Số điện thoại</label>
                     <FormComponent style={{ width: "100%" }}></FormComponent>
                   </div>
                 </div>
               </div>
               {/* bot */}
               <div className="row store-info__email">
-                <label className="title">Email</label>
+                <label className="title-name">Email</label>
                 <FormComponent
                   className="store__mail"
                   type="email"
@@ -59,7 +85,7 @@ const StoreInfoPage = () => {
                 ></FormComponent>
               </div>
               <div className="row store-info__email mb-5">
-                <label className="title">Địa chỉ</label>
+                <label className="title-name">Địa chỉ</label>
                 <FormComponent
                   className="store-address mb-3"
                   style={{ width: "100%" }}

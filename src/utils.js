@@ -26,3 +26,11 @@ export const isAdmin = (token) => {
     return false;
   }
 };
+
+// export const getCancelStatus = (allStatuses) => {
+//   if (!Array.isArray(allStatuses)) {
+//     throw new Error("Danh sách trạng thái không hợp lệ.");
+//   }
+
+//   return allStatuses.find((status) => status.statusCode === "CANCEL");
+// };

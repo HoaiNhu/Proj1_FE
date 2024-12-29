@@ -13,7 +13,7 @@ export const createOrder = async (data) => {
         },
       }
     );
-    return res.data; 
+    return res.data;
   } catch (error) {
     if (error.response) {
       throw {
@@ -33,7 +33,7 @@ export const getDetailsOrder = async (id) => {
       {
         headers: {
           "Content-Type": "application/json",
-        //   token: `Bearer ${access_token}`,
+          //   token: `Bearer ${access_token}`,
         },
       }
     );
@@ -80,14 +80,40 @@ export const updateOrderInfo = async (id, data) => {
   }
 };
 
-export const getAllOrder = async () => {
+export const updateOrderStatus = async (orderId, statusId, access_token) => {
   try {
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_URL_BACKEND}/order/get-all-order`,
+    const res = await axios.put(
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/update-order-status/${orderId}`,
+      { statusId }, // Gửi đúng `statusId`
       {
         headers: {
           "Content-Type": "application/json",
-        //   token: `Bearer ${access_token}`,
+          token: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        status: error.response.data?.status || "ERR",
+        message: error.response.data?.message || "Đã xảy ra lỗi.",
+      };
+    } else {
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};
+
+
+export const getAllOrders = async (access_token) => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/get-all-orders`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
         },
       }
     );
@@ -111,7 +137,7 @@ export const deleteOrder = async (id) => {
       {
         headers: {
           "Content-Type": "application/json",
-        //   token: `Bearer ${access_token}`,
+          //   token: `Bearer ${access_token}`,
         },
       }
     );

@@ -2,14 +2,20 @@ import React from "react";
 import "./ProductRowComponent.css";
 
 const ProductRowComponent = ({ product }) => {
-  const totalPrice = parseInt(product.price) * parseInt(product.quantity); // Thành tiền
+  const name = product.product?.productName || "Không xác định";
+  const image = product.product?.productImage || "default_image_url";
+  const size = product.product?.productSize || "Không xác định";
+  const price = product.product?.productPrice || 0;
+  const quantity = product.quantity || 0;
+  const totalPrice = price * quantity; // Thành tiền
+
   return (
     <div className="product-row d-flex align-items-center">
-      <img src={product.image} alt={product.name} className="product-image" />
-      <div className="product-name">{product.name}</div>
-      <div className="product-size">{product.size}</div>
-      <div className="product-price">{product.price} vnd</div>
-      <div className="product-quantity">x{product.quantity}</div>
+      <img src={image} alt={name} className="product-image" />
+      <div className="product-name">{name}</div>
+      <div className="product-size">{size}</div>
+      <div className="product-price">{price.toLocaleString()} vnd</div>
+      <div className="product-quantity">x{quantity}</div>
       <div className="product-total">{totalPrice.toLocaleString()} vnd</div>
     </div>
   );

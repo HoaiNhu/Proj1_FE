@@ -55,6 +55,7 @@ const HeaderComponent = () => {
     // ); // Kiểm tra xem token đã bị xóa chưa
     dispatch(resetUser());
     setShowLoading(false);
+    handleNavigationLogin();
   };
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const HeaderComponent = () => {
       return;
     }
     navigate(`/search?search=${encodeURIComponent(query.trim())}`);
-  }
+  };
 
   const handleUserInfo = () => {
     navigate("/user-info"); // Navigate to user information page
@@ -119,7 +120,6 @@ const HeaderComponent = () => {
                   onSearch={handleSearch}
                   onButtonClick={(query) => handleSearch(query)}
                 />
-
               </div>
 
               <div className={`col ${styles.nav__cart}`}>

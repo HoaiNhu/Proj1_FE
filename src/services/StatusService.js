@@ -75,6 +75,15 @@ export const getAllStatus = async (access_token) => {
   }
 };
 
+// Hàm tìm trạng thái hủy
+export const getCancelStatus = (allStatuses) => {
+  if (!Array.isArray(allStatuses)) {
+    throw new Error("Danh sách trạng thái không hợp lệ.");
+  }
+
+  return allStatuses.find((status) => status.statusCode === "CANCEL");
+};
+
 export const updateStatus = async (id, data, access_token) => {
   try {
     const res = await axios.put(

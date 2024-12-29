@@ -17,7 +17,6 @@ import Message from "../../../../components/MessageComponent/Message";
 import { useMutationHook } from "../../../../hooks/useMutationHook";
 import * as StatusService from "../../../../services/StatusService";
 
-
 const StatusListPage = () => {
   const status = useSelector((state) => state.status.allStatus || []);
   // console.log("status", status);
@@ -60,16 +59,29 @@ const StatusListPage = () => {
   };
   // console.log("Selected Rows:", selectedRows);
 
-
   // const isSelected = (id) => selectedRows.includes(id);
 
-  const ClickInfor=()=>{navigate("/admin/store-info")}
-  const ClickOrder=()=>{navigate("/order-list")}
-  const ClickDiscount=()=>{navigate("/discount-list")}
-  const ClickStatus=()=>{navigate("/admin/status-list")}
-  const ClickCategory=()=>{navigate("/admin/category-list")}
-  const ClickUser=()=>{navigate("/admin/user-list")}
-  const ClickReprot=()=>{navigate("/admin/report")}
+  const ClickInfor = () => {
+    navigate("/admin/store-info");
+  };
+  const ClickOrder = () => {
+    navigate("/admin/order-list");
+  };
+  const ClickDiscount = () => {
+    navigate("/admin/discount-list");
+  };
+  const ClickStatus = () => {
+    navigate("/admin/status-list");
+  };
+  const ClickCategory = () => {
+    navigate("/admin/category-list");
+  };
+  const ClickUser = () => {
+    navigate("/admin/user-list");
+  };
+  const ClickReport = () => {
+    navigate("/admin/report");
+  };
 
   const fetchData = async () => {
     setShowLoading(true);
@@ -94,14 +106,14 @@ const StatusListPage = () => {
         (item) => item.statusCode === selectedRows[0]
       );
       dispatch(setDetailStatus(selectedStatus)); // Lưu trạng thái vào Redux
-      navigate("/update-status"); // Điều hướng đến trang sửa
+      navigate("/admin/update-status"); // Điều hướng đến trang sửa
     } else {
       alert("Vui lòng chọn một trạng thái để sửa.");
     }
   };
 
   const handleAddStatus = () => {
-    navigate("/add-status", { state: { from: "/status-list" } });
+    navigate("/admin/add-status", { state: { from: "/admin/status-list" } });
   };
 
   const mutation = useMutationHook(StatusService.getAllStatus);
@@ -197,32 +209,27 @@ const StatusListPage = () => {
         <div className="status-list__info">
           {/* side menu */}
           <div className="side-menu__status">
-
-          <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
-            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
-            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
+            <SideMenuComponent className="btn-menu" onClick={ClickInfor}>
               Thông tin cửa hàng
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Đơn hàng</SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
+            <SideMenuComponent className="btn-menu" onClick={ClickOrder}>
+              Đơn hàng
+            </SideMenuComponent>
+            <SideMenuComponent className="btn-menu" onClick={ClickDiscount}>
               Khuyến mãi
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
+            <SideMenuComponent className="btn-menu" onClick={ClickStatus}>
               Trạng thái
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
-              Loại sản phẩm{" "}
+            <SideMenuComponent className="btn-menu" onClick={ClickCategory}>
+              Loại sản phẩm
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">
+            <SideMenuComponent className="btn-menu" onClick={ClickUser}>
               Danh sách người dùng
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu">Thống kê</SideMenuComponent>
-
+            <SideMenuComponent className="btn-menu" onClick={ClickReport}>
+              Thống kê
+            </SideMenuComponent>
           </div>
           {/* status list */}
           <div className="status-list__content">

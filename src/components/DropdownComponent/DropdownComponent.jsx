@@ -16,8 +16,8 @@ const DropdownComponent = ({
 
   // Cập nhật menuItems khi options thay đổi
   useEffect(() => {
-    setMenuItems(options);
-    console.log("Options updated:", options);
+    // setMenuItems(options);
+    // console.log("Options updated:", options);
   }, [options]);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const DropdownComponent = ({
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen); // Đổi trạng thái mở/đóng
-    console.log("Dropdown isOpen:", !isOpen);
+    // console.log("Dropdown isOpen:", !isOpen);
   };
 
   const handleSelectItem = (item) => {
@@ -36,7 +36,7 @@ const DropdownComponent = ({
   };
 
   useEffect(() => {
-    console.log("Menu Items:", menuItems);
+    // console.log("Menu Items:", menuItems);
   }, [menuItems]);
 
   return (

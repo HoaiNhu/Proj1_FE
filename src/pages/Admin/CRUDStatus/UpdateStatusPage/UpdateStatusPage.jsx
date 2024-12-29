@@ -42,7 +42,7 @@ const UpdateStatusPage = () => {
   });
 
   const handleExit = () => {
-    navigate(location.state?.from || "/status-list");
+    navigate(location.state?.from || "/admin/status-list");
   };
 
   const handleEditClick = () => {

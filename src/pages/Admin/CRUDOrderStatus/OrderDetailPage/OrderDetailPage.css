@@ -86,6 +86,30 @@ h2 {
   margin-bottom: 10px;
 }
 
-.info-customer>p {
+.info-customer > p {
   margin-bottom: 20px;
+}
+
+.info-customer {
+  margin-top: 20px;
+}
+
+.info-customer .info-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* 1 phần cho tiêu đề, 2 phần cho giá trị */
+  gap: 10px 30px; /* Khoảng cách giữa các hàng và cột */
+}
+
+.info-customer .info-row {
+  display: contents; /* Đảm bảo mỗi hàng chia thành hai ô cột */
+}
+
+.info-customer .info-title {
+  /* font-weight: bold; */
+  text-align: left; /* Căn trái */
+  color: var(--brown100);
+}
+
+.info-customer .info-value {
+  text-align: left; /* Căn trái */
 }
