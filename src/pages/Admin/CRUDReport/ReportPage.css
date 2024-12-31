@@ -105,7 +105,7 @@ h2 {
 .report-dropdown-container {
   margin-left: 18px;
   display: flex;
-  gap: 100px; 
+  gap: 100px;
 }
 
 .report-dropdown {
@@ -162,7 +162,7 @@ h2 {
   justify-content: center;
   border-collapse: collapse;
   border-radius: 0 0 15px 15px;
-  overflow: hidden; 
+  overflow: hidden;
   box-shadow: 0 0 4px 0 var(--shadow);
 }
 
@@ -174,7 +174,33 @@ h2 {
   color: var(--brown100);
 }
 
+.custom-dropdown {
+  display: inline-block;
+  margin-right: 10px;
+}
 
+.custom-dropdown .dropdown-toggle {
+  background-color: var(--white);
+  color: var(--brown100);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1.8rem;
+  /* align-items: center; */
+  box-shadow: 0 0 4px 0 var(--shadow);
+  width: 18rem;
+  height: 5.5rem;
+  border-radius: 15px;
+}
 
+.custom-dropdown .dropdown-menu {
+  max-height: 200px;
+  overflow-y: auto;
+}
 
-
+.report-dropdown-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+}
