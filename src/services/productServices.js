@@ -154,7 +154,7 @@ export const deleteProduct = async (productId,access_token) => {
 
 export const searchProducts = async (query) => {
   try {
-    console.log("RTYUI", query)
+    
     const res = await axiosJWT.get(
       `${process.env.REACT_APP_API_URL_BACKEND}/product/search?search=${encodeURIComponent(query)}`,
      

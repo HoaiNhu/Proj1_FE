@@ -164,3 +164,30 @@ export const fetchCities = async () => {
     return [];
   }
 };
+
+
+export const getOrdersByUser = async (access_token, userId) => {
+  try {
+    console.log("SERVICE")
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/get-orders-by-user/${userId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
+        },
+      }
+    );
+    console.log("SERVICE1", res.data)
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        // status: error.response.data?.status || "ERR",
+        message: error.response.data?.message || "Đã xảy ra lỗi.",
+      };
+    } else {
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};

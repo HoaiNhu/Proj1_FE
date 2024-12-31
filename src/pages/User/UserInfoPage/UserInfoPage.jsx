@@ -14,11 +14,12 @@ import { useMutationHook } from "../../../hooks/useMutationHook";
 import Loading from "../../../components/LoadingComponent/Loading";
 import Message from "../../../components/MessageComponent/Message";
 import { getBase64 } from "../../../utils";
-
+import { useNavigate } from "react-router-dom";
 
 function UserInfoPage() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate= useNavigate();
   console.log("user", user);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -357,7 +358,7 @@ function UserInfoPage() {
             <div className="side-menu__info">
               <SideMenuComponent>Thông tin cá nhân</SideMenuComponent>
               <SideMenuComponent>Khuyến mãi</SideMenuComponent>
-              <SideMenuComponent>Đơn hàng</SideMenuComponent>
+              <SideMenuComponent >Đơn hàng</SideMenuComponent>
               <SideMenuComponent>Đăng xuất</SideMenuComponent>
             </div>
             <Loading isLoading={showLoading} />
