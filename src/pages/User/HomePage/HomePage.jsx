@@ -17,11 +17,16 @@ import { getAllNews } from '../../../services/NewsService';
 const text = 'Tiệm bánh ngọt Avocado - "My sweetie, my love" mang trong mình sứ mệnh mang đến những chiếc bánh ngọt ngào và tinh tế, không chỉ để thỏa mãn vị giác mà còn để lan tỏa tình yêu và niềm vui đến mọi người. Với phương châm "My sweetie, my love," chúng tôi cam kết sử dụng những nguyên liệu tươi ngon nhất, kết hợp với kỹ thuật làm bánh hiện đại và sự sáng tạo không ngừng. Mỗi chiếc bánh từ Avocado không chỉ là một món ăn, mà còn là một tác phẩm nghệ thuật, được chăm chút tỉ mỉ từ khâu chọn nguyên liệu đến khi hoàn thiện. Chúng tôi hy vọng rằng mỗi lần thưởng thức bánh từ Avocado, khách hàng sẽ cảm nhận được tình yêu và sự tận tâm mà chúng tôi gửi gắm trong từng sản phẩm.';
 
 const HomePage = () => {
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [promos, setPromos] = useState([]);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
   const [arrImgs, setArrImg] = useState([]);  // State lưu trữ mảng hình ảnh
+  const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
+  const [currentCategory, setCurrentCategory] = useState(null); // State lưu category hiện tại
+  const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
+  const [totalPages, setTotalPages] = useState(0); // Tổng số trang
   const navigate = useNavigate()
   const handleClick = (path) => {
     navigate(path);
@@ -38,10 +43,10 @@ const HomePage = () => {
         if (Array.isArray(discounts.data)) {
           setPromos(discounts.data); // Lưu danh sách khuyến mãi
           console.log("HBJK")
-          const images = Array.isArray(discounts.data) 
-          ? discounts.data.map(discount => discount?.discountImage).filter(Boolean)
-          : [];
-        
+          const images = Array.isArray(discounts.data)
+            ? discounts.data.map(discount => discount?.discountImage).filter(Boolean)
+            : [];
+
           console.log("IMG", images)
           setArrImg(images);
         } else {
@@ -64,7 +69,7 @@ const HomePage = () => {
       console.log(categoryIds)
       // Điều hướng đến trang sản phẩm với queryParams chứa categoryIds
       navigate('/products', { state: { categoryIds } });
-     
+
     }
   };
 
@@ -73,6 +78,7 @@ const HomePage = () => {
     const fetchNews = async () => {
       try {
         const response = await getAllNews();
+
         if (Array.isArray(response.data)) {
           setNewsList(response.data.slice(0, 3)); // Chỉ lấy 3 tin tức đầu
         } else {
@@ -84,6 +90,130 @@ const HomePage = () => {
     };
     fetchNews();
   }, []);
+
+
+  //Xem chi tiet
+  const handleDetailNews = (newsId) => {
+    console.log("ID NEWS", newsId)
+    const selectedNews = newsList.find((item) => item._id === newsId);
+    console.log("VB", selectedNews)
+
+    if (selectedNews) {
+      const { newsImage, newsTitle, newsContent } = selectedNews;
+      navigate("/news-detail", {
+        state: { newsImage, newsTitle, newsContent },
+      });
+    } else {
+      alert("News not found!");
+    }
+  };
+
+
+  // Lay danh sach category
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3001/api/category/get-all-category",
+          {
+            method: "GET", // Phương thức GET để lấy danh sách category
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json();
+        if (Array.isArray(data.data)) {
+          setCategories(data.data); // Lưu danh sách category vào state
+          console.log("GGHH", categories)
+          // Lấy category đầu tiên và fetch sản phẩm tương ứng
+          if (data.data.length > 0) {
+            const firstCategoryId = data.data[0]._id;
+            setCurrentCategory(firstCategoryId); // Lưu category đầu tiên
+            fetchProducts(0, 9, firstCategoryId); // Fetch sản phẩm của category đầu tiên
+          }
+        } else {
+          console.error("Categories data is not in expected format");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+ 
+  // Fetch danh sách sản phẩm khi component được mount
+  const fetchProducts = async (page = 0, limit = 9, categoryId = null) => {
+    try {
+      const queryParams = new URLSearchParams({
+        page,
+        limit,
+      }).toString();
+
+      let url = `http://localhost:3001/api/product/get-all-product?${queryParams}`;
+      if (categoryId) {
+        url = `http://localhost:3001/api/product/get-product-by-category/${categoryId}?${queryParams}`;
+      }
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+
+      const data = await response.json();
+      console.log("FDS", data)
+      console.log("GVHNJ", data.data)
+      // setCurrentPage(page); // Cập nhật trang hiện tại
+      // setTotalPages(Math.ceil(data.data.lenght / limit)); // Tính tổng số trang
+
+      if (Array.isArray(data.data)) {
+        setProducts(data.data.slice(0, 4));
+      } else {
+        console.error("Products data is not in expected format");
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  //Click san pham:
+
+ // Khi nhấn vào sản phẩm
+ const handleDetailProduct = (productId) => {
+  const selectedProduct = products.find((product) => product._id === productId);
+
+  if (selectedProduct) {
+    const { productName, productSize, productImage, productCategory, productDescription, productPrice } = selectedProduct;
+    navigate("/view-product-detail", {
+      state: { productId, productName, productSize, productImage, productDescription, productCategory, productPrice },
+    });
+  } else {
+    alert("Product not found!");
+  }
+};
+
+
+  //Click categoryName:
+  const handleCategoryClick = (categoryId) => {
+    console.log("Category clicked:", categoryId);
+    setCurrentCategory(categoryId); // Lưu categoryId để lọc sản phẩm
+    setCurrentPage(0); // Reset trang về 0 khi chuyển qua category mới
+    fetchProducts(0, 9, categoryId); // Fetch sản phẩm theo category
+  };
+
+
+
   return (
 
     <div >
@@ -158,7 +288,8 @@ const HomePage = () => {
           onClick={() => handleClick('/products')}
           style={{
             margin: 'auto'
-          }}>Xem thêm </ButtonComponent>
+          }}
+        >Xem thêm </ButtonComponent>
       </div>
 
       {/* Sản phẩm */}
@@ -189,10 +320,12 @@ const HomePage = () => {
             justifyContent: 'center',
             paddingBottom: 25
           }}>
-          <ButtonNoBGComponent>Banh kem</ButtonNoBGComponent>
-          <ButtonNoBGComponent>Banh cuoi</ButtonNoBGComponent>
-          <ButtonNoBGComponent>Banh ngot</ButtonNoBGComponent>
-          <ButtonNoBGComponent>Phu kien</ButtonNoBGComponent>
+          {categories.map((category) => (
+            <ButtonNoBGComponent key={category._id}
+              onClick={() => handleCategoryClick(category._id)}>
+              {category.categoryName}
+            </ButtonNoBGComponent>
+          ))}
         </div>
         {/* 1 tab */}
         {/* <Row
@@ -215,10 +348,11 @@ const HomePage = () => {
           </Col>
         </Row> */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', marginLeft: '137px', marginRight: '137px', gap: '18px', paddingBottom: 50 }}>
-          <CardProduct type={"primary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"} />
-          <CardProduct type={"primary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"} />
-          <CardProduct type={"primary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"} />
-          <CardProduct type={"primary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"} />
+          {products.map((product) => (
+            <CardProduct type={"primary"} img={product.productImage} title={product.productName} price={product.productPrice} 
+            onClick={() => handleDetailProduct(product._id)}/>
+          ))}
+
         </div>
         <div style={{
           marginBottom: 50,
@@ -354,16 +488,16 @@ const HomePage = () => {
           }}>Cập nhật thông tin mới nhất về các hoạt động của Avocado</h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', marginLeft: '137px', marginRight: '137px', gap: '25px', paddingBottom: 25 }}>
-        {newsList.map((newsItem, index) => (
-          <CardNews
-            key={index}
-            id={newsItem._id}
-            img={newsItem.newsImage || news}
-            title={newsItem.newsTitle}
-            detail={newsItem.newsContent
-            }
-          />
-        ))}
+          {newsList.map((newsItem, index) => (
+            <CardNews
+              key={index}
+              id={newsItem._id}
+              img={newsItem.newsImage || news}
+              title={newsItem.newsTitle}
+              detail={newsItem.newsContent}
+              onClick={handleDetailNews}
+            />
+          ))}
         </div>
         <div style={{
           marginBottom: 50,
