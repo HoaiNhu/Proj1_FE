@@ -69,14 +69,14 @@ export const getDetailsNews = async (id, access_token) => {
   }
 };
 
-export const getAllNews = async (access_token) => {
+export const getAllNews = async () => {
   try {
     const res = await axiosJWT.get(
       `${process.env.REACT_APP_API_URL_BACKEND}/news/get-all-news`,
       {
         headers: {
           "Content-Type": "application/json",
-          token: `Bearer ${access_token}`,
+          //token: `Bearer ${access_token}`,
         },
       }
     );

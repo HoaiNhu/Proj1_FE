@@ -13,6 +13,7 @@ import news from '../../../assets/img/news.jpg';
 import ButtonComponent from '../../../components/ButtonComponent/ButtonComponent';
 import { useNavigate } from "react-router-dom";
 import { getAllDiscount, deleteDiscount } from "../../../services/DiscountService"
+import { getAllNews } from '../../../services/NewsService';
 const text = 'Tiệm bánh ngọt Avocado - "My sweetie, my love" mang trong mình sứ mệnh mang đến những chiếc bánh ngọt ngào và tinh tế, không chỉ để thỏa mãn vị giác mà còn để lan tỏa tình yêu và niềm vui đến mọi người. Với phương châm "My sweetie, my love," chúng tôi cam kết sử dụng những nguyên liệu tươi ngon nhất, kết hợp với kỹ thuật làm bánh hiện đại và sự sáng tạo không ngừng. Mỗi chiếc bánh từ Avocado không chỉ là một món ăn, mà còn là một tác phẩm nghệ thuật, được chăm chút tỉ mỉ từ khâu chọn nguyên liệu đến khi hoàn thiện. Chúng tôi hy vọng rằng mỗi lần thưởng thức bánh từ Avocado, khách hàng sẽ cảm nhận được tình yêu và sự tận tâm mà chúng tôi gửi gắm trong từng sản phẩm.';
 
 const HomePage = () => {
@@ -25,6 +26,8 @@ const HomePage = () => {
   const handleClick = (path) => {
     navigate(path);
   };
+  const [newsList, setNewsList] = useState([]);
+
 
   // Fetch danh sách khuyến mãi
   useEffect(() => {
@@ -64,6 +67,23 @@ const HomePage = () => {
      
     }
   };
+
+  //Lấy danh sách tin tức:
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await getAllNews();
+        if (Array.isArray(response.data)) {
+          setNewsList(response.data.slice(0, 3)); // Chỉ lấy 3 tin tức đầu
+        } else {
+          setError("Dữ liệu trả về không hợp lệ.");
+        }
+      } catch (err) {
+        setError(err.message || "Không thể tải danh sách tin tức.");
+      }
+    };
+    fetchNews();
+  }, []);
   return (
 
     <div >
@@ -334,9 +354,16 @@ const HomePage = () => {
           }}>Cập nhật thông tin mới nhất về các hoạt động của Avocado</h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', marginLeft: '137px', marginRight: '137px', gap: '25px', paddingBottom: 25 }}>
-          <CardNews img={news} title={'Giáng sinh cùng Avocado: Bánh kem Strawberry Cream giảm giá 10%'} detail={'Hòa vào không khí Giáng sinh, Avocado gửi đến khách hàng nhiều ưu đãi hấp dẫn: Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
-          <CardNews img={news} title={'Giáng sinh cùng Avocado: Bánh kem Strawberry Cream giảm giá 10%'} detail={'Hòa vào không khí Giáng sinh, Avocado gửi đến khách hàng nhiều ưu đãi hấp dẫn: Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
-          <CardNews img={news} title={'Giáng sinh cùng Avocado: Bánh kem Strawberry Cream giảm giá 10%'} detail={'Hòa vào không khí Giáng sinh, Avocado gửi đến khách hàng nhiều ưu đãi hấp dẫn: Giảm giá 10% cho sản phẩm Strawberry Cream từ 12/12-25/12/2024'}> </CardNews>
+        {newsList.map((newsItem, index) => (
+          <CardNews
+            key={index}
+            id={newsItem._id}
+            img={newsItem.newsImage || news}
+            title={newsItem.newsTitle}
+            detail={newsItem.newsContent
+            }
+          />
+        ))}
         </div>
         <div style={{
           marginBottom: 50,
