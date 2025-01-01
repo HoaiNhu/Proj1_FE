@@ -8,27 +8,23 @@ import axios from 'axios'; // For making API calls
 import { Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {getProductsByCategory} from "../../../../services/productServices"
-
-
+import { getProductsByCategory } from "../../../../services/productServices";
 
 const ProductPageAdmin = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0);   // Tổng số trang
-
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
   const [categories, setCategories] = useState([]); // State lưu danh sách category
-  // const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null); // Lưu ID sản phẩm cần xóa
+  const [currentCategory, setCurrentCategory] = useState(null); // State lưu category hiện tại
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user);
   const [error, setError] = useState("");
-  ///======lay danh sach category=====
+
+  // Lấy danh sách category
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-
         const response = await fetch("http://localhost:3001/api/category/get-all-category", {
           method: "GET", // Phương thức GET để lấy danh sách category
           headers: {
@@ -41,12 +37,8 @@ const ProductPageAdmin = () => {
         }
 
         const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-        console.log("Categories data:", categories);
-
-        // Kiểm tra và gán mảng categories từ data.data
         if (Array.isArray(data.data)) {
           setCategories(data.data); // Lưu danh sách category vào state
-
         } else {
           console.error("Categories data is not in expected format");
         }
@@ -57,14 +49,64 @@ const ProductPageAdmin = () => {
     fetchCategories();
   }, []);
 
-  //Phan trang
+  // Fetch danh sách sản phẩm theo trang
+  const fetchProducts = async (page = 0, limit = 15, categoryId = null) => {
+    try {
+      let url = `http://localhost:3001/api/product/get-all-product?page=${page}&limit=${limit}`;
+      if (categoryId) {
+        url = `http://localhost:3001/api/product/get-product-by-category/${categoryId}?page=${page}&limit=${limit}`;
+      }
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+
+      const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
+      setCurrentPage(page);  // Cập nhật trang hiện tại
+      setTotalPages(Math.ceil(data.total / limit));  // Tính tổng số trang
+
+      if (Array.isArray(data.data)) {
+        setProducts(data.data); // Lưu danh sách sản phẩm vào state
+      } else {
+        console.error("Products data is not in expected format");
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  // Fetch danh sách sản phẩm khi component được mount
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Handle chọn category
+  const handleCategoryClick = (categoryId) => {
+    setCurrentCategory(categoryId); // Lưu category hiện tại
+    fetchProducts(0, 15, categoryId); // Fetch sản phẩm theo category
+  };
+
+  // Handle khi nhấn vào "Tất cả sản phẩm"
+  const handleAllProductsClick = () => {
+    setCurrentCategory(null); // Reset category
+    fetchProducts(0, 15); // Fetch tất cả sản phẩm
+  };
+
+  // Phân trang
   const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pages = Array.from({ length: totalPages }, (_, index) => index);
-
     return (
       <div>
         {pages.map((page) => (
-          <button className="pageNumber"
+          <button
+            className="pageNumber"
             key={page}
             onClick={() => onPageChange(page)}
             style={{ fontWeight: currentPage === page ? "bold" : "normal" }}
@@ -76,58 +118,9 @@ const ProductPageAdmin = () => {
     );
   };
 
-
-
-
-  // Fetch danh sách sản phẩm khi component được mount
-  const fetchProducts = async (page = 0, limit) => {
-    try {
-
-      const response = await fetch(`http://localhost:3001/api/product/get-all-product?page=${page}&limit=${limit}`, {
-        method: "GET", // Phương thức GET để lấy danh sách category
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-
-      const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-      console.log("Products:", data.data);
-      setCurrentPage(page);  // Cập nhật trang hiện tại
-      setTotalPages(Math.ceil(data.total / limit));  // Tính tổng số trang
-
-      // Kiểm tra và gán mảng categories từ data.data
-      if (Array.isArray(data.data)) {
-        setProducts(data.data); // Lưu danh sách category vào state
-      } else {
-        console.error("Products data is not in expected format");
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  //Lay product theo category
-  const handleCategoryClick = async (categoryId) => {
-    try {
-      const response = await getProductsByCategory(categoryId); // Gọi hàm API với categoryId và token
-      setProducts(response.data); // Cập nhật danh sách sản phẩm sau khi lọc
-      console.log("Filtered products:", response.data);
-    } catch (err) {
-      console.error("Error fetching products by category:", err.message);
-      setError(err.message || "Không thể tải sản phẩm theo danh mục.");
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
+  // Xử lý cập nhật sản phẩm
   const handleUpdate = (productId) => {
     const selectedProduct = products.find((product) => product._id === productId);
-
     if (selectedProduct) {
       const { productName, productSize, productImage, productCategory, productDescription, productPrice } = selectedProduct;
       navigate("/admin/update-product", {
@@ -138,77 +131,84 @@ const ProductPageAdmin = () => {
     }
   };
 
-
   return (
     <div className="container-xl productadmin-container">
       <div className="productadmin">
         {/* productadmin top */}
-        <div className="productadmin__top">
-          <h1 className="productadmin__title">SẢN PHẨM</h1>
-        </div>
+        <div className="product__top">
+            <h1 className="product__title">SẢN PHẨM</h1>
+            {/* Hiển thị tên category nếu có */}
+            {currentCategory ? (
+              <p className="product__current-category">
+                {categories.find((cat) => cat._id === currentCategory)?.categoryName}
+              </p>
+            ) : (
+              <p className="product__current-category">Tất cả sản phẩm</p>
+            )}
+          </div>
         <div style={{ marginLeft: 1222 }}>
           <AddBtn path={"/admin/add-product"} />
         </div>
         {/* productadmin bot */}
         <div className="productadmin__bot">
           {/* side menu */}
-          <div className="side-menu__category" onChange={useEffect}>
+          <div className="side-menu__category">
+            {/* Thêm "Tất cả sản phẩm" */}
+            <SideMenuComponent onClick={handleAllProductsClick}>
+              Tất cả sản phẩm
+            </SideMenuComponent>
             {Array.isArray(categories) && categories.length > 0 ? (
               categories.map((category) => (
-                <SideMenuComponent key={category._id} value={category._id}
-                  onClick={() => handleCategoryClick(category._id)}>
+                <SideMenuComponent
+                  key={category._id}
+                  value={category._id}
+                  onClick={() => handleCategoryClick(category._id)}
+                >
                   {category.categoryName}
                 </SideMenuComponent>
               ))
             ) : (
               <p>Không có loại sản phẩm</p>
             )}
-
           </div>
 
           {/* productadmin list */}
-          <div className="container productadmin__list" onChange={useEffect}>
+          <div className="container productadmin__list">
             {products.length > 0 ? (
               products.map((product) => {
                 const imageUrl = product.productImage.startsWith("http")
                   ? product.productImage
                   : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace("\\", "/")}`;
 
-                //console.log("Product image URL:", imageUrl);  // Debug URL ảnh
                 return (
                   <CardProductAdmin
-                    key={product._id} // Dùng _id làm key cho mỗi sản phẩm
+                    key={product._id}
                     className="col productadmin__item"
                     type={"primary"}
-                    img={imageUrl} // Sử dụng URL ảnh đã xử lý
-                    title={product.productName} // Hiển thị tên sản phẩm
+                    img={imageUrl}
+                    title={product.productName}
                     price={`${product.productPrice.toLocaleString('en-US')} VND`}
                     onUpdate={() => handleUpdate(product._id)}
                     productId={product._id}
-                  //description={product.productDescription} // Mô tả sản phẩm
-
-
                   />
                 );
               })
-
             ) : (
               <p>Không có sản phẩm nào</p>
             )}
           </div>
-
-
         </div>
+
+        {/* Pagination */}
         <div className="PageNumberHolder">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={(page) => fetchProducts(page, 15)}
+            onPageChange={(page) => fetchProducts(page, 15, currentCategory)}
           />
         </div>
       </div>
     </div>
-
   );
 };
 

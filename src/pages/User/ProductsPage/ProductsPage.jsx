@@ -2,22 +2,18 @@ import { React, useEffect, useState } from "react";
 import "./ProductsPage.css";
 import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuComponent";
 import CardProduct from "../../../components/CardProduct/CardProduct";
-import img1 from "../../../assets/img/hero_3.jpg";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useNavigate } from "react-router-dom";
-import {getProductsByCategory} from "../../../services/productServices"
+import { getProductsByCategory } from "../../../services/productServices";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
   const [categories, setCategories] = useState([]); // State lưu danh sách category
-  const [showModal, setShowModal] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(null); // Lưu ID sản phẩm cần xóa
-  const [loading, setLoading] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState(null); // State lưu category hiện tại
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
-  const [totalPages, setTotalPages] = useState(0);   // Tổng số trang
-    const [error, setError] = useState("");
+  const [totalPages, setTotalPages] = useState(0); // Tổng số trang
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  
 
   //=========Danh muc san pham=======
   useEffect(() => {
@@ -37,10 +33,7 @@ const ProductsPage = () => {
           throw new Error("Failed to fetch categories");
         }
 
-        const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-        console.log("Categories data:", categories);
-
-        // Kiểm tra và gán mảng categories từ data.data
+        const data = await response.json();
         if (Array.isArray(data.data)) {
           setCategories(data.data); // Lưu danh sách category vào state
         } else {
@@ -54,17 +47,20 @@ const ProductsPage = () => {
   }, []);
 
   // Fetch danh sách sản phẩm khi component được mount
-  const fetchProducts = async (page = 0, limit = 9, filter = {}) => {
+  const fetchProducts = async (page = 0, limit = 9, categoryId = null) => {
     try {
-
-      // Xây dựng query string từ filter và các tham số khác
       const queryParams = new URLSearchParams({
         page,
         limit,
-        ...filter, // Thêm các điều kiện lọc vào query
       }).toString();
-      const response = await fetch(`http://localhost:3001/api/product/get-all-product?${queryParams}`, {
-        method: "GET", // Phương thức GET để lấy danh sách category
+      
+      let url = `http://localhost:3001/api/product/get-all-product?${queryParams}`;
+      if (categoryId) {
+        url = `http://localhost:3001/api/product/get-product-by-category/${categoryId}?${queryParams}`;
+      }
+
+      const response = await fetch(url, {
+        method: "GET", 
         headers: {
           "Content-Type": "application/json",
         },
@@ -73,14 +69,12 @@ const ProductsPage = () => {
         throw new Error("Failed to fetch products");
       }
 
-      const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-      console.log("Products:", data.data);
+      const data = await response.json();
       setCurrentPage(page);  // Cập nhật trang hiện tại
       setTotalPages(Math.ceil(data.total / limit));  // Tính tổng số trang
 
-      // Kiểm tra và gán mảng products từ data.data
       if (Array.isArray(data.data)) {
-        setProducts(data.data); // Lưu danh sách category vào state
+        setProducts(data.data);
       } else {
         console.error("Products data is not in expected format");
       }
@@ -88,14 +82,15 @@ const ProductsPage = () => {
       console.error("Error fetching products:", error);
     }
   };
-  //Phan trang
+
+  // Phân trang
   const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pages = Array.from({ length: totalPages }, (_, index) => index);
-
     return (
       <div>
         {pages.map((page) => (
-          <button className="pageNumber"
+          <button
+            className="pageNumber"
             key={page}
             onClick={() => onPageChange(page)}
             style={{ fontWeight: currentPage === page ? "bold" : "normal" }}
@@ -107,25 +102,26 @@ const ProductsPage = () => {
     );
   };
 
-
-  // Hàm xử lý reloadProduct
+  // Hàm xử lý reloadProduct khi người dùng chuyển trang
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts(currentPage, 9, currentCategory);
+  }, [currentPage, currentCategory]);
 
-  //Lay product theo category
-  const handleCategoryClick = async (categoryId) => {
-    try {
-      const response = await getProductsByCategory(categoryId); // Gọi hàm API với categoryId và token
-      setProducts(response.data); // Cập nhật danh sách sản phẩm sau khi lọc
-      console.log("Filtered products:", response.data);
-    } catch (err) {
-      console.error("Error fetching products by category:", err.message);
-      setError(err.message || "Không thể tải sản phẩm theo danh mục.");
-    }
+  // Khi nhấn vào category
+  const handleCategoryClick = (categoryId, categoryName) => {
+    setCurrentCategory(categoryId); // Lưu categoryId để lọc sản phẩm
+    setCurrentPage(0); // Reset trang về 0 khi chuyển qua category mới
+    fetchProducts(0, 9, categoryId); // Fetch sản phẩm theo category
   };
-  
 
+  // Khi nhấn vào Tất cả sản phẩm
+  const handleAllProductsClick = () => {
+    setCurrentCategory(null); // Reset category, hiển thị tất cả sản phẩm
+    setCurrentPage(0); // Reset trang về 0
+    fetchProducts(0, 9); // Fetch tất cả sản phẩm
+  };
+
+  // Khi nhấn vào sản phẩm
   const handleDetail = (productId) => {
     const selectedProduct = products.find((product) => product._id === productId);
 
@@ -139,8 +135,6 @@ const ProductsPage = () => {
     }
   };
 
-
-
   return (
     <div>
       <div className="container-xl product-container">
@@ -148,16 +142,36 @@ const ProductsPage = () => {
           {/* product top */}
           <div className="product__top">
             <h1 className="product__title">SẢN PHẨM</h1>
+            {/* Hiển thị tên category nếu có */}
+            {currentCategory ? (
+              <p className="product__current-category">
+                {categories.find((cat) => cat._id === currentCategory)?.categoryName}
+              </p>
+            ) : (
+              <p className="product__current-category">Tất cả sản phẩm</p>
+            )}
           </div>
 
           {/* product bot */}
           <div className="product__bot">
             {/* side menu */}
-            <div className="side-menu__category" onChange={useEffect}>
+            <div className="side-menu__category">
+              {/* Thêm "Tất cả sản phẩm" */}
+              <SideMenuComponent 
+                key="all-products" 
+                value={null}
+                onClick={handleAllProductsClick}
+              >
+                Tất cả sản phẩm
+              </SideMenuComponent>
+
               {Array.isArray(categories) && categories.length > 0 ? (
                 categories.map((category) => (
-                  <SideMenuComponent key={category._id} value={category._id}
-                    onClick={() => handleCategoryClick(category._id)}>
+                  <SideMenuComponent 
+                    key={category._id} 
+                    value={category._id}
+                    onClick={() => handleCategoryClick(category._id, category.categoryName)}
+                  >
                     {category.categoryName}
                   </SideMenuComponent>
                 ))
@@ -167,48 +181,38 @@ const ProductsPage = () => {
             </div>
 
             {/* product list */}
-            <div className=" container product__list">
+            <div className="container product__list">
               {products.length > 0 ? (
                 products.map((product) => {
-                  // console.log("productPage", products.length);
                   const imageUrl = product.productImage.startsWith("http")
                     ? product.productImage
-                    : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace(
-                      "\\",
-                      "/"
-                    )}`;
-                  console.log("Product ID in ProductsPage:", product._id);
-                  //console.log("Product image URL:", imageUrl);  // Debug URL ảnh
+                    : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace("\\", "/")}`;
+
                   return (
-                   
                     <CardProduct
-                      key={product._id} // Dùng _id làm key cho mỗi sản phẩm
+                      key={product._id}
                       className="col productadmin__item"
                       type={"primary"}
-                      img={imageUrl} // Sử dụng URL ảnh đã xử lý
-                      title={product.productName} // Hiển thị tên sản phẩm
-                      price={`${product.productPrice} VND`} // Hiển thị giá sản phẩm
+                      img={imageUrl}
+                      title={product.productName}
+                      price={`${product.productPrice} VND`}
                       id={product._id}
                       onClick={() => handleDetail(product._id)}
                     />
-                    
                   );
                 })
               ) : (
                 <p>Không có sản phẩm nào</p>
               )}
             </div>
-            {/* button see more */}
-            {/* <ButtonComponent className="btn__see-more">
-              Xem thêm
-            </ButtonComponent> */}
           </div>
         </div>
+        {/* Pagination */}
         <div className="PageNumberHolder">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={(page) => fetchProducts(page, 9)}
+            onPageChange={(page) => setCurrentPage(page)}
           />
         </div>
       </div>
