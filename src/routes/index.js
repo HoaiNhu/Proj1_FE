@@ -327,7 +327,7 @@ export const routes = [
     page: UpdateStatus,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true,
   },
   {
     path: "/admin/introduce",

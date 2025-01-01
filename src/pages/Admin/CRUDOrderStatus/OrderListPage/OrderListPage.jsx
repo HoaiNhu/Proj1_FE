@@ -6,12 +6,18 @@ import CheckboxComponent from "../../../../components/CheckboxComponent/Checkbox
 import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
 import { useNavigate } from "react-router-dom";
 import * as OrderService from "../../../../services/OrderService";
+import * as StatusService from "../../../../services/StatusService";
+import { DropdownButton, Dropdown } from "react-bootstrap";
 
 const OrderListPage = () => {
   const [orders, setOrders] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showLoading, setShowLoading] = useState(false);
   const navigate = useNavigate();
 
   const ClickInfor = () => {
@@ -36,18 +42,29 @@ const OrderListPage = () => {
     navigate("/admin/report");
   };
 
-  const toggleSelectRow = (id) => {
-    setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+  const handleUpdateStatusList = () => {
+    const selectedOrders = orders.filter((order) =>
+      selectedRows.includes(order._id)
     );
-  };
 
-  const toggleSelectAll = () => {
-    setSelectedRows(
-      selectedRows.length === orders.length
-        ? []
-        : orders.map((order) => order.id)
-    );
+    if (selectedOrders.length === 0) {
+      alert("Vui lòng chọn ít nhất một đơn hàng để cập nhật trạng thái.");
+      return;
+    }
+
+    const currentStatuses = [
+      ...new Set(selectedOrders.map((order) => order.status.statusName)),
+    ];
+
+    if (currentStatuses.length > 1) {
+      alert("Chỉ được chọn các đơn hàng có cùng trạng thái.");
+      return;
+    }
+
+    const currentStatus = selectedOrders[0].status; // Lấy trạng thái hiện tại
+    navigate("/admin/order-status/update", {
+      state: { selectedOrders, currentStatus },
+    });
   };
 
   const handleDetail = () => {
@@ -70,25 +87,74 @@ const OrderListPage = () => {
 
   const isSelected = (id) => selectedRows.includes(id);
 
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("access_token");
+      // console.log("token", token);
+      const response = await OrderService.getAllOrders(token);
+      // console.log("response", response);
+      setOrders(response?.data || []);
+      setFilteredOrders(response?.data || []);
+    } catch (err) {
+      setError(err.message || "Đã xảy ra lỗi khi tải danh sách đơn hàng.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // console.log("orders", orders);
+
+  const fetchStatuses = async () => {
+    setShowLoading(true);
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await StatusService.getAllStatus(token);
+      const statusOptions = [
+        { label: "Tất cả", value: null },
+        ...response.data.map((status) => ({
+          label: status.statusName,
+          value: status.statusCode,
+        })),
+      ];
+      setStatuses(statusOptions);
+    } catch (error) {
+      console.error("Failed to fetch statuses", error.message);
+    } finally {
+      setShowLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem("access_token");
-        // console.log("token", token);
-        const response = await OrderService.getAllOrders(token);
-        console.log("response", response);
-        setOrders(response?.data || []);
-      } catch (err) {
-        setError(err.message || "Đã xảy ra lỗi khi tải danh sách đơn hàng.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchStatuses();
     fetchOrders();
   }, []);
 
-  console.log("orders", orders);
+  const toggleSelectRow = (id) => {
+    setSelectedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    setSelectedRows(
+      selectedRows.length === filteredOrders.length
+        ? []
+        : filteredOrders.map((order) => order._id)
+    );
+  };
+
+  const handleFilter = (statusCode) => {
+    setSelectedStatus(statusCode);
+    if (!statusCode) {
+      setFilteredOrders(orders); // Hiển thị tất cả đơn hàng
+    } else {
+      setFilteredOrders(
+        orders.filter((order) => order.status?.statusCode === statusCode)
+      );
+    }
+  };
+
   return (
     <div>
       <div className="container-xl">
@@ -126,17 +192,35 @@ const OrderListPage = () => {
                 >
                   Chi tiết
                 </ButtonComponent>
-                <ButtonComponent className="btn btn-cancel">
+                {/* <ButtonComponent className="btn btn-cancel">
                   Hủy đơn
-                </ButtonComponent>
-                <ButtonComponent className="btn btn-update">
+                </ButtonComponent> */}
+                <ButtonComponent
+                  className="btn btn-update"
+                  onClick={handleUpdateStatusList}
+                >
                   Cập nhật
                 </ButtonComponent>
               </div>
             </div>
             <div className="filter-order">
-              <DropdownComponent placeholder="Trạng thái"></DropdownComponent>
-              <ButtonComponent>Lọc</ButtonComponent>
+              <DropdownButton
+                className="filter-order__status"
+                title={
+                  selectedStatus
+                    ? statuses.find((s) => s.value === selectedStatus)?.label ||
+                      "Chọn trạng thái"
+                    : "Chọn trạng thái"
+                }
+                onSelect={handleFilter}
+              >
+                {statuses.map((status, index) => (
+                  <Dropdown.Item key={index} eventKey={status.value}>
+                    {status.label}
+                  </Dropdown.Item>
+                ))}
+              </DropdownButton>
+              {/* <ButtonComponent>Lọc</ButtonComponent> */}
             </div>
             {/* table */}
             <div className="table-container">
@@ -145,12 +229,15 @@ const OrderListPage = () => {
                   <tr>
                     <th>
                       <CheckboxComponent
-                        isChecked={selectedRows.length === orders.length}
+                        isChecked={
+                          selectedRows.length === filteredOrders.length
+                        }
                         onChange={toggleSelectAll}
                       />
                     </th>
                     <th>STT</th>
                     <th>Mã đơn</th>
+                    <th>Khách hàng</th>
                     <th>Trạng thái</th>
                     <th>Ngày đặt</th>
                     <th>Ngày giao</th>
@@ -158,7 +245,7 @@ const OrderListPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((order, index) => (
+                  {filteredOrders.map((order, index) => (
                     <tr
                       key={order._id}
                       className={isSelected(order._id) ? "highlight" : ""}
@@ -171,6 +258,11 @@ const OrderListPage = () => {
                       </td>
                       <td>{index + 1}</td>
                       <td>{order.orderCode}</td>
+                      <td>
+                        {order.shippingAddress.familyName +
+                          " " +
+                          order.shippingAddress.userName}
+                      </td>
                       <td>{order.status?.statusName || "Không xác định"}</td>
                       <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                       <td>

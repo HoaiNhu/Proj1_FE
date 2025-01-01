@@ -1,84 +1,215 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./UpdateStatus.css"; // Import file CSS
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
+import TruckIconComponent from "../../../../components/TruckIconComponent/TruckIconComponent";
+import { useLocation, useNavigate } from "react-router-dom";
+import * as StatusService from "../../../../services/StatusService";
+import * as OrderService from "../../../../services/OrderService";
+
 const UpdateStatus = () => {
-  const [orders, setOrders] = useState([
-    {
-      id: 1,
-      code: "S1",
-      status: "Đang làm",
-      receivedDate: "5/1/2024",
-      deliveryDate: "6/1/2024",
-      total: "625,000 VND",
-    },
-    {
-      id: 2,
-      code: "S2",
-      status: "Đang làm",
-      receivedDate: "5/1/2024",
-      deliveryDate: "5/1/2024",
-      total: "450,000 VND",
-    },
-    {
-      id: 3,
-      code: "S3",
-      status: "Đang làm",
-      receivedDate: "5/1/2024",
-      deliveryDate: "5/1/2024",
-      total: "1,000,000 VND",
-    },
-    {
-      id: 4,
-      code: "S4",
-      status: "Đang làm",
-      receivedDate: "5/1/2024",
-      deliveryDate: "5/1/2024",
-      total: "200,000 VND",
-    },
-  ]);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const handelClickExit = () => {
+    navigate("/admin/order-list");
+  };
+  const ClickInfor = () => {
+    navigate("/admin/store-info");
+  };
+  const ClickOrder = () => {
+    navigate("/admin/order-list");
+  };
+  const ClickDiscount = () => {
+    navigate("/admin/discount-list");
+  };
+  const ClickStatus = () => {
+    navigate("/admin/status-list");
+  };
+  const ClickCategory = () => {
+    navigate("/admin/category-list");
+  };
+  const ClickUser = () => {
+    navigate("/admin/user-list");
+  };
+  const ClickReport = () => {
+    navigate("/admin/report");
+  };
 
-  const [currentStatus, setCurrentStatus] = useState("Đang làm");
+  const { selectedOrders, currentStatus } = location.state || {};
+  console.log("selectedOrders", selectedOrders);
+  const [orders, setOrders] = useState(selectedOrders || []);
+  // console.log("orders", orders);
+  const [statuses, setStatuses] = useState([]); // Tất cả status
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
-  const statuses = ["Đã nhận", "Đang làm", "Đang giao", "Đã giao", "Đã hủy"];
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await StatusService.getAllStatus(token);
+        setStatuses(response.data || []);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    };
 
-  const updateStatus = () => {
-    const newStatusIndex =
-      (statuses.indexOf(currentStatus) + 1) % statuses.length;
-    const newStatus = statuses[newStatusIndex];
+    fetchStatuses();
+  }, []);
 
-    setOrders(orders.map((order) => ({ ...order, status: newStatus })));
-    setCurrentStatus(newStatus);
+  useEffect(() => {
+    if (statuses.length > 0 && currentStatus) {
+      const index = statuses.findIndex(
+        (status) => status.statusName === currentStatus.statusName
+      );
+      setCurrentIndex(index);
+    }
+  }, [statuses, currentStatus]);
+
+  //update status
+  const updateStatus = async () => {
+    if (currentIndex === -1 || currentIndex === statuses.length - 1) {
+      alert("Đây là trạng thái cuối cùng.");
+      return;
+    }
+
+    const currentStatus = statuses[currentIndex];
+    if (currentStatus.statusCode === "COMPLETED") {
+      alert("Trạng thái hiện tại là 'Đã giao'. Không thể cập nhật thêm.");
+      return;
+    }
+
+    const nextStatus = statuses[currentIndex + 1];
+    try {
+      const token = localStorage.getItem("access_token");
+      const updatedOrders = await Promise.all(
+        orders.map((order) =>
+          OrderService.updateOrderStatus(order._id, nextStatus._id, token)
+        )
+      );
+
+      console.log("updatedOrders", updatedOrders);
+
+      const updatedOrdersWithDetails = updatedOrders.map((updatedOrder) => {
+        const updatedOrderData = updatedOrder.data; // Lấy `data` từ response
+        const detailedStatus = statuses.find(
+          (status) => status._id === updatedOrderData.status // Tìm trạng thái chi tiết
+        );
+        return {
+          ...updatedOrderData, // Dữ liệu đơn hàng
+          status: detailedStatus, // Gắn thêm trạng thái chi tiết
+        };
+      });
+
+      alert("Cập nhật trạng thái thành công!");
+      setOrders(updatedOrdersWithDetails);
+      setCurrentIndex((prev) => prev + 1); // Cập nhật chỉ số trạng thái
+    } catch (error) {
+      console.error("Error updating status:", error);
+      alert("Đã xảy ra lỗi khi cập nhật trạng thái.");
+    }
+  };
+
+  //cancel order
+  const cancelOrders = async () => {
+    if (currentIndex === -1 || currentIndex === statuses.length - 1) {
+      alert("Đây là trạng thái cuối cùng.");
+      return;
+    }
+
+    const currentStatus = statuses[currentIndex];
+    if (currentStatus.statusCode === "COMPLETED") {
+      alert("Trạng thái hiện tại là 'Đã giao'. Không thể cập nhật thêm.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        alert("Access token is missing");
+        return;
+      }
+
+      // Tìm trạng thái hủy (CANCEL)
+      const cancelStatus = statuses.find(
+        (status) => status.statusCode === "CANCEL"
+      );
+      if (!cancelStatus) {
+        alert("Không tìm thấy trạng thái hủy.");
+        return;
+      }
+
+      // Cập nhật trạng thái hủy cho các đơn hàng đã chọn
+      const updatedOrders = await Promise.all(
+        orders.map((order) =>
+          OrderService.updateOrderStatus(order._id, cancelStatus._id, token)
+        )
+      );
+
+      const updatedOrdersWithDetails = updatedOrders.map((updatedOrder) => {
+        const updatedOrderData = updatedOrder.data;
+        const detailedStatus = statuses.find(
+          (status) => status._id === updatedOrderData.status
+        );
+        return {
+          ...updatedOrderData,
+          status: detailedStatus,
+        };
+      });
+
+      alert("Hủy đơn thành công!");
+      setOrders(updatedOrdersWithDetails);
+      setCurrentIndex(statuses.length - 1);
+    } catch (error) {
+      console.error("Error canceling orders:", error);
+      alert("Đã xảy ra lỗi khi hủy đơn.");
+    }
   };
 
   const isLastStatus = currentStatus === statuses[statuses.length - 1];
-  const currentIndex = statuses.indexOf(currentStatus);
+  // const currentIndex = statuses.indexOf(currentStatus);
 
-  const navigate = useState();
-  const handelClcikExit = () => {};
+  if (!statuses || !selectedOrders) {
+    return <p>Không có dữ liệu để hiển thị. Vui lòng kiểm tra lại.</p>;
+  }
 
   return (
     <div className="container-xl">
       <div className="holderContent-updateStatus">
         {/* side menu */}
         <div className="side-menu__discount">
-          <SideMenuComponent className="btn-menu">
+          <SideMenuComponent onClick={ClickInfor}>
             Thông tin cửa hàng
           </SideMenuComponent>
-          <SideMenuComponent className="btn-menu">Đơn hàng</SideMenuComponent>
-          <SideMenuComponent className="btn-menu">Khuyến mãi</SideMenuComponent>
-          <SideMenuComponent className="btn-menu">Trạng thái</SideMenuComponent>
-          <SideMenuComponent className="btn-menu">
-            Loại sản phẩm{" "}
+          <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+          <SideMenuComponent onClick={ClickDiscount}>
+            Khuyến mãi
           </SideMenuComponent>
-          <SideMenuComponent className="btn-menu">
-            Danh sách người dùng{" "}
+          <SideMenuComponent onClick={ClickStatus}>
+            Trạng thái
           </SideMenuComponent>
-          <SideMenuComponent className="btn-menu">Thống kê </SideMenuComponent>
+          <SideMenuComponent onClick={ClickCategory}>
+            Loại sản phẩm
+          </SideMenuComponent>
+          <SideMenuComponent onClick={ClickUser}>
+            Danh sách người dùng
+          </SideMenuComponent>
+          <SideMenuComponent onClick={ClickReport}>Thống kê</SideMenuComponent>
         </div>
         <div className="right-area-UpdateStatus">
-          <h1 className="UpdateStatus-title">Cập nhật trạng thái đơn hàng</h1>
-          <p className="CurrentStatus">Trạng thái hiện tại</p>
+          <h2
+            style={{
+              margin: "20px",
+            }}
+          >
+            Cập nhật trạng thái đơn hàng
+          </h2>
+          <label
+            style={{
+              margin: "20px",
+            }}
+          >
+            Trạng thái hiện tại
+          </label>
           <div className="status-bar">
             <div className="progress-line-wrapper">
               <div
@@ -93,24 +224,13 @@ const UpdateStatus = () => {
                   <div
                     key={index}
                     className={`status-circle ${
-                      status === currentStatus ? "active" : ""
+                      index === currentIndex ? "active" : ""
                     } ${index < currentIndex ? "completed" : ""}`}
                   >
                     <div className="car-icon">
-                      {status === currentStatus && (
+                      {index === currentIndex && (
                         <span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M18 18.5C17.6022 18.5 17.2206 18.342 16.9393 18.0607C16.658 17.7794 16.5 17.3978 16.5 17C16.5 16.6022 16.658 16.2206 16.9393 15.9393C17.2206 15.658 17.6022 15.5 18 15.5C18.3978 15.5 18.7794 15.658 19.0607 15.9393C19.342 16.2206 19.5 16.6022 19.5 17C19.5 17.3978 19.342 17.7794 19.0607 18.0607C18.7794 18.342 18.3978 18.5 18 18.5ZM19.5 9.5L21.46 12H17V9.5M6 18.5C5.60218 18.5 5.22064 18.342 4.93934 18.0607C4.65804 17.7794 4.5 17.3978 4.5 17C4.5 16.6022 4.65804 16.2206 4.93934 15.9393C5.22064 15.658 5.60218 15.5 6 15.5C6.39782 15.5 6.77936 15.658 7.06066 15.9393C7.34196 16.2206 7.5 16.6022 7.5 17C7.5 17.3978 7.34196 17.7794 7.06066 18.0607C6.77936 18.342 6.39782 18.5 6 18.5ZM20 8H17V4H3C1.89 4 1 4.89 1 6V17H3C3 17.7956 3.31607 18.5587 3.87868 19.1213C4.44129 19.6839 5.20435 20 6 20C6.79565 20 7.55871 19.6839 8.12132 19.1213C8.68393 18.5587 9 17.7956 9 17H15C15 17.7956 15.3161 18.5587 15.8787 19.1213C16.4413 19.6839 17.2044 20 18 20C18.7956 20 19.5587 19.6839 20.1213 19.1213C20.6839 18.5587 21 17.7956 21 17H23V12L20 8Z"
-                              fill="#3A060E"
-                            />
-                          </svg>
+                          <TruckIconComponent />
                         </span>
                       )}
                     </div>
@@ -121,36 +241,50 @@ const UpdateStatus = () => {
             <div className="status-labels">
               {statuses.map((status, index) => (
                 <div key={index} className="status-label">
-                  {status}
+                  {status.statusName}
                 </div>
               ))}
             </div>
           </div>
-          <table className="table-data-UpdateStatus">
-            <thead>
-              <tr>
-                <th className="headerTableUpdate">STT</th>
-                <th className="headerTableUpdate">Mã đơn</th>
-                <th className="headerTableUpdate">Trạng thái</th>
-                <th className="headerTableUpdate"> Ngày nhận</th>
-                <th className="headerTableUpdate">Ngày giao</th>
-                <th className="headerTableUpdate">Tổng tiền</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order.id}>
-                  <td className="UpdateStatusCol">{order.id}</td>
-                  <td className="UpdateStatusCol">{order.code}</td>
-                  <td className="UpdateStatusCol">{order.status}</td>
-                  <td className="UpdateStatusCol">{order.receivedDate}</td>
-                  <td className="UpdateStatusCol">{order.deliveryDate}</td>
-                  <td className="UpdateStatusCol">{order.total}</td>
+
+          {/* table */}
+          <div className="table-container">
+            <table className="order-table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Mã đơn</th>
+                  <th>Khách hàng</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày đặt</th>
+                  <th>Ngày giao</th>
+                  <th>Tổng tiền</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="BtnHolder-UpdateStatus">
+              </thead>
+              <tbody>
+                {orders.map((order, index) => (
+                  <tr key={order._id}>
+                    <td>{index + 1}</td>
+                    <td>{order.orderCode}</td>
+                    <td>
+                      {order.shippingAddress.familyName +
+                        " " +
+                        order.shippingAddress.userName}
+                    </td>
+                    <td>{order.status?.statusName}</td>
+                    <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      {order.deliveryDate
+                        ? new Date(order.deliveryDate).toLocaleDateString()
+                        : "Chưa giao"}
+                    </td>
+                    <td>{order.totalPrice.toLocaleString()} VND</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="BtnHolder-UpdateStatus gap-3">
             <div className="UpdateStatus-btn">
               <ButtonComponent
                 onClick={updateStatus}
@@ -160,13 +294,15 @@ const UpdateStatus = () => {
                 Cập nhật trạng thái
               </ButtonComponent>
             </div>
+            <ButtonComponent
+              className="btn btn-cancel"
+              onClick={cancelOrders}
+              style={{ marginLeft: "20px" }}
+            >
+              Hủy đơn
+            </ButtonComponent>
             <div className="ExitHolder-btn">
-              <ButtonComponent
-                className="ExitBtn-Custom-updatestatus"
-                onClick={handelClcikExit}
-              >
-                Thoát
-              </ButtonComponent>
+              <ButtonComponent onClick={handelClickExit}>Thoát</ButtonComponent>
             </div>
           </div>
         </div>
