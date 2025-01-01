@@ -8,6 +8,7 @@ import ButtonComponent from "../../../../components/ButtonComponent/ButtonCompon
 import { createDiscount } from "../../../../services/DiscountService";
 import "./AddDiscountPage.css";
 import { useMutationHook } from "../../../../hooks/useMutationHook";
+import { useNavigate } from "react-router-dom";
 
 
 const AddDiscountPage = () => {
@@ -18,7 +19,7 @@ const AddDiscountPage = () => {
   const [previewImage, setPreviewImage] = useState(null); // State để lưu URL của ảnh preview
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
-
+  const navigate= useNavigate();
   const [statediscount, setstateDiscount] = useState({
     discountCode: "",
     discountName: "",
@@ -112,6 +113,7 @@ const AddDiscountPage = () => {
           console.log("RESKLT",result);
           if (result.status === "OK") {
             alert("Thêm khuyến mãi thành công!");
+            navigate('/admin/discount-list')
           
           } else {
             alert(`Thêm khuyến mãi thất bại: ${result.message}`);
@@ -142,6 +144,7 @@ const AddDiscountPage = () => {
       }
   
      mutation.mutate(formData)
+    //  navigate('/admin/discount-list')
     };
   return (
     <div>
@@ -268,7 +271,7 @@ const AddDiscountPage = () => {
               {/* button */}
               <div className="btn__add-discount">
                 <ButtonComponent onClick={handleSubmit}>Lưu</ButtonComponent>
-                <ButtonComponent>Thoát</ButtonComponent>
+                <ButtonComponent >Thoát</ButtonComponent>
               </div>
             </div>
           </div>

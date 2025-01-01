@@ -178,7 +178,7 @@ export const routes = [
   },
 
   {
-    path: "/discount-list",
+    path: "/admin/discount-list",
     page: DiscountListPage,
     isShowHeader: true,
     isShowFooter: true,

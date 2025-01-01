@@ -17,8 +17,8 @@ import CheckboxComponent from "../../../../components/CheckboxComponent/Checkbox
 const UserListPage = () => {
   const navigate = useNavigate();
   const ClickInfor=()=>{navigate("/admin/store-info")}
-  const ClickOrder=()=>{navigate("/order-list")}
-  const ClickDiscount=()=>{navigate("/discount-list")}
+  const ClickOrder=()=>{navigate("/admin/order-list")}
+  const ClickDiscount=()=>{navigate("/admin/discount-list")}
   const ClickStatus=()=>{navigate("/admin/status-list")}
   const ClickCategory=()=>{navigate("/admin/category-list")}
   const ClickUser=()=>{navigate("/admin/user-list")}

@@ -233,7 +233,7 @@ const ReportPage = () => {
     navigate("/admin/order-list");
   };
   const ClickDiscount = () => {
-    navigate("/discount-list");
+    navigate("/admin/discount-list");
   };
   const ClickStatus = () => {
     navigate("/admin/status-list");

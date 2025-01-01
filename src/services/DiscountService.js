@@ -124,14 +124,13 @@ export const updateDiscount = async (id, access_token, data) => {
   }
 };
 
-export const deleteDiscount = async (DiscountId,access_token) => {
+
+export const deleteDiscount = async (id, access_token) => {
   try {
     const res = await axios.delete(
-      `${process.env.REACT_APP_API_URL_BACKEND}/discount/delete-discount/${DiscountId}`,
-      
+      `${process.env.REACT_APP_API_URL_BACKEND}/discount/delete-discount/${id}`, // Sử dụng ID của khuyến mãi
       {
         headers: {
-          "Content-Type": "application/json",
           token: `Bearer ${access_token}`,
         },
       }
@@ -140,14 +139,17 @@ export const deleteDiscount = async (DiscountId,access_token) => {
   } catch (error) {
     if (error.response) {
       throw {
-        // Discount: error.response.data?.Discount || "ERR",
         message: error.response.data?.message || "Đã xảy ra lỗi.",
       };
     } else {
-      throw { Discount: 500, message: "Không thể kết nối đến máy chủ." };
+      throw { message: "Không thể kết nối đến máy chủ." };
     }
   }
 };
+
+
+
+
 
 // services/DiscountService.js
 

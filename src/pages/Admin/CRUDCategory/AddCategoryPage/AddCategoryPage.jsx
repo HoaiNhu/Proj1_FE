@@ -58,8 +58,8 @@ const ExitForm =()=>{
   };
   const navigate= useNavigate();
   const ClickInfor=()=>{navigate("/store-info")}
-  const ClickOrder=()=>{navigate("/order-list")}
-  const ClickDiscount=()=>{navigate("/discount-list")}
+  const ClickOrder=()=>{navigate("/admin/order-list")}
+  const ClickDiscount=()=>{navigate("/admin/discount-list")}
   const ClickStatus=()=>{navigate("/status-list")}
   const ClickCategory=()=>{navigate("/category-list")}
   const ClickUser=()=>{navigate("/user-list")}
