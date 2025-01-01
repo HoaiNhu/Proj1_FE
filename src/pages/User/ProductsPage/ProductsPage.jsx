@@ -5,6 +5,7 @@ import CardProduct from "../../../components/CardProduct/CardProduct";
 import img1 from "../../../assets/img/hero_3.jpg";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useNavigate } from "react-router-dom";
+import {getProductsByCategory} from "../../../services/productServices"
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
@@ -14,6 +15,7 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0);   // Tổng số trang
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   
 
@@ -111,10 +113,18 @@ const ProductsPage = () => {
     fetchProducts();
   }, []);
 
-  //Ham loc product theo category 
-  const handleCategoryClick = (categoryId) => {
-    fetchProducts(0, 9, { productCategory: categoryId });
+  //Lay product theo category
+  const handleCategoryClick = async (categoryId) => {
+    try {
+      const response = await getProductsByCategory(categoryId); // Gọi hàm API với categoryId và token
+      setProducts(response.data); // Cập nhật danh sách sản phẩm sau khi lọc
+      console.log("Filtered products:", response.data);
+    } catch (err) {
+      console.error("Error fetching products by category:", err.message);
+      setError(err.message || "Không thể tải sản phẩm theo danh mục.");
+    }
   };
+  
 
   const handleDetail = (productId) => {
     const selectedProduct = products.find((product) => product._id === productId);
