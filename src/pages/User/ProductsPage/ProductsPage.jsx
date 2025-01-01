@@ -15,7 +15,7 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0);   // Tổng số trang
-  const [error, setError] = useState("");
+    const [error, setError] = useState("");
   const navigate = useNavigate();
   
 

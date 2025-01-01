@@ -1,35 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./DiscountListPage.css";
 import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
 import { useNavigate } from "react-router-dom";
-const DiscountListPage = () => {
-  const [selectedRows, setSelectedRows] = useState([]);
+import { getAllDiscount } from "../../../../services/DiscountService";
 
-  const promos = [
-    {
-      id: 1,
-      code: "KM1",
-      name: "Summer",
-      startDate: "30/5/2025",
-      endDate: "2/6/2025",
-    },
-    {
-      id: 2,
-      code: "KM2",
-      name: "Winter",
-      startDate: "1/12/2025",
-      endDate: "31/12/2025",
-    },
-    {
-      id: 3,
-      code: "KM3",
-      name: "Spring",
-      startDate: "1/3/2025",
-      endDate: "31/3/2025",
-    },
-  ];
+const DiscountListPage = () => {
+  const accessToken = localStorage.getItem("access_token");
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [promos, setPromos] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  // Fetch danh sách category
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/category/get-all-category", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json();
+        if (Array.isArray(data.data)) {
+          setCategories(data.data); // Lưu danh sách category
+        } else {
+          console.error("Categories data is not in expected format");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch danh sách khuyến mãi
+  useEffect(() => {
+    const fetchDiscounts = async () => {
+      try {
+        const discounts = await getAllDiscount(accessToken);
+        if (Array.isArray(discounts.data)) {
+          setPromos(discounts.data); // Lưu danh sách khuyến mãi
+        } else {
+          setError("Dữ liệu trả về không hợp lệ.");
+        }
+      } catch (err) {
+        setError(err.message || "Không thể tải danh sách khuyến mãi.");
+      }
+    };
+    fetchDiscounts();
+  }, [accessToken]);
+
+  const getCategoryNameById = (id) => {
+    const category = categories.find((cat) => cat.id === id);
+    return category ? category.categoryName : "Không xác định";
+  };
 
   const toggleSelectRow = (id) => {
     setSelectedRows((prev) =>
@@ -46,24 +79,27 @@ const DiscountListPage = () => {
   };
 
   const isSelected = (id) => selectedRows.includes(id);
-const navigate= useNavigate();
-  const ClickInfor=()=>{navigate("/admin/store-info")}
-  const ClickOrder=()=>{navigate("/order-list")}
-  const ClickDiscount=()=>{navigate("/discount-list")}
-  const ClickStatus=()=>{navigate("/admin/status-list")}
-  const ClickCategory=()=>{navigate("/admin/category-list")}
-  const ClickUser=()=>{navigate("/admin/user-list")}
-  const ClickReprot=()=>{navigate("/admin/report")}
+
+  const ClickInfor = () => navigate("/admin/store-info");
+  const ClickOrder = () => navigate("/order-list");
+  const ClickDiscount = () => navigate("/discount-list");
+  const ClickStatus = () => navigate("/admin/status-list");
+  const ClickCategory = () => navigate("/admin/category-list");
+  const ClickUser = () => navigate("/admin/user-list");
+  const ClickReport = () => navigate("/admin/report");
+
   return (
     <div>
       <div className="container-xl">
         <div className="discount-list__info">
-          {/* side menu */}
+          {/* Side menu */}
           <div className="side-menu__discount">
             <SideMenuComponent className="btn-menu" onClick={ClickInfor}>
               Thông tin cửa hàng
             </SideMenuComponent>
-            <SideMenuComponent className="btn-menu" onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
+            <SideMenuComponent className="btn-menu" onClick={ClickOrder}>
+              Đơn hàng
+            </SideMenuComponent>
             <SideMenuComponent className="btn-menu" onClick={ClickDiscount}>
               Khuyến mãi
             </SideMenuComponent>
@@ -71,24 +107,31 @@ const navigate= useNavigate();
               Trạng thái
             </SideMenuComponent>
             <SideMenuComponent className="btn-menu" onClick={ClickCategory}>
-              Loại sản phẩm{" "}
-            </SideMenuComponent >
-            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
+              Loại sản phẩm
+            </SideMenuComponent>
+            <SideMenuComponent onClick={ClickUser}>
+              Danh sách người dùng
+            </SideMenuComponent>
+            <SideMenuComponent onClick={ClickReport}>Thống kê</SideMenuComponent>
           </div>
-          {/* discount list */}
+
+          {/* Discount list */}
           <div className="discount-list__content">
             <div className="discount-list__action">
               <h2 className="discount-list__title">Danh sách khuyến mãi</h2>
               <div className="btn__action">
-                <ButtonComponent className="btn btn-delete">
-                  Xóa
-                </ButtonComponent>
+                <ButtonComponent className="btn btn-delete">Xóa</ButtonComponent>
                 <ButtonComponent className="btn btn-edit">Sửa</ButtonComponent>
-                <ButtonComponent className="btn btn-add">Thêm</ButtonComponent>
+                <ButtonComponent
+                  className="btn btn-add"
+                  onClick={() => navigate("/admin/add-discount")}
+                >
+                  Thêm
+                </ButtonComponent>
               </div>
             </div>
-            {/* table */}
+
+            {/* Table */}
             <div className="table-container">
               <table className="promo-table">
                 <thead>
@@ -102,48 +145,48 @@ const navigate= useNavigate();
                     <th>STT</th>
                     <th>Mã khuyến mãi</th>
                     <th>Tên khuyến mãi</th>
+                    <th>Giá trị khuyến mãi</th>
+                    <th>Loại sản phẩm</th>
                     <th>Ngày bắt đầu</th>
                     <th>Ngày kết thúc</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {promos.map((promo, index) => (
-                    <tr
-                      key={promo.id}
-                      className={isSelected(promo.id) ? "highlight" : ""}
-                    >
-                      <td>
-                        <CheckboxComponent
-                          isChecked={isSelected(promo.id)}
-                          onChange={() => toggleSelectRow(promo.id)}
-                        />
-                      </td>
-                      <td>{index + 1}</td>
-                      <td>{promo.code}</td>
-                      <td>{promo.name}</td>
-                      <td>{promo.startDate}</td>
-                      <td>{promo.endDate}</td>
-                      <td>
-                        <button className="delete-btn">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="19"
-                            height="24"
-                            viewBox="0 0 19 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M1.35714 21.3333C1.35714 22.8 2.57857 24 4.07143 24H14.9286C16.4214 24 17.6429 22.8 17.6429 21.3333V8C17.6429 6.53333 16.4214 5.33333 14.9286 5.33333H4.07143C2.57857 5.33333 1.35714 6.53333 1.35714 8V21.3333ZM17.6429 1.33333H14.25L13.2864 0.386667C13.0421 0.146667 12.6893 0 12.3364 0H6.66357C6.31071 0 5.95786 0.146667 5.71357 0.386667L4.75 1.33333H1.35714C0.610714 1.33333 0 1.93333 0 2.66667C0 3.4 0.610714 4 1.35714 4H17.6429C18.3893 4 19 3.4 19 2.66667C19 1.93333 18.3893 1.33333 17.6429 1.33333Z"
-                              fill="currentColor"
-                            />
-                          </svg>
-                        </button>
-                      </td>
+                  {promos.length > 0 ? (
+                    promos.map((promo, index) => (
+                      <tr
+                        key={promo.id}
+                        className={isSelected(promo.id) ? "highlight" : ""}
+                      >
+                        <td>
+                          <CheckboxComponent
+                            isChecked={isSelected(promo.id)}
+                            onChange={() => toggleSelectRow(promo.id)}
+                          />
+                        </td>
+                        <td>{index + 1}</td>
+                        <td>{promo.discountCode}</td>
+                        <td>{promo.discountName}</td>
+                        <td>{promo.discountValue} VND</td>
+                        <td>{getCategoryNameById(promo.aplicableCategory)}</td>
+                        <td>{promo.discountStartDate}</td>
+                        <td>{promo.discountEndDate}</td>
+                        <td>
+                          <button className="delete-btn">
+                            {/* Icon */}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9">Không có khuyến mãi nào để hiển thị.</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
+              {error && <p className="error-message">{error}</p>}
             </div>
           </div>
         </div>
