@@ -8,6 +8,8 @@ import axios from 'axios'; // For making API calls
 import { Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {getProductsByCategory} from "../../../../services/productServices"
+
 
 
 const ProductPageAdmin = () => {
@@ -17,10 +19,11 @@ const ProductPageAdmin = () => {
 
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
   const [categories, setCategories] = useState([]); // State lưu danh sách category
- // const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null); // Lưu ID sản phẩm cần xóa
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user)
+  const [error, setError] = useState("");
   ///======lay danh sach category=====
   useEffect(() => {
     const fetchCategories = async () => {
@@ -106,8 +109,17 @@ const ProductPageAdmin = () => {
     }
   };
 
-
-
+  //Lay product theo category
+  const handleCategoryClick = async (categoryId) => {
+    try {
+      const response = await getProductsByCategory(categoryId); // Gọi hàm API với categoryId và token
+      setProducts(response.data); // Cập nhật danh sách sản phẩm sau khi lọc
+      console.log("Filtered products:", response.data);
+    } catch (err) {
+      console.error("Error fetching products by category:", err.message);
+      setError(err.message || "Không thể tải sản phẩm theo danh mục.");
+    }
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -115,17 +127,17 @@ const ProductPageAdmin = () => {
 
   const handleUpdate = (productId) => {
     const selectedProduct = products.find((product) => product._id === productId);
-    
+
     if (selectedProduct) {
-      const { productName, productSize, productImage, productCategory, productDescription, productPrice } = selectedProduct; 
+      const { productName, productSize, productImage, productCategory, productDescription, productPrice } = selectedProduct;
       navigate("/admin/update-product", {
-        state: { productId, productName, productSize, productImage,  productDescription, productCategory, productPrice}, 
+        state: { productId, productName, productSize, productImage, productDescription, productCategory, productPrice },
       });
     } else {
       alert("Product not found!");
     }
   };
-  
+
 
   return (
     <div className="container-xl productadmin-container">
@@ -143,7 +155,8 @@ const ProductPageAdmin = () => {
           <div className="side-menu__category" onChange={useEffect}>
             {Array.isArray(categories) && categories.length > 0 ? (
               categories.map((category) => (
-                <SideMenuComponent key={category._id} value={category._id}>
+                <SideMenuComponent key={category._id} value={category._id}
+                  onClick={() => handleCategoryClick(category._id)}>
                   {category.categoryName}
                 </SideMenuComponent>
               ))
@@ -170,7 +183,7 @@ const ProductPageAdmin = () => {
                     img={imageUrl} // Sử dụng URL ảnh đã xử lý
                     title={product.productName} // Hiển thị tên sản phẩm
                     price={`${product.productPrice.toLocaleString('en-US')} VND`}
-                    onUpdate={() => handleUpdate(product._id)} 
+                    onUpdate={() => handleUpdate(product._id)}
                     productId={product._id}
                   //description={product.productDescription} // Mô tả sản phẩm
 
