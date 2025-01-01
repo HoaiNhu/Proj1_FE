@@ -46,7 +46,7 @@ const DiscountListPage = () => {
   useEffect(() => {
     const fetchDiscounts = async () => {
       try {
-        const discounts = await getAllDiscount(accessToken);
+        const discounts = await getAllDiscount();
         if (Array.isArray(discounts.data)) {
           setPromos(discounts.data); // Lưu danh sách khuyến mãi
         } else {
@@ -57,7 +57,7 @@ const DiscountListPage = () => {
       }
     };
     fetchDiscounts();
-  }, [accessToken]);
+  },[]);
 
   const getCategoryNameById = (id) => {
     const category = categories.find((cat) => cat.id === id);

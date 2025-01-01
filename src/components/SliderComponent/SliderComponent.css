@@ -19,7 +19,7 @@
 /* Đảm bảo ảnh trong slider chiếm toàn bộ chiều rộng slider */
 .slider-image {
     width: 100%;
-    height: 100%;
+    height: 266px;
     object-fit: cover;
     object-position: center;
 }

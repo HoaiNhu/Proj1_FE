@@ -68,14 +68,14 @@ export const getDetailsDiscount = async (id, access_token) => {
   }
 };
 
-export const getAllDiscount = async (access_token) => {
+export const getAllDiscount = async () => {
   try {
     const res = await axiosJWT.get(
       `${process.env.REACT_APP_API_URL_BACKEND}/discount/get-all-discount`,
       {
         headers: {
           "Content-Type": "application/json",
-          token: `Bearer ${access_token}`,
+          
         },
       }
     );

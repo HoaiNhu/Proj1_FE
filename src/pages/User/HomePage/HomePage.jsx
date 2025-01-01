@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SliderComponent from '../../../components/SliderComponent/SliderComponent';
 import slider1 from '../../../assets/img/slider1.webp';
 import slider2 from '../../../assets/img/slider2.webp';
@@ -12,19 +12,52 @@ import CardNews from '../../../components/CardNews/CardNews';
 import news from '../../../assets/img/news.jpg';
 import ButtonComponent from '../../../components/ButtonComponent/ButtonComponent';
 import { useNavigate } from "react-router-dom";
+import { getAllDiscount, deleteDiscount } from "../../../services/DiscountService"
 const text = 'Tiệm bánh ngọt Avocado - "My sweetie, my love" mang trong mình sứ mệnh mang đến những chiếc bánh ngọt ngào và tinh tế, không chỉ để thỏa mãn vị giác mà còn để lan tỏa tình yêu và niềm vui đến mọi người. Với phương châm "My sweetie, my love," chúng tôi cam kết sử dụng những nguyên liệu tươi ngon nhất, kết hợp với kỹ thuật làm bánh hiện đại và sự sáng tạo không ngừng. Mỗi chiếc bánh từ Avocado không chỉ là một món ăn, mà còn là một tác phẩm nghệ thuật, được chăm chút tỉ mỉ từ khâu chọn nguyên liệu đến khi hoàn thiện. Chúng tôi hy vọng rằng mỗi lần thưởng thức bánh từ Avocado, khách hàng sẽ cảm nhận được tình yêu và sự tận tâm mà chúng tôi gửi gắm trong từng sản phẩm.';
 
 const HomePage = () => {
-  const navigate= useNavigate()
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [promos, setPromos] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState("");
+  const [arrImgs, setArrImg] = useState([]);  // State lưu trữ mảng hình ảnh
+  const navigate = useNavigate()
   const handleClick = (path) => {
     navigate(path);
   };
+
+  // Fetch danh sách khuyến mãi
+  useEffect(() => {
+    const fetchDiscounts = async () => {
+      try {
+        const discounts = await getAllDiscount();
+        console.log("TYU", discounts)
+        if (Array.isArray(discounts.data)) {
+          setPromos(discounts.data); // Lưu danh sách khuyến mãi
+          console.log("HBJK")
+          const images = Array.isArray(discounts.data) 
+          ? discounts.data.map(discount => discount?.discountImage).filter(Boolean)
+          : [];
+        
+          console.log("IMG", images)
+          setArrImg(images);
+        } else {
+          setError("Dữ liệu trả về không hợp lệ.");
+        }
+      } catch (err) {
+        setError(err.message || "Không thể tải danh sách khuyến mãi.");
+      }
+    };
+    fetchDiscounts();
+  }, []);
+
+ 
   return (
 
     <div >
       {/* Banner quànrg cáo */}
       <div >
-        <SliderComponent onClick={()=> handleClick('/products')} arrImg={[slider1, slider3, slider2]} />
+        <SliderComponent arrImg={arrImgs} />
       </div>
       <div
         style={{
@@ -90,10 +123,10 @@ const HomePage = () => {
         </div>
 
         <ButtonComponent
-            onClick={()=> handleClick('/products')}
-            style={{
-              margin: 'auto'
-      }}>Xem thêm </ButtonComponent>
+          onClick={() => handleClick('/products')}
+          style={{
+            margin: 'auto'
+          }}>Xem thêm </ButtonComponent>
       </div>
 
       {/* Sản phẩm */}
@@ -158,11 +191,11 @@ const HomePage = () => {
         <div style={{
           marginBottom: 50,
         }}>
-         <ButtonComponent
-            onClick={()=> handleClick('/products')}
+          <ButtonComponent
+            onClick={() => handleClick('/products')}
             style={{
               margin: 'auto'
-      }}>Xem thêm </ButtonComponent>
+            }}>Xem thêm </ButtonComponent>
         </div>
       </div>
 
@@ -262,7 +295,7 @@ const HomePage = () => {
                   marginLeft: 45,
                   cursor: 'pointer'
                 }}
-                onClick={()=> handleClick('/introduce')}
+                onClick={() => handleClick('/introduce')}
               >Xem thêm </a>
             </div>
           </div>
@@ -297,10 +330,10 @@ const HomePage = () => {
           marginBottom: 50,
         }}>
           <ButtonComponent
-            onClick={()=> handleClick('/news')}
+            onClick={() => handleClick('/news')}
             style={{
               margin: 'auto'
-      }}>Xem thêm </ButtonComponent>
+            }}>Xem thêm </ButtonComponent>
         </div>
       </div>
     </div>

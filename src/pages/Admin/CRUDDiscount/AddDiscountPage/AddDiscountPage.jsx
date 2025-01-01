@@ -271,7 +271,7 @@ const AddDiscountPage = () => {
               {/* button */}
               <div className="btn__add-discount">
                 <ButtonComponent onClick={handleSubmit}>Lưu</ButtonComponent>
-                <ButtonComponent >Thoát</ButtonComponent>
+                <ButtonComponent onClick={() => navigate("/admin/discount-list")}>Thoát</ButtonComponent>
               </div>
             </div>
           </div>

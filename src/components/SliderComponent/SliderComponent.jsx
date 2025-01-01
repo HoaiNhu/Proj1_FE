@@ -19,11 +19,12 @@ const SliderComponent = ({ arrImg, onClick }) => {
 
 
   return (
-    <div className="slider-container" onClick={ onClick}>
+    <div className="slider-container" >
       <Slider {...settings}>
         {arrImg.map((image, index) => (
           <div key={index} className="slider-item">
-            <img className="slider-image" src={image} alt="slider" />
+            <img className="slider-image" src={image} alt="slider"
+            onClick={ onClick} />
           </div>
         ))}
       </Slider>
