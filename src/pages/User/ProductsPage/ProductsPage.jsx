@@ -3,8 +3,7 @@ import "./ProductsPage.css";
 import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuComponent";
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
-import { useNavigate } from "react-router-dom";
-import { getProductsByCategory } from "../../../services/productServices";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
@@ -12,10 +11,15 @@ const ProductsPage = () => {
   const [currentCategory, setCurrentCategory] = useState(null); // State lưu category hiện tại
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0); // Tổng số trang
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // State lưu lỗi
   const navigate = useNavigate();
+  const location = useLocation();
 
-  //=========Danh muc san pham=======
+
+  // Lấy categoryId từ state truyền qua navigation
+  const previousCategoryId = location.state?.categoryIds || null;
+  console.log("GHJ",previousCategoryId)
+  //=========Danh mục sản phẩm=======
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -53,14 +57,14 @@ const ProductsPage = () => {
         page,
         limit,
       }).toString();
-      
+
       let url = `http://localhost:3001/api/product/get-all-product?${queryParams}`;
       if (categoryId) {
         url = `http://localhost:3001/api/product/get-product-by-category/${categoryId}?${queryParams}`;
       }
 
       const response = await fetch(url, {
-        method: "GET", 
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
@@ -70,8 +74,8 @@ const ProductsPage = () => {
       }
 
       const data = await response.json();
-      setCurrentPage(page);  // Cập nhật trang hiện tại
-      setTotalPages(Math.ceil(data.total / limit));  // Tính tổng số trang
+      setCurrentPage(page); // Cập nhật trang hiện tại
+      setTotalPages(Math.ceil(data.total / limit)); // Tính tổng số trang
 
       if (Array.isArray(data.data)) {
         setProducts(data.data);
@@ -82,6 +86,17 @@ const ProductsPage = () => {
       console.error("Error fetching products:", error);
     }
   };
+
+  // Khi component được mount
+  useEffect(() => {
+    if (previousCategoryId) {
+      setCurrentCategory(previousCategoryId); // Lưu categoryId để lọc sản phẩm
+    setCurrentPage(0); // Reset trang về 0 khi chuyển qua category mới
+    fetchProducts(0, 9, previousCategoryId); // Fetch sản phẩm theo category
+    } else {
+      fetchProducts(0, 9); // Nếu không có categoryId thì fetch tất cả sản phẩm
+    }
+  }, [previousCategoryId]);
 
   // Phân trang
   const Pagination = ({ currentPage, totalPages, onPageChange }) => {

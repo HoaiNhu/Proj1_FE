@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import Slider from "react-slick";
 import './SliderComponent.css'; // Đảm bảo bạn đã import file CSS
 
-const SliderComponent = ({ arrImg, onClick }) => {
+const SliderComponent = ({ arrImg, onImageClick }) => {
  
 
   const settings = {
@@ -24,7 +24,7 @@ const SliderComponent = ({ arrImg, onClick }) => {
         {arrImg.map((image, index) => (
           <div key={index} className="slider-item">
             <img className="slider-image" src={image} alt="slider"
-            onClick={ onClick} />
+            onClick={() => onImageClick(image)}  />
           </div>
         ))}
       </Slider>

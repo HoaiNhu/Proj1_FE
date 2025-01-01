@@ -51,13 +51,25 @@ const HomePage = () => {
     fetchDiscounts();
   }, []);
 
- 
+  // Hàm xử lý khi click vào một ảnh slider
+  const handleSliderImageClick = (clickedImage) => {
+    // Tìm khuyến mãi có ảnh đó
+    const promo = promos.find(promo => promo.discountImage === clickedImage);
+    console.log("PROMOS", promo)
+    if (promo) {
+      const categoryIds = promo.applicableCategory || [];
+      console.log(categoryIds)
+      // Điều hướng đến trang sản phẩm với queryParams chứa categoryIds
+      navigate('/products', { state: { categoryIds } });
+     
+    }
+  };
   return (
 
     <div >
       {/* Banner quànrg cáo */}
       <div >
-        <SliderComponent arrImg={arrImgs} />
+        <SliderComponent arrImg={arrImgs} onImageClick={handleSliderImageClick} />
       </div>
       <div
         style={{
