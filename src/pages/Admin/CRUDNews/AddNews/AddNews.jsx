@@ -40,6 +40,7 @@ const AddNews = () => {
                 //console.log("RESKLT",result);
                 if (result.status === "OK") {
                     alert("Thêm tin tức thành công!");
+                    navigate('/admin/news')
                     // Reset form
                     //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
                 } else {
@@ -68,7 +69,7 @@ const AddNews = () => {
         }
 
         const response = mutation.mutate(formData)
-        navigate('/admin/news')
+       
     };
 
     return (

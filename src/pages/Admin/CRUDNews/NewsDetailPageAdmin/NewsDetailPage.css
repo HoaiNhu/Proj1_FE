@@ -23,8 +23,9 @@
     justify-content: space-between;
   }
   .Exit_btn{
-    margin-left: 1100px;
+    margin-left: 1000px;
     margin-bottom: 20px;
+    margin-right: 30px;
   }
   
   /* ===========================news left============================= */
@@ -80,4 +81,6 @@
     line-height: 1.75;
     
   }
-  
+  .btn_holder{
+    display: flex;
+  }

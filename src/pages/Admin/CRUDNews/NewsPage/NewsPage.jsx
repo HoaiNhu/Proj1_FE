@@ -78,9 +78,10 @@ const NewsPageAdmin = () => {
     const selectedNews = news.find((news) => news._id === newsId);
 
     if (selectedNews) {
-      const {  newsImage, newsTitle, newsContent } = selectedNews;
-      navigate("/news-detail", {
-        state: { newsImage, newsTitle, newsContent },
+      const {  newsImage, newsTitle, newsContent, _id } = selectedNews;
+      console.log("DETAIL", _id)
+      navigate("/admin/news-detail", {
+        state: { newsImage, newsTitle, newsContent, _id },
       });
     } else {
       alert("News not found!");

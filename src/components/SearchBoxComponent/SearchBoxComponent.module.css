@@ -11,6 +11,7 @@
   color: var(--brown100);
   /* box-shadow: 0 0 0 2px var(--green30); */
   box-shadow: 0 0 4px var(--green50), 0 0 15px var(--green30);
+  margin-right: 10px;
 }
 
 .search__component::placeholder {
@@ -28,4 +29,8 @@
 }
 .search__wrapper{
   display: flex;
+}
+.search__button{
+  margin-left: 20px;
+  padding: none;
 }
