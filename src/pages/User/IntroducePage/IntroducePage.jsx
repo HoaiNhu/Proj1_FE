@@ -49,7 +49,7 @@ const IntroducePage = () => {
             {/* introduce left */}
             <div className="introduce__right">
               <h4 className="introduce__paragraph--title">
-                Câu chuyện thương hiệu
+                Sứ mệnh - tầm nhìn
               </h4>
               <p
                 className="introduce__paragraph--content"

@@ -14,6 +14,7 @@ import ButtonComponent from '../../../components/ButtonComponent/ButtonComponent
 import { useNavigate } from "react-router-dom";
 import { getAllDiscount, deleteDiscount } from "../../../services/DiscountService"
 import { getAllNews } from '../../../services/NewsService';
+import img12 from "../../../assets/img/hero_2.jpg";
 const text = 'Là một hệ thống đội ngũ nhân viên và lãnh đạo chuyên nghiệp, gồm CBCNV và những người thợ đã có kinh nghiệm lâu năm trong các công ty đầu ngành. Mô hình vận hành hoạt động công ty được bố trí theo chiều ngang, làm gia tăng sự thuận tiện trong việc vận hành cỗ máy kinh doanh và gia tăng sự phối hợp thống nhất giữa các bộ phận trong công ty.';
 
 const HomePage = () => {
@@ -402,11 +403,11 @@ const HomePage = () => {
               marginTop: 17,
               borderRadius: 15
             }} />
-          <img src={story}
+          <img src={img12}
             style={{
               position: "relative",
-              width: '577px',
-              height: '406px',
+              width: '550px',
+              height: '400px',
               marginLeft: 137,
               borderRadius: 15,
               flexShrink: 0
