@@ -184,7 +184,7 @@ const OrderListPage = () => {
           {/* order list */}
           <div className="order-list__content">
             <div className="order-list__action">
-              <h2 className="order-list__title">Danh sách khuyến mãi</h2>
+              <h2 className="order-list__title">Danh sách đơn hàng</h2>
               <div className="btn__action">
                 <ButtonComponent
                   className="btn btn-detail"
