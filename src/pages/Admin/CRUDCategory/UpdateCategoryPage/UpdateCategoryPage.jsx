@@ -19,7 +19,7 @@ const UpdateCategoryPage = () => {
     name: categoryName || "",
   });
   const ExitForm =()=>{
-    navigate("/category-list")
+    navigate("/admin/category-list")
   }
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const UpdateCategoryPage = () => {
   const ClickOrder=()=>{navigate("/admin/order-list")}
   const ClickDiscount=()=>{navigate("/admin/discount-list")}
   const ClickStatus=()=>{navigate("/status-list")}
-  const ClickCategory=()=>{navigate("/category-list")}
+  const ClickCategory=()=>{navigate("/admin/category-list")}
   const ClickUser=()=>{navigate("/user-list")}
   const ClickReprot=()=>{navigate("/reprot")}
 

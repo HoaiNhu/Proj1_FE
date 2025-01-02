@@ -72,6 +72,21 @@ const NewsPageAdmin = () => {
     fetchnews();
   }, []);
 
+  //Xem chi tiet
+  const handleDetail = (newsId) => {
+    console.log("ID NEWS", newsId)
+    const selectedNews = news.find((news) => news._id === newsId);
+
+    if (selectedNews) {
+      const {  newsImage, newsTitle, newsContent } = selectedNews;
+      navigate("/news-detail", {
+        state: { newsImage, newsTitle, newsContent },
+      });
+    } else {
+      alert("News not found!");
+    }
+  };
+
   return (
     <div>
       <div className="productadmin__top">
@@ -104,17 +119,16 @@ const NewsPageAdmin = () => {
                 img={imageUrl} // Sử dụng URL ảnh đã xử lý
                 title={news.newsTitle} // Hiển thị tên sản phẩm
                 detail={news.newsContent}
-                //onUpdate={() => handleUpdate(news._id)} 
+                onClick={()=>handleDetail(news._id)}
                 newsId={news._id}
               //description={news.newsDescription} // Mô tả sản phẩm
-
               />
               </div>
             );
           })
 
         ) : (
-          <p>Không có sản phẩm nào</p>
+          <p>Không có tin tức nào</p>
         )}
         
 

@@ -12,7 +12,7 @@ const AddCategoryPage = () => {
     categoryName: "",
   });
 const ExitForm =()=>{
-  navigate("/category-list")
+  navigate("/admin/category-list")
 }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +54,7 @@ const ExitForm =()=>{
       alert("Đã xảy ra lỗi khi thêm loại bánh!");
       console.error(error);
     }
-    navigate("/category-list")
+    navigate("/admin/category-list")
   };
   const navigate= useNavigate();
   const ClickInfor=()=>{navigate("/store-info")}

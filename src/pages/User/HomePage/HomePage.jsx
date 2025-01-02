@@ -49,6 +49,7 @@ const HomePage = () => {
 
           console.log("IMG", images)
           setArrImg(images);
+          console.log("IMFGH",arrImgs)
         } else {
           setError("Dữ liệu trả về không hợp lệ.");
         }
@@ -279,7 +280,7 @@ const HomePage = () => {
         </Row> */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', marginLeft: '137px', marginRight: '137px', gap: '18px' }}>
         {products.map((product) => (
-            <CardProduct type={"secondary"} img={product.productImage} title={product.productName} price={product.productPrice} 
+            <CardProduct type="secondary" img={product.productImage} title={product.productName} price={product.productPrice} 
             onClick={() => handleDetailProduct(product._id)}/>
           ))}
         </div>

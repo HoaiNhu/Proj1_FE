@@ -39,11 +39,11 @@ const AddNews = () => {
                 const result = await response;
                 //console.log("RESKLT",result);
                 if (result.status === "OK") {
-                    alert("Thêm tin tuc thành công!");
+                    alert("Thêm tin tức thành công!");
                     // Reset form
                     //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
                 } else {
-                    alert(`Thêm tin tuc thất bại: ${result.message}`);
+                    alert(`Thêm tin tức thất bại: ${result.message}`);
                 }
             } catch (error) {
                 alert("Đã xảy ra lỗi khi thêm bánh!");

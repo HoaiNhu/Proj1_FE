@@ -43,9 +43,9 @@ const NewsDetailPage = () => {
               <h4 className="news__paragraph--title">
                 {news.newsTitle}
               </h4>
-              <pre className="news__paragraph--content">
+              <p className="news__paragraph--content">
                {news.newsContent}
-              </pre>
+              </p>
             </div>
            
           </div>

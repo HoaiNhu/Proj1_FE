@@ -11,7 +11,7 @@ const CategoryListPage = () => {
   const [selectedRows, setSelectedRows] = useState([]);  // State lưu danh sách các hàng được chọn
   const [categories, setCategories] = useState([]); // State lưu danh sách categories
   const AddCategory=()=>{
-      navigate("/add-category")
+      navigate("/admin/add-category")
   }
 
   const handleEdit = () => {
