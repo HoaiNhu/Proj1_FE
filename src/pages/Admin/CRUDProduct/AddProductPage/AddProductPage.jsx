@@ -108,6 +108,7 @@ const AddProductPage = () => {
         //console.log("RESKLT",result);
         if (result.status === "OK") {
           alert("Thêm bánh thành công!");
+          navigate('/admin/products')
           // Reset form
           //setProduct({productName: "", productPrice: "", productCategory:null, productImage:null, productSize:"" });
         } else {
@@ -280,7 +281,7 @@ const AddProductPage = () => {
                 <FormComponent
                   style={{ width: "36rem", height: "6rem" }}
                   className="choose-property"
-                  placeholder="Nhập kích thướcthước sản phẩm"
+                  placeholder="Nhập kích thước sản phẩm"
                   name="productSize"
                   value={stateproduct.productSize}
                   onChange={handleInputChange}
