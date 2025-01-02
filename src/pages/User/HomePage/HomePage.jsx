@@ -14,7 +14,7 @@ import ButtonComponent from '../../../components/ButtonComponent/ButtonComponent
 import { useNavigate } from "react-router-dom";
 import { getAllDiscount, deleteDiscount } from "../../../services/DiscountService"
 import { getAllNews } from '../../../services/NewsService';
-const text = 'Tiệm bánh ngọt Avocado - "My sweetie, my love" mang trong mình sứ mệnh mang đến những chiếc bánh ngọt ngào và tinh tế, không chỉ để thỏa mãn vị giác mà còn để lan tỏa tình yêu và niềm vui đến mọi người. Với phương châm "My sweetie, my love," chúng tôi cam kết sử dụng những nguyên liệu tươi ngon nhất, kết hợp với kỹ thuật làm bánh hiện đại và sự sáng tạo không ngừng. Mỗi chiếc bánh từ Avocado không chỉ là một món ăn, mà còn là một tác phẩm nghệ thuật, được chăm chút tỉ mỉ từ khâu chọn nguyên liệu đến khi hoàn thiện. Chúng tôi hy vọng rằng mỗi lần thưởng thức bánh từ Avocado, khách hàng sẽ cảm nhận được tình yêu và sự tận tâm mà chúng tôi gửi gắm trong từng sản phẩm.';
+const text = 'Là một hệ thống đội ngũ nhân viên và lãnh đạo chuyên nghiệp, gồm CBCNV và những người thợ đã có kinh nghiệm lâu năm trong các công ty đầu ngành. Mô hình vận hành hoạt động công ty được bố trí theo chiều ngang, làm gia tăng sự thuận tiện trong việc vận hành cỗ máy kinh doanh và gia tăng sự phối hợp thống nhất giữa các bộ phận trong công ty.';
 
 const HomePage = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -433,8 +433,7 @@ const HomePage = () => {
                 marginTop: 45,
                 paddingBottom: 25
               }}
-            > Câu chuyện bánh ngọt </h3>
-
+            > Câu chuyện thương hiệu </h3>
             <LinesEllipsis
               text={text}
               maxLine='4' // Số dòng tối đa
