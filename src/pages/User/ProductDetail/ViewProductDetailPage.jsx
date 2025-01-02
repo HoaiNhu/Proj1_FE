@@ -120,7 +120,7 @@ const ViewProductDetailPage = () => {
         {/* info bot */}
         <div className="info__bot">
           <label className="description">Mô Tả</label>
-          <p className="product-description">{product.productDescription}</p>
+          <textarea className="product-description">{product.productDescription}</textarea>
         </div>
 
         {/* <div className="btn__update">

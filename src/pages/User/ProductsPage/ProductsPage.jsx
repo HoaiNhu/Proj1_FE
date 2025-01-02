@@ -210,7 +210,7 @@ const ProductsPage = () => {
                       type={"primary"}
                       img={imageUrl}
                       title={product.productName}
-                      price={`${product.productPrice} VND`}
+                      price={`${product.productPrice}`}
                       id={product._id}
                       onClick={() => handleDetail(product._id)}
                     />
