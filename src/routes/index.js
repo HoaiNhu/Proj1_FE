@@ -42,6 +42,7 @@ import UpdateContact from "../pages/Admin/CRUDContact/UpdateContact/UpdateContac
 import AddUserPage from "../pages/Admin/CRUDUser/AddUserPage/AddUserPage";
 import NewsDetailPage from "../pages/User/NewsDetailPage/NewsDetailPage";
 import SearchResultPage from "../pages/SearchResultPage/SearchResultPage";
+import NewsDetailPageAdmin from "../pages/Admin/CRUDNews/NewsDetailPageAdmin/NewsDetailPage";
 
 export const routes = [
   {
@@ -140,6 +141,7 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+
 
   {
     path: "/admin/add-product",
@@ -352,6 +354,13 @@ export const routes = [
   {
     path: "/news-detail",
     page: NewsDetailPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/admin/news-detail",
+    page: NewsDetailPageAdmin,
     isShowHeader: true,
     isShowFooter: true,
   },

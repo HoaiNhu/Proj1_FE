@@ -38,7 +38,6 @@ const SearchBoxComponent = ({ onSearch, onButtonClick }) => {
       />
       <ButtonComponent
         className='search__button'
-        styles={{marginLeft: 10}}
         onClick={() => onButtonClick(query)}
       >
         Tìm kiếm
