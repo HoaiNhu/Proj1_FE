@@ -313,6 +313,13 @@ function UserInfoPage() {
     wards.map((ward) => ({ label: ward.name, value: ward.code }))
   );
 
+  const handleClickProfile=(()=>{
+    navigate('/user-info')
+  })
+  const handleClickOrder=(()=>{
+    navigate('/order-history')
+  })
+
   return (
     <div>
       <div className="container-xl">
@@ -356,9 +363,9 @@ function UserInfoPage() {
           <div className="user-info__bot">
             {/* side menu */}
             <div className="side-menu__info">
-              <SideMenuComponent>Thông tin cá nhân</SideMenuComponent>
+            <SideMenuComponent onClick={handleClickProfile}>Thông tin cá nhân</SideMenuComponent>
               {/* <SideMenuComponent>Khuyến mãi</SideMenuComponent> */}
-              <SideMenuComponent >Đơn hàng</SideMenuComponent>
+              <SideMenuComponent onClick={handleClickOrder}>Đơn hàng</SideMenuComponent>
               <SideMenuComponent>Đăng xuất</SideMenuComponent>
             </div>
             <Loading isLoading={showLoading} />

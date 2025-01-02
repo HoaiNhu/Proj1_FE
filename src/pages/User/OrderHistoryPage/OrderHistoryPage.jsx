@@ -5,6 +5,7 @@ import OrderHistoryCardComponent from "../../../components/OrderHistoryCardCompo
 import { getOrdersByUser } from "../../../services/OrderService";
 import img from "../../../assets/img/hero_1.jpg"
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const OrderHistoryPage = () => {
   const [orders, setOrders] = useState([]);
@@ -14,6 +15,7 @@ const OrderHistoryPage = () => {
   console.log("token", access_token)
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate= useNavigate();
  
   useEffect(() => {
     if (user && user.id) {
@@ -46,7 +48,12 @@ const OrderHistoryPage = () => {
   };
   
   
-
+  const handleClickProfile=(()=>{
+    navigate('/user-info')
+  })
+  const handleClickOrder=(()=>{
+    navigate('/order-history')
+  })
  
   // const orders = [
   //   {
@@ -90,9 +97,9 @@ const OrderHistoryPage = () => {
         <div className="user-info__container">
           <div className="user-info__bot">
           <div className="side-menu__info">
-              <SideMenuComponent>Thông tin cá nhân</SideMenuComponent>
+          <SideMenuComponent onClick={handleClickProfile}>Thông tin cá nhân</SideMenuComponent>
               {/* <SideMenuComponent>Khuyến mãi</SideMenuComponent> */}
-              <SideMenuComponent>Đơn hàng</SideMenuComponent>
+              <SideMenuComponent onClick={handleClickOrder}>Đơn hàng</SideMenuComponent>
               <SideMenuComponent>Đăng xuất</SideMenuComponent>
             </div>
             <div className="order-history__info">

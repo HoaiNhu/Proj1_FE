@@ -18,12 +18,9 @@ const OrderHistoryCardComponent = ({ order }) => {
   // const totalAmount = order.products.reduce((acc, product) => {
   //   return acc + parseInt(product.price) * parseInt(product.quantity); // Tổng tiền của tất cả sản phẩm
   // }, 0);
-  const totalAmount = order.orderItems?.reduce((acc, orderItem) => {
-    console.log("ORDERCOMPONENT13", orderItem)
-    return acc + parseInt(orderItem.total);
-  }, 0) || 0;
-  console.log("ORDERCOMPONENT", order.orderItems)
-  console.log("ORDERCOMPONENT1313", totalAmount)
+  const totalAmount = order.totalPrice;
+  // console.log("ORDERCOMPONENT", order.orderItems)
+  // console.log("ORDERCOMPONENT1313", totalAmount)
   return (
     <div className="order-card">
       <div className="order-title d-flex align-items-center">
