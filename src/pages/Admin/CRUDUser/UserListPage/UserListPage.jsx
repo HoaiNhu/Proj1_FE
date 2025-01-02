@@ -76,7 +76,7 @@ const UserListPage = () => {
   }, [dispatch]);
 
   const handleAddUser = () => {
-    navigate("/add-user", { state: { from: "/user-list" } });
+    navigate("/admin/add-user", { state: { from: "/admin/user-list" } });
   };
 
   const mutation = useMutationHook(UserService.getAllUser);
@@ -211,7 +211,7 @@ const UserListPage = () => {
           {/* Nút thêm */}
           <div className="btn__action">
             <ButtonComponent onClick={handleAddUser}>Thêm</ButtonComponent>
-            <ButtonComponent>Chi tiết</ButtonComponent>
+            {/* <ButtonComponent>Chi tiết</ButtonComponent> */}
             <ButtonComponent onClick={handleDeleteUser}>Xóa</ButtonComponent>
           </div>
 
