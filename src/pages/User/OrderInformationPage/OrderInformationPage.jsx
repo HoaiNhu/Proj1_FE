@@ -40,6 +40,7 @@ const OrderInformationPage = () => {
   };
   const handleClickNext = async () => {
     const orderData = {
+      
       orderItems: selectedProducts.map((product) => ({
         product: product.id, // Gắn ID của sản phẩm vào trường `product`
         quantity: product.quantity, // Số lượng

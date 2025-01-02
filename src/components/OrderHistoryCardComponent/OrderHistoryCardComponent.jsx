@@ -20,7 +20,7 @@ const OrderHistoryCardComponent = ({ order }) => {
   // }, 0);
   const totalAmount = order.totalPrice;
   // console.log("ORDERCOMPONENT", order.orderItems)
-  // console.log("ORDERCOMPONENT1313", totalAmount)
+  console.log("ORDERCOMPONENT1313", totalAmount)
   return (
     <div className="order-card">
       <div className="order-title d-flex align-items-center">
