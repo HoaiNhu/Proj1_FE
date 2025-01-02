@@ -67,11 +67,17 @@ const StoreInfoPage = () => {
                 <div className="col name-phone">
                   <div className="store-name">
                     <label className="title-name">Tên cửa hàng</label>
-                    <FormComponent style={{ width: "100%" }}></FormComponent>
+                    <FormComponent
+                      style={{ width: "100%" }}
+                      value="AVOCADO"
+                    ></FormComponent>
                   </div>
                   <div className="store-phone">
                     <label className="title-name">Số điện thoại</label>
-                    <FormComponent style={{ width: "100%" }}></FormComponent>
+                    <FormComponent
+                      style={{ width: "100%" }}
+                      value="0334455246"
+                    ></FormComponent>
                   </div>
                 </div>
               </div>
@@ -82,6 +88,7 @@ const StoreInfoPage = () => {
                   className="store__mail"
                   type="email"
                   style={{ width: "100%" }}
+                  value="avocado@gmail.com"
                 ></FormComponent>
               </div>
               <div className="row store-info__email mb-5">
@@ -89,12 +96,13 @@ const StoreInfoPage = () => {
                 <FormComponent
                   className="store-address mb-3"
                   style={{ width: "100%" }}
+                  value="Đường Mạc Đỉnh Chi, khu phố Tân Hòa, Dĩ An, Bình Dương"
                 ></FormComponent>
-                <div className="dropdown__address">
+                {/* <div className="dropdown__address">
                   <DropdownComponent></DropdownComponent>
                   <DropdownComponent></DropdownComponent>
                   <DropdownComponent></DropdownComponent>
-                </div>
+                </div> */}
               </div>
 
               {/* button */}
