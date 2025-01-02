@@ -12,7 +12,7 @@ const ViewProductDetailPage = () => {
   const product = {
     id: 1,
     productName: "Green Tea Flour Love",
-    productPrice: "250,000 vnd",
+    productPrice: "250,000 VND",
     productSize: ["20cm", "25cm"],
     productCategory: "Bánh ngọt",
     productImage: `${img1}`,

@@ -91,7 +91,7 @@ const OrderHistoryPage = () => {
           <div className="user-info__bot">
           <div className="side-menu__info">
               <SideMenuComponent>Thông tin cá nhân</SideMenuComponent>
-              <SideMenuComponent>Khuyến mãi</SideMenuComponent>
+              {/* <SideMenuComponent>Khuyến mãi</SideMenuComponent> */}
               <SideMenuComponent>Đơn hàng</SideMenuComponent>
               <SideMenuComponent>Đăng xuất</SideMenuComponent>
             </div>

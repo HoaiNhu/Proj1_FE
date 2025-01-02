@@ -28,7 +28,7 @@ const OrderHistoryCardComponent = ({ order }) => {
     <div className="order-card">
       <div className="order-title d-flex align-items-center">
         <StatusComponent
-          status={order.status === "delivered" ? "Đơn hàng đã được giao" : "Đơn hàng đang được giao"}
+          status={order.status.statusName}
         />
       </div>
       <div className="order-products">
@@ -46,7 +46,7 @@ const OrderHistoryCardComponent = ({ order }) => {
           </ButtonComponent>
           <div className="order-total d-flex text-center gap-5">
             <label>Tổng số tiền: </label>{" "}
-            <div>{totalAmount.toLocaleString()} vnd</div>
+            <div>{totalAmount.toLocaleString()} VND</div>
           </div>
         </div>
       </div>

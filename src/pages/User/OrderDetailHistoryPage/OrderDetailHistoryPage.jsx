@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuComponent";
 import ProductRowComponent from "../../../components/ProductRowComponent/ProductRowComponent"; 
 import "./OrderDetailHistoryPage.css";
@@ -7,6 +7,7 @@ import "./OrderDetailHistoryPage.css";
 const OrderDetailHistoryPage = () => {
   const deliveryCost = 30000;
   const location = useLocation();
+  const navigate= useNavigate();
   const order = location.state?.order; // Lấy dữ liệu từ state
 
   if (!order) {
@@ -24,6 +25,14 @@ const OrderDetailHistoryPage = () => {
   const totalAmount = order.orderItems?.reduce((acc, orderItem) => {
     return acc + parseInt(orderItem.total) || 0;
   }, 0) || 0;
+
+  const handleClickProfile=(()=>{
+    navigate('/user-info')
+  })
+  const handleClickOrder=(()=>{
+    navigate('/order-history')
+  })
+  
 
   return (
     <div>
@@ -46,9 +55,9 @@ const OrderDetailHistoryPage = () => {
           {/* Nội dung chính */}
           <div className="user-info__bot">
             <div className="side-menu__info">
-              <SideMenuComponent>Thông tin cá nhân</SideMenuComponent>
-              <SideMenuComponent>Khuyến mãi</SideMenuComponent>
-              <SideMenuComponent>Đơn hàng</SideMenuComponent>
+              <SideMenuComponent onClick={handleClickProfile}>Thông tin cá nhân</SideMenuComponent>
+              {/* <SideMenuComponent>Khuyến mãi</SideMenuComponent> */}
+              <SideMenuComponent onClick={handleClickOrder}>Đơn hàng</SideMenuComponent>
               <SideMenuComponent>Đăng xuất</SideMenuComponent>
             </div>
             <div className="order-detail-history">
@@ -81,14 +90,14 @@ const OrderDetailHistoryPage = () => {
                 <div className="total-cost">
                   <div className="cost">
                     <label className="product-cost">
-                      Tổng tiền sản phẩm: {totalAmount.toLocaleString()} vnd
+                      Tổng tiền sản phẩm: {totalAmount.toLocaleString()} VND
                     </label>
                     <label className="delivery-cost">
-                      Phí vận chuyển: {deliveryCost.toLocaleString()} vnd
+                      Phí vận chuyển: {deliveryCost.toLocaleString()} VND
                     </label>
                   </div>
                   <div className="total-bill">
-                    Tổng hóa đơn: {(totalAmount + deliveryCost).toLocaleString()} vnd
+                    Tổng hóa đơn: {(totalAmount + deliveryCost).toLocaleString()} VND
                   </div>
                 </div>
 

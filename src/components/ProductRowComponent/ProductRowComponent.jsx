@@ -14,9 +14,9 @@ const ProductRowComponent = ({ product }) => {
       <img src={image} alt={name} className="product-image" />
       <div className="product-name">{name}</div>
       <div className="product-size">{size}</div>
-      <div className="product-price">{price.toLocaleString()} vnd</div>
+      <div className="product-price">{price.toLocaleString()} VND</div>
       <div className="product-quantity">x{quantity}</div>
-      <div className="product-total">{totalPrice.toLocaleString()} vnd</div>
+      <div className="product-total">{totalPrice.toLocaleString()} VND</div>
     </div>
   );
 };

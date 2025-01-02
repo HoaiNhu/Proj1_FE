@@ -13,7 +13,7 @@ const DetailCategoryPage = () => {
       img: 1,
       name: "Tiramisu trái cây lộn xộn",
       size: "23cm",
-      price: "100,000 vnd",
+      price: "100,000 VND",
       expiryDate: "5/1/2024",
     },
     {
@@ -21,7 +21,7 @@ const DetailCategoryPage = () => {
       img: 1,
       name: "Tiramisu trái cây lộn xộn",
       size: "23cm",
-      price: "100,000 vnd",
+      price: "100,000 VND",
       expiryDate: "5/1/2024",
     },
     {
@@ -29,7 +29,7 @@ const DetailCategoryPage = () => {
       img: 1,
       name: "Tiramisu trái cây lộn xộn",
       size: "23cm",
-      price: "100,000 vnd",
+      price: "100,000 VND",
       expiryDate: "5/1/2024",
     },
   ];

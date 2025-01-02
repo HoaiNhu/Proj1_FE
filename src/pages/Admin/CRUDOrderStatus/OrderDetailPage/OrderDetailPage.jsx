@@ -283,19 +283,19 @@ const OrderDetailPage = () => {
               <div className="cost">
                 <p className="product-cost" style={{ color: "var(--brown100" }}>
                   Tổng tiền sản phẩm: {"  "}{" "}
-                  <label>{totalAmount.toLocaleString()} vnd</label>
+                  <label>{totalAmount.toLocaleString()} VND</label>
                 </p>
                 <p
                   className="delivery-cost"
                   style={{ color: "var(--brown100" }}
                 >
                   Phí vận chuyển:{" "}
-                  <label>{order.shippingPrice.toLocaleString()} vnd</label>
+                  <label>{order.shippingPrice.toLocaleString()} VND</label>
                 </p>
               </div>
               <div className="total-bill" style={{ color: "var(--brown100" }}>
                 Tổng hóa đơn:{" "}
-                {(totalAmount + order.shippingPrice).toLocaleString()} vnd
+                {(totalAmount + order.shippingPrice).toLocaleString()} VND
               </div>
             </div>
           </div>
