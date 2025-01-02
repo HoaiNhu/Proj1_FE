@@ -80,7 +80,7 @@ const CardProduct = ({ id, type, img, title, price,onClick}) => {
           style={{
             fontFamily: "Poppins",
             fontSize: 16,
-            fontWeight: 300,
+            fontWeight: 500,
             lineHeight: 1.5,
             textTransform: "capitalize",
             textAlign: "center",
@@ -100,7 +100,7 @@ const CardProduct = ({ id, type, img, title, price,onClick}) => {
               textAlign: "center",
             }}
           >
-            {price}
+            {`${price.toLocaleString('en-US')} VND`}
           </Card.Subtitle>
         )}
       </Card.Body>
@@ -152,7 +152,7 @@ const CardProduct = ({ id, type, img, title, price,onClick}) => {
             </Col>
             <Col>
               <TagPriceComponent style={{ marginTop: -40 }}>
-                {price}
+              {`${price.toLocaleString('en-US')} VND`}
               </TagPriceComponent>
             </Col>
           </Row>

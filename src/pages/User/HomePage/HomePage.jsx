@@ -187,8 +187,7 @@ const HomePage = () => {
     }
   };
 
-  //Click san pham:
-
+  
  // Khi nhấn vào sản phẩm
  const handleDetailProduct = (productId) => {
   const selectedProduct = products.find((product) => product._id === productId);
@@ -211,6 +210,7 @@ const HomePage = () => {
     setCurrentPage(0); // Reset trang về 0 khi chuyển qua category mới
     fetchProducts(0, 9, categoryId); // Fetch sản phẩm theo category
   };
+
 
 
 
@@ -278,10 +278,10 @@ const HomePage = () => {
           </Col>
         </Row> */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', marginLeft: '137px', marginRight: '137px', gap: '18px' }}>
-          <CardProduct type={"secondary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"} />
-          <CardProduct type={"secondary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"} />
-          <CardProduct type={"secondary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"} />
-          <CardProduct type={"secondary"} img={image1} title={"Chocolate Sweet Cream"} price={"250.000 VND"} />
+        {products.map((product) => (
+            <CardProduct type={"secondary"} img={product.productImage} title={product.productName} price={product.productPrice} 
+            onClick={() => handleDetailProduct(product._id)}/>
+          ))}
         </div>
 
         <ButtonComponent

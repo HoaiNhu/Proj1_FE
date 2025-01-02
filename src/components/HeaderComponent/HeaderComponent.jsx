@@ -157,7 +157,7 @@ const HeaderComponent = () => {
                       ) : (
                         <UserIconComponent />
                       )}
-                      <span>{user.userName || user.userEmail || "User"}</span>
+                      <span style={{color:"var(--brown100)"}}>{user.userName || user.userEmail || "User"}</span>
                     </div>
                   </OverlayTrigger>
                 ) : (

@@ -47,7 +47,7 @@ const OrderDetailHistoryPage = () => {
                   src={order.products?.[0]?.image || "default-image.jpg"} // kiểm tra ảnh sản phẩm
                   alt="Order Avatar"
                 /> */}
-                <h2 className="user-top__name">Chi tiết đơn hàng</h2>
+                {/* <h2 className="user-top__name">Chi tiết đơn hàng</h2> */}
               </div>
             </div>
           </div>
@@ -113,7 +113,6 @@ const OrderDetailHistoryPage = () => {
                     <label>Hành trình giao hàng</label>
                     <p>Hoàn thành đơn hàng: {new Date(order.deliveryDate).toLocaleDateString()}</p>
                     <p>Thanh toán: {new Date(order.createdAt).toLocaleDateString()}</p>
-                    <p>Giao hàng cho đơn vị vận chuyển: {new Date(order.deliveryDate).toLocaleDateString()}</p>
                     <p>Xác nhận đơn hàng: {new Date(order.createdAt).toLocaleDateString()}</p>
                     <p>Đặt hàng: {new Date(order.createdAt).toLocaleDateString()}</p>
                   </div>
