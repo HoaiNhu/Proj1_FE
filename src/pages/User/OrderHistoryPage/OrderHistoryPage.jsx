@@ -6,8 +6,12 @@ import { getOrdersByUser } from "../../../services/OrderService";
 import img from "../../../assets/img/hero_1.jpg"
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import * as UserService from "../../../services/UserService";
+import { resetUser, updateUser } from "../../../redux/slides/userSlide";
+
 
 const OrderHistoryPage = () => {
+  const [showLoading, setShowLoading] = useState(false); // Thêm trạng thái riêng
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -90,6 +94,23 @@ const OrderHistoryPage = () => {
   //     ],
   //   },
   // ];
+const handleNavigationLogin = () => {
+    navigate("/login");
+  };
+  const handleLogout = async () => {
+    setShowLoading(true);
+    await UserService.logoutUser();
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("cart");
+    // console.log(
+    //   "Access token after removal:",
+    //   localStorage.getItem("access-token")
+    // ); // Kiểm tra xem token đã bị xóa chưa
+    dispatch(resetUser());
+    setShowLoading(false);
+    handleNavigationLogin();
+  };
 
   return (
     <div>
@@ -100,7 +121,9 @@ const OrderHistoryPage = () => {
           <SideMenuComponent onClick={handleClickProfile}>Thông tin cá nhân</SideMenuComponent>
               {/* <SideMenuComponent>Khuyến mãi</SideMenuComponent> */}
               <SideMenuComponent onClick={handleClickOrder}>Đơn hàng</SideMenuComponent>
-              <SideMenuComponent>Đăng xuất</SideMenuComponent>
+              <SideMenuComponent onClick={handleLogout}>
+                Đăng xuất
+              </SideMenuComponent>
             </div>
             <div className="order-history__info">
               <h2 className="order-history__title">Lịch sử mua hàng</h2>

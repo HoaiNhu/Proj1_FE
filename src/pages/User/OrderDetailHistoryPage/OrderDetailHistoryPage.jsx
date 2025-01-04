@@ -1,14 +1,21 @@
-import React from "react";
+
 import { useLocation, useNavigate} from "react-router-dom";
 import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuComponent";
 import ProductRowComponent from "../../../components/ProductRowComponent/ProductRowComponent"; 
 import "./OrderDetailHistoryPage.css";
+import * as UserService from "../../../services/UserService";
+import { resetUser, updateUser } from "../../../redux/slides/userSlide";
+import { React, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const OrderDetailHistoryPage = () => {
   const deliveryCost = 30000;
   const location = useLocation();
   const navigate= useNavigate();
   const order = location.state?.order; // Lấy dữ liệu từ state
+  const [showLoading, setShowLoading] = useState(false); // Thêm trạng thái riêng
+  const dispatch = useDispatch();
 
   if (!order) {
     return <div>Không tìm thấy thông tin đơn hàng!</div>;
@@ -32,7 +39,25 @@ const OrderDetailHistoryPage = () => {
   const handleClickOrder=(()=>{
     navigate('/order-history')
   })
-  
+ 
+  const handleNavigationLogin = () => {
+    navigate("/login");
+  };
+  const handleLogout = async () => {
+    setShowLoading(true);
+    await UserService.logoutUser();
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("cart");
+    // console.log(
+    //   "Access token after removal:",
+    //   localStorage.getItem("access-token")
+    // ); // Kiểm tra xem token đã bị xóa chưa
+    dispatch(resetUser());
+    setShowLoading(false);
+    handleNavigationLogin();
+  };
+
 
   return (
     <div>
@@ -58,7 +83,9 @@ const OrderDetailHistoryPage = () => {
               <SideMenuComponent onClick={handleClickProfile}>Thông tin cá nhân</SideMenuComponent>
               {/* <SideMenuComponent>Khuyến mãi</SideMenuComponent> */}
               <SideMenuComponent onClick={handleClickOrder}>Đơn hàng</SideMenuComponent>
-              <SideMenuComponent>Đăng xuất</SideMenuComponent>
+              <SideMenuComponent onClick={handleLogout}>
+                Đăng xuất
+              </SideMenuComponent>
             </div>
             <div className="order-detail-history">
               <div className="detail__content">
