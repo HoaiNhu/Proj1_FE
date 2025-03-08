@@ -190,7 +190,7 @@ const LogInPage = () => {
           <div className="case__signup">
             Bạn chưa có tài khoản?
             <u>
-              <Link to="./signup" className="btn__goto__signup">
+              <Link to="/signup" className="btn__goto__signup">
                 Đăng ký
               </Link>
             </u>

@@ -1,38 +1,91 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import img2 from "../../../assets/img/AVOCADO.png";
 import img1 from "../../../assets/img/hero_2.jpg";
 import ButtonFormComponent from "../../../components/ButtonFormComponent/ButtonFormComponent";
 import OTPComponent from "../../../components/OTPComponent/OTPComponent";
+import * as AuthService from "../../../services/AuthService";
+import Message from "../../../components/MessageComponent/Message";
+import Loading from "../../../components/LoadingComponent/Loading";
 import "./EnterOTP.css";
 
 const EnterOTP = () => {
   const nav = useNavigate();
-  const handleSendBackOTP = () => {};
+  const location = useLocation();
+  const email = location.state?.email || "";
+  const [statusMessage, setStatusMessage] = useState(null);
 
-  const handleEnterOTP = () => {
-    const otpInputs = document.querySelectorAll(".input__otp"); // Lấy tất cả các ô nhập OTP
+  const handleSendBackOTP = async () => {
+    try {
+      const response = await AuthService.forgotPassword(email);
+      if (response.success) {
+        setStatusMessage({
+          type: "Success",
+          message: "OTP mới đã được gửi!",
+        });
+      } else {
+        setStatusMessage({
+          type: "Error",
+          message: response.message || "Lỗi khi gửi lại OTP.",
+        });
+      }
+    } catch (error) {
+      setStatusMessage({
+        type: "Error",
+        message: error.message || "Đã xảy ra lỗi. Vui lòng thử lại.",
+      });
+    }
+  };
+
+  const handleEnterOTP = async (e) => {
+    e.preventDefault();
+    const otpInputs = document.querySelectorAll(".input__otp");
     const otp = Array.from(otpInputs)
       .map((input) => input.value)
-      .join(""); // Gộp các giá trị của các ô OTP thành chuỗi
+      .join("");
 
-    // Kiểm tra OTP có hợp lệ hay không
     if (otp.length !== otpInputs.length) {
-      alert("Vui lòng nhập đầy đủ mã OTP!");
+      setStatusMessage({
+        type: "Warning",
+        message: "Vui lòng nhập đầy đủ mã OTP!",
+      });
       return;
     }
 
-    // Thêm logic kiểm tra OTP hợp lệ từ server nếu cần (giả sử OTP đúng)
-    const isValidOTP = true; // Thay bằng logic thực tế
-    if (!isValidOTP) {
-      alert("Mã OTP không hợp lệ!");
-      return;
+    try {
+      const response = await AuthService.verifyOTP(email, otp);
+      if (response.success) {
+        setStatusMessage({
+          type: "Success",
+          message: "OTP hợp lệ! Đang chuyển đến trang đặt mật khẩu mới...",
+        });
+        setTimeout(() => {
+          nav("/forgot-password/new-password", { state: { email } });
+        }, 1500);
+      } else {
+        setStatusMessage({
+          type: "Error",
+          message: "Mã OTP không hợp lệ!",
+        });
+      }
+    } catch (error) {
+      setStatusMessage({
+        type: "Error",
+        message: error.message || "Mã OTP không hợp lệ!",
+      });
     }
-
-    nav("/forgot-password/new-password");
   };
+
   return (
     <div className="container-xl container-enter-otp">
+      {statusMessage && (
+        <Message
+          type={statusMessage.type}
+          message={statusMessage.message}
+          duration={3000}
+          onClose={() => setStatusMessage(null)}
+        />
+      )}
       <div className="enter-otp-container">
         {/* enter-otp right */}
         <div className="enter-otp-container__img">
@@ -42,12 +95,13 @@ const EnterOTP = () => {
         {/* enter-otp left */}
         <div className="enter-otp__left">
           <h1 className="enter-otp__title">QUÊN MẬT KHẨU</h1>
-          <form className="enter-otp__form">
+
+          <form className="enter-otp__form" onSubmit={handleEnterOTP}>
             <div className="otp__input">
-              <OTPComponent></OTPComponent>
-              <OTPComponent></OTPComponent>
-              <OTPComponent></OTPComponent>
-              <OTPComponent></OTPComponent>
+              <OTPComponent />
+              <OTPComponent />
+              <OTPComponent />
+              <OTPComponent />
             </div>
             {/* back to login */}
             <div className="enter-otp__extend">
@@ -55,9 +109,7 @@ const EnterOTP = () => {
                 Bạn chưa nhận được OTP? <b>Gửi lại</b>
               </div>
             </div>
-            <ButtonFormComponent onClick={handleEnterOTP}>
-              Xác nhận
-            </ButtonFormComponent>
+            <ButtonFormComponent type="submit">Xác nhận</ButtonFormComponent>
           </form>
         </div>
       </div>

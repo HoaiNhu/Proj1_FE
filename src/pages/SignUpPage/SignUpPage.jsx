@@ -161,7 +161,7 @@ const SignUpPage = () => {
           <div className="case__login">
             Bạn đã có tài khoản?
             <u>
-              <Link to="./login" className="btn__goto__login">
+              <Link to="/login" className="btn__goto__login">
                 Đăng nhập
               </Link>
             </u>
