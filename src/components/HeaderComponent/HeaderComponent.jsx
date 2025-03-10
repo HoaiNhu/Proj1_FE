@@ -74,7 +74,7 @@ const HeaderComponent = () => {
   };
 
   const handleUserInfo = () => {
-    navigate("/user-info"); // Navigate to user information page
+    navigate("/profile"); // Navigate to user information page
   };
 
   const popover = (

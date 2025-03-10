@@ -1,20 +1,20 @@
 import React from "react";
 import "./SideMenuComponent.css";
-import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
 
-const SideMenuComponent = (props) => {
+const SideMenuComponent = ({ onClick, isActive, children }) => {
   return (
-    <div>
-      <div className="side-menu sticky-left">
-        <div
-          className=" btn__side-menu"
-          role="group"
-          aria-label="Vertical button group"
+    <div className="side-menu sticky-left">
+      <div
+        className="btn__side-menu"
+        role="group"
+        aria-label="Vertical button group"
+      >
+        <button
+          className={`btn__component ${isActive ? "active" : ""}`}
+          onClick={onClick}
         >
-          <button className="btn__component" onClick={props.onClick}>
-            {props.children}
-          </button>
-        </div>
+          {children}
+        </button>
       </div>
     </div>
   );

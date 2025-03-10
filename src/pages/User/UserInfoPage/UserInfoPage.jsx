@@ -313,30 +313,30 @@ function UserInfoPage() {
     wards.map((ward) => ({ label: ward.name, value: ward.code }))
   );
 
-  const handleClickProfile = () => {
-    navigate("/user-info");
-  };
-  const handleClickOrder = () => {
-    navigate("/order-history");
-  };
+  // const handleClickProfile = () => {
+  //   navigate("/user-info");
+  // };
+  // const handleClickOrder = () => {
+  //   navigate("/order-history");
+  // };
 
-  const handleNavigationLogin = () => {
-    navigate("/login");
-  };
-  const handleLogout = async () => {
-    setShowLoading(true);
-    await UserService.logoutUser();
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("cart");
-    // console.log(
-    //   "Access token after removal:",
-    //   localStorage.getItem("access-token")
-    // ); // Kiểm tra xem token đã bị xóa chưa
-    dispatch(resetUser());
-    setShowLoading(false);
-    handleNavigationLogin();
-  };
+  // const handleNavigationLogin = () => {
+  //   navigate("/login");
+  // };
+  // const handleLogout = async () => {
+  //   setShowLoading(true);
+  //   await UserService.logoutUser();
+  //   localStorage.removeItem("access_token");
+  //   localStorage.removeItem("refresh_token");
+  //   localStorage.removeItem("cart");
+  //   // console.log(
+  //   //   "Access token after removal:",
+  //   //   localStorage.getItem("access-token")
+  //   // ); // Kiểm tra xem token đã bị xóa chưa
+  //   dispatch(resetUser());
+  //   setShowLoading(false);
+  //   handleNavigationLogin();
+  // };
 
   return (
     <div>
@@ -351,7 +351,7 @@ function UserInfoPage() {
             />
           )}
           {/* info top */}
-          <div className="user-info__top">
+          {/* <div className="user-info__top">
             <div className="user-profile">
               <div className="section-item">
                 <svg
@@ -372,7 +372,7 @@ function UserInfoPage() {
                   {familyName + " " + userName}
                 </h2>
               </div>
-              {/* {isEditing && (
+              {isEditing && (
                 <ButtonComponent
                   className="btn__upload"
                   type="file"
@@ -382,24 +382,24 @@ function UserInfoPage() {
                 >
                   Chọn ảnh
                 </ButtonComponent>
-              )} */}
+              )}
             </div>
-          </div>
+          </div> */}
           {/* info bot */}
           <div className="user-info__bot">
             {/* side menu */}
-            <div className="side-menu__info">
+            {/* <div className="side-menu__info">
               <SideMenuComponent onClick={handleClickProfile}>
                 Thông tin cá nhân
               </SideMenuComponent>
-              {/* <SideMenuComponent>Khuyến mãi</SideMenuComponent> */}
+              <SideMenuComponent>Khuyến mãi</SideMenuComponent>
               <SideMenuComponent onClick={handleClickOrder}>
                 Đơn hàng
               </SideMenuComponent>
               <SideMenuComponent onClick={handleLogout}>
                 Đăng xuất
               </SideMenuComponent>
-            </div>
+            </div> */}
             <Loading isLoading={showLoading} />
             {!showLoading && (
               <div className="user-info">

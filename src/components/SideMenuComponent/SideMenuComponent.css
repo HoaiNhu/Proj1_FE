@@ -42,4 +42,6 @@
 .active {
   background: var(--green30);
   border-radius: 10px;
+  /* font-weight: bold; */
+  color: var(--brown100);
 }

@@ -43,6 +43,7 @@ import AddUserPage from "../pages/Admin/CRUDUser/AddUserPage/AddUserPage";
 import NewsDetailPage from "../pages/User/NewsDetailPage/NewsDetailPage";
 import SearchResultPage from "../pages/SearchResultPage/SearchResultPage";
 import NewsDetailPageAdmin from "../pages/Admin/CRUDNews/NewsDetailPageAdmin/NewsDetailPage";
+import UserTab from "../pages/User/UserTab/UserTab.jsx";
 
 export const routes = [
   {
@@ -104,6 +105,13 @@ export const routes = [
   {
     path: "/forgot-password/new-password",
     page: EnterNewPassword,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/profile",
+    page: UserTab,
     isShowHeader: true,
     isShowFooter: true,
   },
