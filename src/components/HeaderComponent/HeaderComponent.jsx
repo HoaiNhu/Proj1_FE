@@ -15,6 +15,7 @@ import { resetUser } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/Loading";
 import UserIconComponent from "../UserIconComponent/UserIconComponent";
 import CartIconComponent from "../CartIconComponent/CartIconComponent";
+import VoiceComponent from "../VoiceComponent/VoiceComponent";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
@@ -77,6 +78,15 @@ const HeaderComponent = () => {
     navigate("/profile"); // Navigate to user information page
   };
 
+  //Voice search
+  // const handleVoiceSearch = (query) => {
+  //   if (!query.trim()) {
+  //     alert("Không nhận diện được giọng nói. Vui lòng thử lại!");
+  //     return;
+  //   }
+  //   navigate(`/search?search=${encodeURIComponent(query.trim())}`);
+  // };
+
   const popover = (
     <Popover id="popover-basic">
       <Popover.Body>
@@ -120,6 +130,7 @@ const HeaderComponent = () => {
                   onSearch={handleSearch}
                   onButtonClick={(query) => handleSearch(query)}
                 />
+                {/* <VoiceComponent onVoiceSearch={handleVoiceSearch} /> */}
               </div>
 
               <div className={`col ${styles.nav__cart}`}>
@@ -157,7 +168,9 @@ const HeaderComponent = () => {
                       ) : (
                         <UserIconComponent />
                       )}
-                      <span style={{color:"var(--brown100)"}}>{user.userName || user.userEmail || "User"}</span>
+                      <span style={{ color: "var(--brown100)" }}>
+                        {user.userName || user.userEmail || "User"}
+                      </span>
                     </div>
                   </OverlayTrigger>
                 ) : (

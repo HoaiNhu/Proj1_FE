@@ -3,6 +3,7 @@ import "../../assets/css/style.css";
 import "../../assets/css/reset.css";
 import styles from "./SearchBoxComponent.module.css";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
+import VoiceComponent from "../VoiceComponent/VoiceComponent";
 
 const SearchBoxComponent = ({ onSearch, onButtonClick }) => {
   const [query, setQuery] = useState("");
@@ -25,6 +26,11 @@ const SearchBoxComponent = ({ onSearch, onButtonClick }) => {
     }
   };
 
+  const handleVoiceInput = (speechResult) => {
+    setQuery(speechResult); // Cập nhật ô tìm kiếm với kết quả giọng nói
+    setTimeout(() => handleSearch(), 500); // Tự động tìm kiếm sau khi nhận kết quả
+  };
+
   return (
     <div className={styles.search__wrapper}>
       <input
@@ -36,8 +42,9 @@ const SearchBoxComponent = ({ onSearch, onButtonClick }) => {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
       />
+      <VoiceComponent onVoiceInput={handleVoiceInput} />
       <ButtonComponent
-        className='search__button'
+        className="search__button"
         onClick={() => onButtonClick(query)}
       >
         Tìm kiếm
