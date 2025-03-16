@@ -25,7 +25,7 @@ function App() {
   const dispatch = useDispatch();
   const [showLoading, setShowLoading] = useState(false);
   const user = useSelector((state) => state.user);
-  console.log("user", user);
+  // console.log("user", user);
 
   useEffect(() => {
     WebFont.load({
@@ -46,50 +46,75 @@ function App() {
         console.log("decoded", decoded);
       } catch (error) {
         console.error("Token không hợp lệ", error);
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        storageData = null;
       }
     }
     return { decoded, storageData };
   };
 
   useEffect(() => {
-    setShowLoading(true);
-    const { storageData, decoded } = handleDecoded();
-    console.log("decoded?.id", decoded?.id);
-    if (decoded?.id) {
-      handleGetDetailsUser(decoded?.id, storageData);
-    }
-    setShowLoading(false);
+    const initAuth = async () => {
+      setShowLoading(true);
+      let { storageData, decoded } = handleDecoded();
+      // let newAccessToken = storageData;
+      // Nếu không có token hoặc token hết hạn, thử refresh
+      if (!decoded || decoded.exp < Date.now() / 1000) {
+        try {
+          const data = await UserService.refreshToken();
+          storageData = data?.access_token;
+          localStorage.setItem("access_token", storageData);
+          decoded = jwtDecode(storageData);
+        } catch (error) {
+          console.warn("Không thể refresh token, yêu cầu đăng nhập lại.");
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          setShowLoading(false);
+          return;
+        }
+      }
+
+      if (decoded?.id) {
+        await handleGetDetailsUser(decoded.id, storageData);
+      }
+      setShowLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   //token hết hạn
   UserService.axiosJWT.interceptors.request.use(
     async (config) => {
-      // Do something before request is sent
-      const currentTime = new Date();
-      const { decoded } = handleDecoded();
-      if (decoded?.exp < currentTime.getTime() / 1000) {
-        // console.log("decoded?.exp", decoded?.exp);
+      let { decoded, storageData } = handleDecoded();
+      let newAccessToken = storageData; // Fix lỗi 'storageData' undefined
 
+      if (!decoded || decoded.exp < Date.now() / 1000) {
         try {
-          const data = await UserService.refreshToken();
-          // localStorage.setItem("access_token", data?.access_token);
-          config.headers["token"] = `Bearer ${data?.access_token}`;
+          let data = await UserService.refreshToken(); // Fix lỗi 'data' undefined
+          newAccessToken = data?.access_token;
+          localStorage.setItem("access_token", newAccessToken);
+          decoded = jwtDecode(newAccessToken);
         } catch (error) {
           console.error("Lỗi khi làm mới token", error);
+          return Promise.reject(error);
         }
       }
+
+      config.headers["token"] = `Bearer ${newAccessToken}`;
       return config;
     },
-    function (error) {
-      // Do something with request error
-      return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
   );
 
   const handleGetDetailsUser = async (id, token) => {
-    const res = await UserService.getDetailsUser(id, token);
-    // console.log("res", res);
-    dispatch(updateUser({ ...res?.data, access_token: token }));
+    try {
+      const res = await UserService.getDetailsUser(id, token);
+      dispatch(updateUser({ ...res?.data, access_token: token }));
+    } catch (error) {
+      console.error("Lỗi lấy thông tin người dùng:", error);
+    }
   };
 
   // useEffect(() => {
