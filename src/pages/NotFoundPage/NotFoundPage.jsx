@@ -8,6 +8,7 @@ import SideMenuComponent from "../../components/SideMenuComponent/SideMenuCompon
 import "./NotFoundPage.css";
 import OTPComponent from "../../components/OTPComponent/OTPComponent";
 import SizeComponent from "../../components/SizeComponent/SizeComponent";
+import ModalComponent from "../../components/ModalComponent/ModalComponent";
 
 const NotFoundPage = () => {
   return (
@@ -22,10 +23,11 @@ const NotFoundPage = () => {
         type="email"
         placeholder="Nhập email"
       />
-      <FooterComponent></FooterComponent>
+      {/* <FooterComponent></FooterComponent>
       <SideMenuComponent></SideMenuComponent>
       <OTPComponent></OTPComponent>
-      <SizeComponent></SizeComponent>
+      <SizeComponent></SizeComponent> */}
+      <ModalComponent></ModalComponent>
     </div>
   );
 };
