@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 //import $ from "jquery";
-import banner1 from "../../../../assets/img/banner_1.png";
-import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
-import FormComponent from "../../../../components/FormComponent/FormComponent";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
+import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
+import FormComponent from "../../../../components/FormComponent/FormComponent";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
+import { useMutationHook } from "../../../../hooks/useMutationHook";
 import { createDiscount } from "../../../../services/DiscountService";
 import "./AddDiscountPage.css";
-import { useMutationHook } from "../../../../hooks/useMutationHook";
-import { useNavigate } from "react-router-dom";
 
 
 const AddDiscountPage = () => {
@@ -146,19 +144,25 @@ const AddDiscountPage = () => {
      mutation.mutate(formData)
     //  navigate('/admin/discount-list')
     };
+
+      const [activeTab, setActiveTab] = useState("discount");
+     
+      const handleTabClick = (tab, navigatePath) => {
+        setActiveTab(tab);
+        navigate(navigatePath);
+      };
   return (
     <div>
       <div className="container-xl">
         <div className="add-discount__container">
           {/* side menu */}
           <div className="side-menu__discount">
-            <SideMenuComponent>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent>Trạng thái</SideMenuComponent>
-            <SideMenuComponent>Loại sản phẩm </SideMenuComponent>
-            <SideMenuComponent>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent>Thống kê</SideMenuComponent>
+        
+          <SideMenuComponent_AdminManage
+            activeTab={activeTab}
+            handleTabClick={handleTabClick}
+            />
+          
           </div>
           {/* info */}
           <div className="add-discount__content">
