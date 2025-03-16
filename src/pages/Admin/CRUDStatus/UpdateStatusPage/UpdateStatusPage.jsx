@@ -1,5 +1,5 @@
 import FormComponent from "../../../../components/FormComponent/FormComponent";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import "./UpdateStatusPage.css";
 import { useSelector } from "react-redux";
@@ -85,6 +85,13 @@ const UpdateStatusPage = () => {
     }
   }, [mutation.isSuccess, mutation.isError, mutation.error]);
 
+   const [activeTab, setActiveTab] = useState("status");
+  
+    const handleTabClick = (tab, navigatePath) => {
+      setActiveTab(tab);
+      navigate(navigatePath);
+    };
+
   return (
     <div>
       <div className="container-xl">
@@ -102,14 +109,11 @@ const UpdateStatusPage = () => {
         )}
         <div className="update-status__container">
           {/* side menu */}
-          <div className="side-menu__status">
-            <SideMenuComponent>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent>Trạng thái</SideMenuComponent>
-            <SideMenuComponent>Loại sản phẩm </SideMenuComponent>
-            <SideMenuComponent>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent>Thống kê</SideMenuComponent>
+          <div className="side-menu__discount">
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
+            />
           </div>
 
           <iv className="update-status__content">

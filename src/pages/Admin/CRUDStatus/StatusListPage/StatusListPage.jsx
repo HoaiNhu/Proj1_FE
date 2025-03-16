@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./StatusListPage.css";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
 import { useNavigate } from "react-router-dom";
@@ -60,28 +60,6 @@ const StatusListPage = () => {
   // console.log("Selected Rows:", selectedRows);
 
   // const isSelected = (id) => selectedRows.includes(id);
-
-  const ClickInfor = () => {
-    navigate("/admin/store-info");
-  };
-  const ClickOrder = () => {
-    navigate("/admin/order-list");
-  };
-  const ClickDiscount = () => {
-    navigate("/admin/discount-list");
-  };
-  const ClickStatus = () => {
-    navigate("/admin/status-list");
-  };
-  const ClickCategory = () => {
-    navigate("/admin/category-list");
-  };
-  const ClickUser = () => {
-    navigate("/admin/user-list");
-  };
-  const ClickReport = () => {
-    navigate("/admin/report");
-  };
 
   const fetchData = async () => {
     setShowLoading(true);
@@ -195,6 +173,13 @@ const StatusListPage = () => {
     }
   };
 
+  const [activeTab, setActiveTab] = useState("status");
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
+
   return (
     <div>
       <div className="container-xl">
@@ -208,28 +193,12 @@ const StatusListPage = () => {
         )}
         <div className="status-list__info">
           {/* side menu */}
-          <div className="side-menu__status">
-            <SideMenuComponent className="btn-menu" onClick={ClickInfor}>
-              Thông tin cửa hàng
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu" onClick={ClickOrder}>
-              Đơn hàng
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu" onClick={ClickDiscount}>
-              Khuyến mãi
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu" onClick={ClickStatus}>
-              Trạng thái
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu" onClick={ClickCategory}>
-              Loại sản phẩm
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu" onClick={ClickUser}>
-              Danh sách người dùng
-            </SideMenuComponent>
-            <SideMenuComponent className="btn-menu" onClick={ClickReport}>
-              Thống kê
-            </SideMenuComponent>
+          <div className="side-menu__discount">
+          <SideMenuComponent_AdminManage
+            activeTab={activeTab}
+            handleTabClick={handleTabClick}
+            />
+
           </div>
           {/* status list */}
           <div className="status-list__content">

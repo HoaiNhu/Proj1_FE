@@ -1,6 +1,6 @@
 import React from "react";
 import FormComponent from "../../../../components/FormComponent/FormComponent";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import "./AddStatusPage.css";
 import { useEffect, useState } from "react";
@@ -13,9 +13,6 @@ import { useMutationHook } from "../../../../hooks/useMutationHook";
 import { isAdmin } from "../../../../utils";
 
 const AddStatusPage = () => {
-  // const [statusCode, setStatusCode] = useState("");
-  // const [statusName, setStatusName] = useState("");
-  // const [statusDescription, setStatusDescription] = useState("");
   const accessToken = localStorage.getItem("access_token");
 
   const [formData, setFormData] = useState({
@@ -74,6 +71,14 @@ const AddStatusPage = () => {
     }));
   };
 
+
+  const [activeTab, setActiveTab] = useState("status");
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
+
   return (
     <div>
       <div className="container-xl">
@@ -91,14 +96,11 @@ const AddStatusPage = () => {
         )}
         <div className="add-status__container">
           {/* side menu */}
-          <div className="side-menu__status">
-            <SideMenuComponent>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent>Trạng thái</SideMenuComponent>
-            <SideMenuComponent>Loại sản phẩm </SideMenuComponent>
-            <SideMenuComponent>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent>Thống kê</SideMenuComponent>
+          <div className="side-menu__discount">
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
+            />
           </div>
 
           <div className="add-status__content">
