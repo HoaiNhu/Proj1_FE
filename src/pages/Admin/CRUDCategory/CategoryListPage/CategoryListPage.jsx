@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import "./CategoryListPage.css";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useHistory để điều hướng
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
+import "./CategoryListPage.css";
 
 const CategoryListPage = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const CategoryListPage = () => {
   
       if (selectedCategory) {
         const { categoryCode, categoryName } = selectedCategory; // Lấy mã và tên loại
-        navigate("/update-category", {
+        navigate("/admin/update-category", {
           state: { categoryId, categoryCode, categoryName }, // Truyền toàn bộ dữ liệu cần thiết
         });
       } else {
@@ -151,26 +151,22 @@ const CategoryListPage = () => {
     }
   };
   
-  const ClickInfor=()=>{navigate("/admin/store-info")}
-  const ClickOrder=()=>{navigate("/admin/order-list")}
-  const ClickDiscount=()=>{navigate("/admin/discount-list")}
-  const ClickStatus=()=>{navigate("/admin/status-list")}
-  const ClickCategory=()=>{navigate("/admin/category-list")}
-  const ClickUser=()=>{navigate("/admin/user-list")}
-  const ClickReprot=()=>{navigate("/admin/report")}
+  const [activeTab, setActiveTab] = useState("category");
+ 
+   const handleTabClick = (tab, navigatePath) => {
+     setActiveTab(tab);
+     navigate(navigatePath);
+   };
   return (
     <div>
       <div className="container-xl">
         <div className="category-list__info">
           {/* Side Menu */}
           <div className="side-menu__category">
-          <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
-            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
-            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
+          <SideMenuComponent_AdminManage
+            activeTab={activeTab}
+            handleTabClick={handleTabClick}
+            />
           </div>
           {/* Category List */}
           <div className="category-list__content">

@@ -4,9 +4,10 @@ import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenu
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import "./AddCategoryPage.css";
 import { useNavigate } from "react-router-dom";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 
 const AddCategoryPage = () => {
-  
+  const navigate= useNavigate();
   const [category, setCategory] = useState({
     categoryCode: "",
     categoryName: "",
@@ -56,16 +57,12 @@ const ExitForm =()=>{
     }
     navigate("/admin/category-list")
   };
-  const navigate= useNavigate();
-  const ClickInfor=()=>{navigate("/store-info")}
-  const ClickOrder=()=>{navigate("/admin/order-list")}
-  const ClickDiscount=()=>{navigate("/admin/discount-list")}
-  const ClickStatus=()=>{navigate("/status-list")}
-  const ClickCategory=()=>{navigate("/category-list")}
-  const ClickUser=()=>{navigate("/user-list")}
-  const ClickReprot=()=>{navigate("/reprot")}
+  const [activeTab, setActiveTab] = useState("category");
 
-
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
 
   return (
     <div>
@@ -73,15 +70,11 @@ const ExitForm =()=>{
         <div className="add-category__container">
           {/* side menu */}
           <div className="side-menu__category">
-            <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
-            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
-            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
+          <SideMenuComponent_AdminManage
+            activeTab={activeTab}
+            handleTabClick={handleTabClick}
+            />
           </div>
-
           <div className="add-category__content">
             <div className="category__info">
               <div className="add_category__title">

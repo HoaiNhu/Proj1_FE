@@ -198,7 +198,6 @@ const StatusListPage = () => {
             activeTab={activeTab}
             handleTabClick={handleTabClick}
             />
-
           </div>
           {/* status list */}
           <div className="status-list__content">
