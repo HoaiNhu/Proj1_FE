@@ -1,0 +1,26 @@
+.iconChatbot {
+    width: 100px;
+    height: 100px;
+    background-size: 110%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+   
+    transition: transform 0.2s ease; /* Hiệu ứng hover mượt mà */
+}
+
+.iconChatbot:hover {
+    transform: scale(1.1); /* Phóng to khi hover */
+    animation: shake 0.5s ease-in-out 0s infinite;  /* Lặp lại sau 3 giây */
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
