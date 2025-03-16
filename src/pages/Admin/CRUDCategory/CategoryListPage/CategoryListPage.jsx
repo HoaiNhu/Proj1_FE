@@ -7,20 +7,20 @@ import "./CategoryListPage.css";
 
 const CategoryListPage = () => {
   const navigate = useNavigate();
-  
+
   const [selectedRows, setSelectedRows] = useState([]);  // State lưu danh sách các hàng được chọn
   const [categories, setCategories] = useState([]); // State lưu danh sách categories
-  const AddCategory=()=>{
-      navigate("/admin/add-category")
+  const AddCategory = () => {
+    navigate("/admin/add-category")
   }
 
   const handleEdit = () => {
     if (selectedRows.length === 1) { // Đảm bảo chỉ có 1 category được chọn
       const categoryId = selectedRows[0];
-  
+
       // Tìm category dựa trên categoryId
       const selectedCategory = categories.find((category) => category._id === categoryId);
-  
+
       if (selectedCategory) {
         const { categoryCode, categoryName } = selectedCategory; // Lấy mã và tên loại
         navigate("/admin/update-category", {
@@ -79,10 +79,10 @@ const CategoryListPage = () => {
       alert("Please select at least one category to delete.");
       return;
     }
-  
+
     // Hiển thị hộp thoại xác nhận
     const isConfirmed = window.confirm("Are you sure you want to delete the selected categories?");
-    
+
     if (isConfirmed) {
       try {
         // Gửi yêu cầu xóa từng category được chọn
@@ -93,21 +93,21 @@ const CategoryListPage = () => {
               "Content-Type": "application/json",
             },
           });
-  
+
           const data = await response.json();
-          
+
           if (!response.ok) {
             alert(`Error deleting category with ID ${categoryId}: ${data.message}`);
             continue; // Nếu có lỗi với category này, chuyển sang category tiếp theo
           }
         }
-  
+
         alert("Selected categories have been deleted successfully!");
-        
+
         // Cập nhật lại danh sách categories sau khi xóa
         setCategories(categories.filter((category) => !selectedRows.includes(category._id)));
         setSelectedRows([]); // Clear selected rows
-  
+
       } catch (error) {
         console.error("Error deleting categories:", error);
         alert("Something went wrong while deleting the categories.");
@@ -116,14 +116,14 @@ const CategoryListPage = () => {
       console.log("Category deletion cancelled.");
     }
   };
-  
-  
+
+
   const handleDeleteCategory = async (categoryId) => {
     // Hiển thị hộp thoại xác nhận
     const isConfirmed = window.confirm("Are you sure you want to delete this category?");
-    
+
     if (isConfirmed) {
-  
+
       try {
         const response = await fetch(`/api/category/delete-category/${categoryId}`, {
           method: "DELETE",
@@ -131,9 +131,9 @@ const CategoryListPage = () => {
             "Content-Type": "application/json",
           },
         });
-  
-        const data = await response.json(); 
-  
+
+        const data = await response.json();
+
         if (response.ok) {
           alert("Category deleted successfully!");
           // Cập nhật UI hoặc làm mới danh sách category nếu cần
@@ -150,22 +150,22 @@ const CategoryListPage = () => {
       console.log("Category deletion cancelled.");
     }
   };
-  
+
   const [activeTab, setActiveTab] = useState("category");
- 
-   const handleTabClick = (tab, navigatePath) => {
-     setActiveTab(tab);
-     navigate(navigatePath);
-   };
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
   return (
     <div>
       <div className="container-xl">
         <div className="category-list__info">
           {/* Side Menu */}
           <div className="side-menu__category">
-          <SideMenuComponent_AdminManage
-            activeTab={activeTab}
-            handleTabClick={handleTabClick}
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
             />
           </div>
           {/* Category List */}
@@ -214,9 +214,9 @@ const CategoryListPage = () => {
                       <td>{category.categoryName}</td> {/* Hiển thị tên loại */}
                       <td>{new Date(category.createdAt).toLocaleDateString("vi-VN")}</td> {/* Hiển thị ngày tạo */}
                       <td>
-                        <button 
-                          className="delete-btn" 
-                          onClick={() => handleDeleteCategory(category._id) } // Gọi delete cho từng category
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDeleteCategory(category._id)} // Gọi delete cho từng category
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

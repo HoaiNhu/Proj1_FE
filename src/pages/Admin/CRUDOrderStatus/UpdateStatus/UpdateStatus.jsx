@@ -15,11 +15,11 @@ const UpdateStatus = () => {
     navigate("/admin/order-list");
   };
   const [activeTab, setActiveTab] = useState("order");
-      
-       const handleTabClick = (tab, navigatePath) => {
-         setActiveTab(tab);
-         navigate(navigatePath);
-       };
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
 
 
   const { selectedOrders, currentStatus } = location.state || {};
@@ -132,7 +132,7 @@ const UpdateStatus = () => {
         )
       );
 
-      
+
       const updatedOrdersWithDetails = updatedOrders.map((updatedOrder) => {
         const updatedOrderData = updatedOrder.data;
         const detailedStatus = statuses.find(
@@ -167,9 +167,9 @@ const UpdateStatus = () => {
         {/* side menu */}
         <div className="side-menu__discount">
           <SideMenuComponent_AdminManage
-           activeTab={activeTab}
-           handleTabClick={handleTabClick}
-           />
+            activeTab={activeTab}
+            handleTabClick={handleTabClick}
+          />
         </div>
         <div className="right-area-UpdateStatus">
           <h2
@@ -199,9 +199,8 @@ const UpdateStatus = () => {
                 {statuses.map((status, index) => (
                   <div
                     key={index}
-                    className={`status-circle ${
-                      index === currentIndex ? "active" : ""
-                    } ${index < currentIndex ? "completed" : ""}`}
+                    className={`status-circle ${index === currentIndex ? "active" : ""
+                      } ${index < currentIndex ? "completed" : ""}`}
                   >
                     <div className="car-icon">
                       {index === currentIndex && (

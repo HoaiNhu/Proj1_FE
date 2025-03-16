@@ -57,13 +57,13 @@ const DiscountListPage = () => {
       }
     };
     fetchDiscounts();
-  },[]);
+  }, []);
 
   const getCategoryNameById = (id) => {
     const category = categories.find((cat) => cat.id === id);
     return category ? category.categoryName : "Không xác định";
   };
- 
+
 
   const toggleSelectAll = () => {
     setSelectedRows(
@@ -87,7 +87,7 @@ const DiscountListPage = () => {
   };
 
   const [activeTab, setActiveTab] = useState("discount");
- 
+
   const handleTabClick = (tab, navigatePath) => {
     setActiveTab(tab);
     navigate(navigatePath);
@@ -112,17 +112,17 @@ const DiscountListPage = () => {
       }
     }
   };
-  
-  
+
+
   return (
     <div>
       <div className="container-xl">
         <div className="discount-list__info">
           {/* Side menu */}
           <div className="side-menu__discount">
-          <SideMenuComponent_AdminManage
-            activeTab={activeTab}
-            handleTabClick={handleTabClick}
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
             />
           </div>
 
@@ -132,7 +132,7 @@ const DiscountListPage = () => {
               <h2 className="discount-list__title">Danh sách khuyến mãi</h2>
               <div className="btn__action">
                 <ButtonComponent className="btn btn-delete" onClick={handleDelete}>Xóa</ButtonComponent>
-               
+
                 <ButtonComponent
                   className="btn btn-add"
                   onClick={() => navigate("/admin/add-discount")}

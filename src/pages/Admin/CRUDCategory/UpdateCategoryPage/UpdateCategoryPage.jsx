@@ -6,17 +6,17 @@ import SideMenuComponent_AdminManage from "../../../../components/SideMenuCompon
 import "./UpdateCategoryPage.css";
 
 const UpdateCategoryPage = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation(); // Sử dụng hook để lấy thông tin state
-  const { categoryId, categoryName, categoryCode} = location.state || {}; // Lấy thông tin category từ state
+  const { categoryId, categoryName, categoryCode } = location.state || {}; // Lấy thông tin category từ state
 
   // State cho categoryId và categoryName
   const [category, setCategory] = useState({
     id: categoryId || "",
-    code: categoryCode ||"",
+    code: categoryCode || "",
     name: categoryName || "",
   });
-  const ExitForm =()=>{
+  const ExitForm = () => {
     navigate("/admin/category-list")
   }
 
@@ -33,7 +33,7 @@ const UpdateCategoryPage = () => {
     setCategory({ ...category, [name]: value });
   };
 
- 
+
   const handleSave = async () => {
     try {
       const response = await fetch(`/api/category/update-category/${category.id}`, {
@@ -46,26 +46,26 @@ const UpdateCategoryPage = () => {
           categoryCode: category.code,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         alert("Cập nhật loại sản phẩm thành công!")
-         
+
       } else {
-       
+
       }
     } catch (error) {
       alert("Error updating category:", error);
-      
+
     }
   };
   const [activeTab, setActiveTab] = useState("category");
- 
-   const handleTabClick = (tab, navigatePath) => {
-     setActiveTab(tab);
-     navigate(navigatePath);
-   };
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
 
   return (
     <div>
@@ -73,9 +73,9 @@ const UpdateCategoryPage = () => {
         <div className="update-category__container">
           {/* Side menu */}
           <div className="side-menu__category">
-          <SideMenuComponent_AdminManage
-            activeTab={activeTab}
-            handleTabClick={handleTabClick}
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
             />
           </div>
 
@@ -109,7 +109,7 @@ const UpdateCategoryPage = () => {
                       cursor: "pointer",
                     }}
                   >
-                    
+
                   </span>
                   <FormComponent
                     placeholder="Bánh mùa đông"

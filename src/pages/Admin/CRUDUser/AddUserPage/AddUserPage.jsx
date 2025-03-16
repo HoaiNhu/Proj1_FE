@@ -96,13 +96,13 @@ const AddUserPage = () => {
     );
   };
 
-    const [activeTab, setActiveTab] = useState("user");
-        
-         const handleTabClick = (tab, navigatePath) => {
-           setActiveTab(tab);
-           navigate(navigatePath);
-         };
-  
+  const [activeTab, setActiveTab] = useState("user");
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
+
 
   return (
     <div>
@@ -118,10 +118,10 @@ const AddUserPage = () => {
         <div className="add-status__container">
           {/* side menu */}
           <div className="side-menu__status">
-          <SideMenuComponent_AdminManage
-           activeTab={activeTab}
-           handleTabClick={handleTabClick}
-           />
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
+            />
           </div>
 
           <div className="add-status__content">

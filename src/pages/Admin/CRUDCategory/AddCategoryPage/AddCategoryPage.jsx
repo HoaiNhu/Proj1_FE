@@ -7,14 +7,14 @@ import { useNavigate } from "react-router-dom";
 import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 
 const AddCategoryPage = () => {
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const [category, setCategory] = useState({
     categoryCode: "",
     categoryName: "",
   });
-const ExitForm =()=>{
-  navigate("/admin/category-list")
-}
+  const ExitForm = () => {
+    navigate("/admin/category-list")
+  }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCategory({ ...category, [name]: value });
@@ -22,7 +22,7 @@ const ExitForm =()=>{
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
+
     try {
       // Lấy access token từ localStorage
       const accessToken = localStorage.getItem("access_token");
@@ -70,9 +70,9 @@ const ExitForm =()=>{
         <div className="add-category__container">
           {/* side menu */}
           <div className="side-menu__category">
-          <SideMenuComponent_AdminManage
-            activeTab={activeTab}
-            handleTabClick={handleTabClick}
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
             />
           </div>
           <div className="add-category__content">

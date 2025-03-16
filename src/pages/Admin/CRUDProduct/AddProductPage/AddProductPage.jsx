@@ -11,7 +11,7 @@ import Loading from "../../../../components/LoadingComponent/Loading";
 import { useNavigate } from "react-router-dom";
 
 const AddProductPage = () => {
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const accessToken = localStorage.getItem("access_token");
   const [stateproduct, setstateProduct] = useState({
     productName: "",
@@ -184,7 +184,7 @@ const AddProductPage = () => {
           <div className="info__top">
             {/* Info left */}
             <div className="info__left">
-           
+
               <input
                 // className="product__image"
                 type="file"
@@ -193,18 +193,18 @@ const AddProductPage = () => {
                 required
               />
               <div className="product__image">
-              {previewImage && (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  className="product-preview"
-                  style={{
-                    width: "36rem",
-                    height: "40rem",
-                    borderRadius: "15px"
-                  }}
-                />
-              )}
+                {previewImage && (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="product-preview"
+                    style={{
+                      width: "36rem",
+                      height: "40rem",
+                      borderRadius: "15px"
+                    }}
+                  />
+                )}
               </div>
               {/* <div className="icon__add-image">
                 <svg
@@ -306,7 +306,7 @@ const AddProductPage = () => {
 
         <div className="btn-submit">
           <ButtonComponent onClick={handleSubmit}>Thêm</ButtonComponent>
-          <ButtonComponent onClick={()=> navigate("/admin/products")}>Thoát</ButtonComponent>
+          <ButtonComponent onClick={() => navigate("/admin/products")}>Thoát</ButtonComponent>
         </div>
 
       </div>

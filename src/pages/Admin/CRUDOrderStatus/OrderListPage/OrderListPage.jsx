@@ -21,11 +21,11 @@ const OrderListPage = () => {
 
 
   const [activeTab, setActiveTab] = useState("order");
-      
-       const handleTabClick = (tab, navigatePath) => {
-         setActiveTab(tab);
-         navigate(navigatePath);
-       };
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
 
   const handleUpdateStatusList = () => {
     const selectedOrders = orders.filter((order) =>
@@ -147,9 +147,9 @@ const OrderListPage = () => {
           {/* side menu */}
           <div className="side-menu__order">
             <SideMenuComponent_AdminManage
-             activeTab={activeTab}
-             handleTabClick={handleTabClick}
-             />
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
+            />
           </div>
           {/* order list */}
           <div className="order-list__content">
@@ -179,7 +179,7 @@ const OrderListPage = () => {
                 title={
                   selectedStatus
                     ? statuses.find((s) => s.value === selectedStatus)?.label ||
-                      "Chọn trạng thái"
+                    "Chọn trạng thái"
                     : "Chọn trạng thái"
                 }
                 onSelect={handleFilter}

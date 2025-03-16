@@ -15,13 +15,13 @@ const OrderDetailPage = () => {
   console.log("order", order);
   const accessToken = localStorage.getItem("access_token");
 
-  
+
   const [activeTab, setActiveTab] = useState("order");
-      
-       const handleTabClick = (tab, navigatePath) => {
-         setActiveTab(tab);
-         navigate(navigatePath);
-       };
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
   // console.log("accessToken", accessToken);
 
   // Sử dụng useState để quản lý order
@@ -145,9 +145,9 @@ const OrderDetailPage = () => {
         <div className="order-list__info">
           {/* side menu */}
           <div className="side-menu__order">
-          <SideMenuComponent_AdminManage
-            activeTab={activeTab}
-            handleTabClick={handleTabClick}
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
             />
           </div>
           {/* order list */}
