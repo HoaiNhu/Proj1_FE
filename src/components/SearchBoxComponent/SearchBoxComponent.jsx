@@ -27,8 +27,10 @@ const SearchBoxComponent = ({ onSearch, onButtonClick }) => {
   };
 
   const handleVoiceInput = (speechResult) => {
-    setQuery(speechResult); // Cập nhật ô tìm kiếm với kết quả giọng nói
-    setTimeout(() => handleSearch(), 500); // Tự động tìm kiếm sau khi nhận kết quả
+    if (speechResult.trim()) {
+      setQuery(speechResult); // Cập nhật ô tìm kiếm với kết quả giọng nói
+      setTimeout(() => onSearch(speechResult.trim()), 200); // Đợi 200ms để cập nhật xong rồi mới tìm kiếm
+    }
   };
 
   return (
