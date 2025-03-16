@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 //import $ from "jquery";
-import banner1 from "../../../../assets/img/banner_1.png";
-import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
-import FormComponent from "../../../../components/FormComponent/FormComponent";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
+import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
+import FormComponent from "../../../../components/FormComponent/FormComponent";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
+import { useMutationHook } from "../../../../hooks/useMutationHook";
 import { createDiscount } from "../../../../services/DiscountService";
 import "./AddDiscountPage.css";
-import { useMutationHook } from "../../../../hooks/useMutationHook";
-import { useNavigate } from "react-router-dom";
 
 
 const AddDiscountPage = () => {
@@ -19,7 +17,7 @@ const AddDiscountPage = () => {
   const [previewImage, setPreviewImage] = useState(null); // State để lưu URL của ảnh preview
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const [statediscount, setstateDiscount] = useState({
     discountCode: "",
     discountName: "",
@@ -66,99 +64,105 @@ const AddDiscountPage = () => {
   //   const value = ref.current?.value || "";
   //   setstateDiscount();
   // };
-  useEffect(()=>{
-      const fetchCategories = async () => {
-        try {
-  
-          const response = await fetch("http://localhost:3001/api/category/get-all-category", {
-            method: "GET", // Phương thức GET để lấy danh sách category
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-  
-          if (!response.ok) {
-            throw new Error("Failed to fetch categories");
-          }
-  
-          const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-          console.log("Categories data:", categories);
-  
-          // Kiểm tra và gán mảng categories từ data.data
-          if (Array.isArray(data.data)) {
-            setCategories(data.data); // Lưu danh sách category vào state
-          } else {
-            console.error("Categories data is not in expected format");
-          }
-        } catch (error) {
-          console.error("Error fetching categories:", error);
-        }
-      };
-      fetchCategories();
-    }, []);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
 
-    
+        const response = await fetch("http://localhost:3001/api/category/get-all-category", {
+          method: "GET", // Phương thức GET để lấy danh sách category
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
+        console.log("Categories data:", categories);
+
+        // Kiểm tra và gán mảng categories từ data.data
+        if (Array.isArray(data.data)) {
+          setCategories(data.data); // Lưu danh sách category vào state
+        } else {
+          console.error("Categories data is not in expected format");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setstateDiscount({ ...statediscount, [e.target.name]: e.target.value });
   };
 
   const mutation = useMutationHook(
-      async (data) => {
-  
-        const response = await createDiscount (data, accessToken);
-        console.log("RESKLT", response);
-        try {
-          const result = await response;
-          console.log("RESKLT",result);
-          if (result.status === "OK") {
-            alert("Thêm khuyến mãi thành công!");
-            navigate('/admin/discount-list')
-          
-          } else {
-            alert(`Thêm khuyến mãi thất bại: ${result.message}`);
-          }
-        } catch (error) {
-          alert("Đã xảy ra lỗi khi thêm khuyến mãi!");
-          console.error(error.message);
+    async (data) => {
+
+      const response = await createDiscount(data, accessToken);
+      console.log("RESKLT", response);
+      try {
+        const result = await response;
+        console.log("RESKLT", result);
+        if (result.status === "OK") {
+          alert("Thêm khuyến mãi thành công!");
+          navigate('/admin/discount-list')
+
+        } else {
+          alert(`Thêm khuyến mãi thất bại: ${result.message}`);
         }
-        return response;
+      } catch (error) {
+        alert("Đã xảy ra lỗi khi thêm khuyến mãi!");
+        console.error(error.message);
       }
-    );
-    const { data, isLoading, isSuccess, isError } = mutation;
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      console.log("state", statediscount)
-      const formData = new FormData();
-      formData.append("discountCode", statediscount.discountCode);
-      formData.append("discountName", statediscount.discountName);
-      formData.append("discountValue", statediscount.discountValue);
-      formData.append("applicableCategory", statediscount.applicableCategory);
-      formData.append("discountImage", statediscount.discountImage);
-      formData.append("discountStartDate", statediscount.discountStartDate);
-      formData.append("discountEndDate", statediscount.discountEndDate);
-      // Kiểm tra FormData
-      for (let pair of formData.entries()) {
-        console.log("FORM",`${pair[0]}: ${pair[1]}`);
-      }
-  
-     mutation.mutate(formData)
+      return response;
+    }
+  );
+  const { data, isLoading, isSuccess, isError } = mutation;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("state", statediscount)
+    const formData = new FormData();
+    formData.append("discountCode", statediscount.discountCode);
+    formData.append("discountName", statediscount.discountName);
+    formData.append("discountValue", statediscount.discountValue);
+    formData.append("applicableCategory", statediscount.applicableCategory);
+    formData.append("discountImage", statediscount.discountImage);
+    formData.append("discountStartDate", statediscount.discountStartDate);
+    formData.append("discountEndDate", statediscount.discountEndDate);
+    // Kiểm tra FormData
+    for (let pair of formData.entries()) {
+      console.log("FORM", `${pair[0]}: ${pair[1]}`);
+    }
+
+    mutation.mutate(formData)
     //  navigate('/admin/discount-list')
-    };
+  };
+
+  const [activeTab, setActiveTab] = useState("discount");
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
   return (
     <div>
       <div className="container-xl">
         <div className="add-discount__container">
           {/* side menu */}
           <div className="side-menu__discount">
-            <SideMenuComponent>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent>Trạng thái</SideMenuComponent>
-            <SideMenuComponent>Loại sản phẩm </SideMenuComponent>
-            <SideMenuComponent>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent>Thống kê</SideMenuComponent>
+
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
+            />
+
           </div>
           {/* info */}
           <div className="add-discount__content">
@@ -194,48 +198,48 @@ const AddDiscountPage = () => {
                 <div className="content__item">
                   <label className="id__title">Mã khuyến mãi</label>
                   <FormComponent placeholder="Nhập mã khuyến mãi"
-                  name="discountCode"
-                  onChange={handleInputChange}
-                  value={statediscount.discountCode}
-                 ></FormComponent>
+                    name="discountCode"
+                    onChange={handleInputChange}
+                    value={statediscount.discountCode}
+                  ></FormComponent>
                 </div>
                 <div className="content__item">
                   <label className="name__title">Tên khuyến mãi</label>
                   <FormComponent placeholder="Nhập tên khuyến mãi"
-                   name="discountName"
-                   value={statediscount.discountName}
-                  onChange={handleInputChange}></FormComponent>
+                    name="discountName"
+                    value={statediscount.discountName}
+                    onChange={handleInputChange}></FormComponent>
                 </div>
                 <div className="content__item">
                   <label className="value__title">Giá trị khuyến mãi (VND)</label>
                   <FormComponent placeholder="Nhập giá trị khuyến mãi"
-                  className="choose-property"
-                  name="discountValue"
-                  value={statediscount.discountValue}
-                  onChange={handleInputChange}
+                    className="choose-property"
+                    name="discountValue"
+                    value={statediscount.discountValue}
+                    onChange={handleInputChange}
                   ></FormComponent>
                 </div>
                 <div className="content__item">
                   <label className="category__title">Loại áp dụng</label>
-                  <br/>
+                  <br />
                   <select
-                  name="applicableCategory"
-                  value={statediscount.applicableCategory}
-                  onChange={handleInputChange}
-                  className="choose-property"
-                  style={{ width: "36rem", height: "6rem", border: "none", color: "grey", borderRadius: "50px", boxShadow: "0px 2px 4px 0px #203c1640", padding: "15px" }}
-                  placeholder="Chọn loại sản phẩm"
-                >
-                   <option value="" disabled>Chọn loại sản phẩm</option>
-                  {Array.isArray(categories) && categories.length > 0 ? (
-                    categories.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category.categoryName}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Không có loại sản phẩm</option>
-                  )}
+                    name="applicableCategory"
+                    value={statediscount.applicableCategory}
+                    onChange={handleInputChange}
+                    className="choose-property"
+                    style={{ width: "36rem", height: "6rem", border: "none", color: "grey", borderRadius: "50px", boxShadow: "0px 2px 4px 0px #203c1640", padding: "15px" }}
+                    placeholder="Chọn loại sản phẩm"
+                  >
+                    <option value="" disabled>Chọn loại sản phẩm</option>
+                    {Array.isArray(categories) && categories.length > 0 ? (
+                      categories.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.categoryName}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Không có loại sản phẩm</option>
+                    )}
                   </select>
                 </div>
                 <div className="content__item">

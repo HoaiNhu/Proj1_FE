@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
-import FormComponent from "../../../../components/FormComponent/FormComponent";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
+import FormComponent from "../../../../components/FormComponent/FormComponent";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 import "./UpdateCategoryPage.css";
-import { useNavigate } from "react-router-dom"; // Import useHistory để điều hướng
 
 const UpdateCategoryPage = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation(); // Sử dụng hook để lấy thông tin state
-  const { categoryId, categoryName, categoryCode} = location.state || {}; // Lấy thông tin category từ state
+  const { categoryId, categoryName, categoryCode } = location.state || {}; // Lấy thông tin category từ state
 
   // State cho categoryId và categoryName
   const [category, setCategory] = useState({
     id: categoryId || "",
-    code: categoryCode ||"",
+    code: categoryCode || "",
     name: categoryName || "",
   });
-  const ExitForm =()=>{
+  const ExitForm = () => {
     navigate("/admin/category-list")
   }
 
@@ -35,7 +33,7 @@ const UpdateCategoryPage = () => {
     setCategory({ ...category, [name]: value });
   };
 
- 
+
   const handleSave = async () => {
     try {
       const response = await fetch(`/api/category/update-category/${category.id}`, {
@@ -48,27 +46,26 @@ const UpdateCategoryPage = () => {
           categoryCode: category.code,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         alert("Cập nhật loại sản phẩm thành công!")
-         
+
       } else {
-       
+
       }
     } catch (error) {
       alert("Error updating category:", error);
-      
+
     }
   };
-  const ClickInfor=()=>{navigate("/store-info")}
-  const ClickOrder=()=>{navigate("/admin/order-list")}
-  const ClickDiscount=()=>{navigate("/admin/discount-list")}
-  const ClickStatus=()=>{navigate("/status-list")}
-  const ClickCategory=()=>{navigate("/admin/category-list")}
-  const ClickUser=()=>{navigate("/user-list")}
-  const ClickReprot=()=>{navigate("/reprot")}
+  const [activeTab, setActiveTab] = useState("category");
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
 
   return (
     <div>
@@ -76,13 +73,10 @@ const UpdateCategoryPage = () => {
         <div className="update-category__container">
           {/* Side menu */}
           <div className="side-menu__category">
-          <SideMenuComponent onClick={ClickInfor}>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickDiscount}>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent onClick={ClickStatus}>Trạng thái</SideMenuComponent>
-            <SideMenuComponent onClick={ClickCategory}>Loại sản phẩm</SideMenuComponent>
-            <SideMenuComponent onClick={ClickUser}>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
+            />
           </div>
 
           <div className="update-category__content">
@@ -115,7 +109,7 @@ const UpdateCategoryPage = () => {
                       cursor: "pointer",
                     }}
                   >
-                    
+
                   </span>
                   <FormComponent
                     placeholder="Bánh mùa đông"

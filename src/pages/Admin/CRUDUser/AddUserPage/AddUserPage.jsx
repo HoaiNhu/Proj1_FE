@@ -1,15 +1,11 @@
-import React from "react";
-import FormComponent from "../../../../components/FormComponent/FormComponent";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
-import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createUser } from "../../../../services/UserService";
-import Loading from "../../../../components/LoadingComponent/Loading";
+import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
+import FormComponent from "../../../../components/FormComponent/FormComponent";
 import Message from "../../../../components/MessageComponent/Message";
-import * as UserService from "../../../../services/UserService";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 import { useMutationHook } from "../../../../hooks/useMutationHook";
-import { isAdmin } from "../../../../utils";
+import * as UserService from "../../../../services/UserService";
 
 const AddUserPage = () => {
   // const accessToken = localStorage.getItem("access_token");
@@ -100,6 +96,14 @@ const AddUserPage = () => {
     );
   };
 
+  const [activeTab, setActiveTab] = useState("user");
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
+  };
+
+
   return (
     <div>
       <div className="container-xl">
@@ -114,13 +118,10 @@ const AddUserPage = () => {
         <div className="add-status__container">
           {/* side menu */}
           <div className="side-menu__status">
-            <SideMenuComponent>Thông tin cửa hàng</SideMenuComponent>
-            <SideMenuComponent>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent>Khuyến mãi</SideMenuComponent>
-            <SideMenuComponent>Trạng thái</SideMenuComponent>
-            <SideMenuComponent>Loại sản phẩm </SideMenuComponent>
-            <SideMenuComponent>Danh sách người dùng</SideMenuComponent>
-            <SideMenuComponent>Thống kê</SideMenuComponent>
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
+            />
           </div>
 
           <div className="add-status__content">

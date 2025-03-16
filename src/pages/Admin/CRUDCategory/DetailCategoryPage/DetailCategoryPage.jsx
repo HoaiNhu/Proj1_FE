@@ -62,73 +62,73 @@ const DetailCategoryPage = () => {
               Thống kê
             </SideMenuComponent>
           </div>
-          
+
           {/* category products */}
           <div className="category-list__content">
             {/* category detail */}
-          <div className="detail-category__content">
-            <div className="category__info">
-          
-              <div className="detail_category__title">
-                <label>Chi tiết loại bánh</label>
-              </div>
-           
-              <div className="content">
-                <div className="content__item">
-                  <label className="id__title">Mã loại bánh</label>
-                  <FormComponent placeholder="C6"></FormComponent>
+            <div className="detail-category__content">
+              <div className="category__info">
+
+                <div className="detail_category__title">
+                  <label>Chi tiết loại bánh</label>
                 </div>
-                <div className="content__item" style={{ position: 'relative' }}>
-                  <label className="name__title">Tên loại bánh</label>
-                    <span 
-                        className="material-icons" 
-                        style={{ 
+
+                <div className="content">
+                  <div className="content__item">
+                    <label className="id__title">Mã loại bánh</label>
+                    <FormComponent placeholder="C6"></FormComponent>
+                  </div>
+                  <div className="content__item" style={{ position: 'relative' }}>
+                    <label className="name__title">Tên loại bánh</label>
+                    <span
+                      className="material-icons"
+                      style={{
                         fontSize: '26px',
                         marginRight: "45px",
-                        position: 'absolute', 
-                        top: '0', 
-                        right: '0', 
-                        cursor: 'pointer' 
-                        }}
+                        position: 'absolute',
+                        top: '0',
+                        right: '0',
+                        cursor: 'pointer'
+                      }}
                     >edit
-                  </span>
-                  <FormComponent placeholder="Bánh mùa đông"></FormComponent>
+                    </span>
+                    <FormComponent placeholder="Bánh mùa đông"></FormComponent>
+                  </div>
                 </div>
               </div>
-              </div>
-              </div>
+            </div>
             <div className="category-list__action" style={{ position: 'relative' }}>
               <h2 className="category-list__title">Danh sách sản phẩm</h2>
 
-              <span 
-                        className="material-icons" 
-                        style={{
-                        fontWeight:'bold',
-                        fontSize: '36px',
-                        marginTop: "10px",
-                        marginRight: "100px",
-                        position: 'absolute', 
-                        top: '0', 
-                        right: '0', 
-                        cursor: 'pointer' 
-                        }}
-                    >+
-                  </span>
-              
-              <span 
-                        className="material-icons" 
-                        style={{ 
-                        fontSize: '26px',
-                        marginTop: "20px",
-                        marginRight: "40px",
-                        position: 'absolute', 
-                        top: '0', 
-                        right: '0', 
-                        cursor: 'pointer' 
-                        }}
-                    >edit
-                  </span>
-                  
+              <span
+                className="material-icons"
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '36px',
+                  marginTop: "10px",
+                  marginRight: "100px",
+                  position: 'absolute',
+                  top: '0',
+                  right: '0',
+                  cursor: 'pointer'
+                }}
+              >+
+              </span>
+
+              <span
+                className="material-icons"
+                style={{
+                  fontSize: '26px',
+                  marginTop: "20px",
+                  marginRight: "40px",
+                  position: 'absolute',
+                  top: '0',
+                  right: '0',
+                  cursor: 'pointer'
+                }}
+              >edit
+              </span>
+
             </div>
             {/* table */}
             <div className="table-container">
@@ -151,11 +151,11 @@ const DetailCategoryPage = () => {
                     >
                       <td>{index + 1}</td>
                       <td>
-                        <img 
-                          src={cake1} 
-                          alt={"Promp img"} 
+                        <img
+                          src={cake1}
+                          alt={"Promp img"}
                           style={{ width: '60px', height: '60px' }}
-                          />
+                        />
                       </td>
                       <td>{promo.name}</td>
                       <td>{promo.size}</td>
@@ -183,9 +183,9 @@ const DetailCategoryPage = () => {
               </table>
             </div>
             <div className="btn__update-category">
-                <ButtonComponent>Lưu</ButtonComponent>
-                <ButtonComponent>Thoát</ButtonComponent>
-              </div>
+              <ButtonComponent>Lưu</ButtonComponent>
+              <ButtonComponent>Thoát</ButtonComponent>
+            </div>
           </div>
         </div>
       </div>

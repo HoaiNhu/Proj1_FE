@@ -136,16 +136,16 @@ const ProductPageAdmin = () => {
       <div className="productadmin">
         {/* productadmin top */}
         <div className="product__top">
-            <h1 className="product__title">SẢN PHẨM</h1>
-            {/* Hiển thị tên category nếu có */}
-            {currentCategory ? (
-              <p className="product__current-category">
-                {categories.find((cat) => cat._id === currentCategory)?.categoryName}
-              </p>
-            ) : (
-              <p className="product__current-category">Tất cả sản phẩm</p>
-            )}
-          </div>
+          <h1 className="product__title">SẢN PHẨM</h1>
+          {/* Hiển thị tên category nếu có */}
+          {currentCategory ? (
+            <p className="product__current-category">
+              {categories.find((cat) => cat._id === currentCategory)?.categoryName}
+            </p>
+          ) : (
+            <p className="product__current-category">Tất cả sản phẩm</p>
+          )}
+        </div>
         <div style={{ marginLeft: 1222 }}>
           <AddBtn path={"/admin/add-product"} />
         </div>

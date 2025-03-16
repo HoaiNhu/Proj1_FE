@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./OrderListPage.css";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
+import { Dropdown, DropdownButton } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
-import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
-import { useNavigate } from "react-router-dom";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 import * as OrderService from "../../../../services/OrderService";
 import * as StatusService from "../../../../services/StatusService";
-import { DropdownButton, Dropdown } from "react-bootstrap";
+import "./OrderListPage.css";
 
 const OrderListPage = () => {
   const [orders, setOrders] = useState([]);
@@ -20,26 +19,12 @@ const OrderListPage = () => {
   const [showLoading, setShowLoading] = useState(false);
   const navigate = useNavigate();
 
-  const ClickInfor = () => {
-    navigate("/admin/store-info");
-  };
-  const ClickOrder = () => {
-    navigate("/admin/order-list");
-  };
-  const ClickDiscount = () => {
-    navigate("/admin/discount-list");
-  };
-  const ClickStatus = () => {
-    navigate("/admin/status-list");
-  };
-  const ClickCategory = () => {
-    navigate("/admin/category-list");
-  };
-  const ClickUser = () => {
-    navigate("/admin/user-list");
-  };
-  const ClickReport = () => {
-    navigate("/admin/report");
+
+  const [activeTab, setActiveTab] = useState("order");
+
+  const handleTabClick = (tab, navigatePath) => {
+    setActiveTab(tab);
+    navigate(navigatePath);
   };
 
   const handleUpdateStatusList = () => {
@@ -161,25 +146,10 @@ const OrderListPage = () => {
         <div className="order-list__info">
           {/* side menu */}
           <div className="side-menu__order">
-            <SideMenuComponent onClick={ClickInfor}>
-              Thông tin cửa hàng
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickDiscount}>
-              Khuyến mãi
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickStatus}>
-              Trạng thái
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickCategory}>
-              Loại sản phẩm
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickUser}>
-              Danh sách người dùng
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickReport}>
-              Thống kê
-            </SideMenuComponent>
+            <SideMenuComponent_AdminManage
+              activeTab={activeTab}
+              handleTabClick={handleTabClick}
+            />
           </div>
           {/* order list */}
           <div className="order-list__content">
@@ -209,7 +179,7 @@ const OrderListPage = () => {
                 title={
                   selectedStatus
                     ? statuses.find((s) => s.value === selectedStatus)?.label ||
-                      "Chọn trạng thái"
+                    "Chọn trạng thái"
                     : "Chọn trạng thái"
                 }
                 onSelect={handleFilter}

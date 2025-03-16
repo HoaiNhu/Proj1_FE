@@ -13,16 +13,17 @@ import * as UserService from "../../../../services/UserService";
 import { getAllUser } from "../../../../services/UserService";
 import EditIconComponent from "../../../../components/EditIconComponent/EditIconComponent";
 import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 
 const UserListPage = () => {
   const navigate = useNavigate();
-  const ClickInfor=()=>{navigate("/admin/store-info")}
-  const ClickOrder=()=>{navigate("/admin/order-list")}
-  const ClickDiscount=()=>{navigate("/admin/discount-list")}
-  const ClickStatus=()=>{navigate("/admin/status-list")}
-  const ClickCategory=()=>{navigate("/admin/category-list")}
-  const ClickUser=()=>{navigate("/admin/user-list")}
-  const ClickReprot=()=>{navigate("/admin/report")}
+    const [activeTab, setActiveTab] = useState("user");
+        
+         const handleTabClick = (tab, navigatePath) => {
+           setActiveTab(tab);
+           navigate(navigatePath);
+         };
+  
 
   const user = useSelector((state) => state.user.allUser || []);
   const userCurrent = useSelector((state) => state.user || {});
@@ -167,23 +168,10 @@ const UserListPage = () => {
       <div className="user-list__info">
         {/* Menu bên trái */}
         <div className="side-menu__user">
-          <SideMenuComponent onClick={ClickInfor}>
-            Thông tin cửa hàng
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-          <SideMenuComponent onClick={ClickDiscount}>
-            Khuyến mãi
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickStatus}>
-            Trạng thái
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickCategory}>
-            Loại sản phẩm
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickUser}>
-            Danh sách người dùng
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickReprot}>Thống kê</SideMenuComponent>
+         <SideMenuComponent_AdminManage
+         activeTab={activeTab}
+         handleTabClick={handleTabClick}
+         />
         </div>
 
         {/* Nội dung chính */}
