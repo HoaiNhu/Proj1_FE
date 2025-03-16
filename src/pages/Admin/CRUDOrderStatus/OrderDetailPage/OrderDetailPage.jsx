@@ -1,18 +1,11 @@
 import React, { useState } from "react";
-import "./OrderDetailPage.css";
-import SideMenuComponent from "../../../../components/SideMenuComponent/SideMenuComponent";
-import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
-import CheckboxComponent from "../../../../components/CheckboxComponent/CheckboxComponent";
-import DropdownComponent from "../../../../components/DropdownComponent/DropdownComponent";
 import { useLocation, useNavigate } from "react-router-dom";
+import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import ProductRowComponent from "../../../../components/ProductRowComponent/ProductRowComponent";
-import { updateOrderStatus } from "../../../../services/OrderService";
-import {
-  getAllStatus,
-  getCancelStatus,
-} from "../../../../services/StatusService";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 import * as OrderService from "../../../../services/OrderService";
 import * as StatusService from "../../../../services/StatusService";
+import "./OrderDetailPage.css";
 
 const OrderDetailPage = () => {
   const navigate = useNavigate();
@@ -21,6 +14,14 @@ const OrderDetailPage = () => {
   // const order = location.state; // Nhận dữ liệu từ state khi điều hướng
   console.log("order", order);
   const accessToken = localStorage.getItem("access_token");
+
+  
+  const [activeTab, setActiveTab] = useState("order");
+      
+       const handleTabClick = (tab, navigatePath) => {
+         setActiveTab(tab);
+         navigate(navigatePath);
+       };
   // console.log("accessToken", accessToken);
 
   // Sử dụng useState để quản lý order
@@ -46,27 +47,7 @@ const OrderDetailPage = () => {
     navigate("/admin/order-list");
   };
 
-  const ClickInfor = () => {
-    navigate("/admin/store-info");
-  };
-  const ClickOrder = () => {
-    navigate("/admin/order-list");
-  };
-  const ClickDiscount = () => {
-    navigate("/admin/discount-list");
-  };
-  const ClickStatus = () => {
-    navigate("/admin/status-list");
-  };
-  const ClickCategory = () => {
-    navigate("/admin/category-list");
-  };
-  const ClickUser = () => {
-    navigate("/admin/user-list");
-  };
-  const ClickReport = () => {
-    navigate("/admin/report");
-  };
+
 
   // Hàm xử lý cập nhật trạng thái
   const handleUpdateStatus = async () => {
@@ -164,25 +145,10 @@ const OrderDetailPage = () => {
         <div className="order-list__info">
           {/* side menu */}
           <div className="side-menu__order">
-            <SideMenuComponent onClick={ClickInfor}>
-              Thông tin cửa hàng
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-            <SideMenuComponent onClick={ClickDiscount}>
-              Khuyến mãi
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickStatus}>
-              Trạng thái
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickCategory}>
-              Loại sản phẩm
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickUser}>
-              Danh sách người dùng
-            </SideMenuComponent>
-            <SideMenuComponent onClick={ClickReport}>
-              Thống kê
-            </SideMenuComponent>
+          <SideMenuComponent_AdminManage
+            activeTab={activeTab}
+            handleTabClick={handleTabClick}
+            />
           </div>
           {/* order list */}
           <div className="order-list__content">

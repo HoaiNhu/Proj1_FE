@@ -6,6 +6,7 @@ import TruckIconComponent from "../../../../components/TruckIconComponent/TruckI
 import { useLocation, useNavigate } from "react-router-dom";
 import * as StatusService from "../../../../services/StatusService";
 import * as OrderService from "../../../../services/OrderService";
+import SideMenuComponent_AdminManage from "../../../../components/SideMenuComponent_AdminManage/SideMenuComponent_AdminManage";
 
 const UpdateStatus = () => {
   const location = useLocation();
@@ -13,27 +14,13 @@ const UpdateStatus = () => {
   const handelClickExit = () => {
     navigate("/admin/order-list");
   };
-  const ClickInfor = () => {
-    navigate("/admin/store-info");
-  };
-  const ClickOrder = () => {
-    navigate("/admin/order-list");
-  };
-  const ClickDiscount = () => {
-    navigate("/admin/discount-list");
-  };
-  const ClickStatus = () => {
-    navigate("/admin/status-list");
-  };
-  const ClickCategory = () => {
-    navigate("/admin/category-list");
-  };
-  const ClickUser = () => {
-    navigate("/admin/user-list");
-  };
-  const ClickReport = () => {
-    navigate("/admin/report");
-  };
+  const [activeTab, setActiveTab] = useState("order");
+      
+       const handleTabClick = (tab, navigatePath) => {
+         setActiveTab(tab);
+         navigate(navigatePath);
+       };
+
 
   const { selectedOrders, currentStatus } = location.state || {};
   console.log("selectedOrders", selectedOrders);
@@ -145,6 +132,7 @@ const UpdateStatus = () => {
         )
       );
 
+      
       const updatedOrdersWithDetails = updatedOrders.map((updatedOrder) => {
         const updatedOrderData = updatedOrder.data;
         const detailedStatus = statuses.find(
@@ -172,28 +160,16 @@ const UpdateStatus = () => {
     return <p>Không có dữ liệu để hiển thị. Vui lòng kiểm tra lại.</p>;
   }
 
+
   return (
     <div className="container-xl">
       <div className="holderContent-updateStatus">
         {/* side menu */}
         <div className="side-menu__discount">
-          <SideMenuComponent onClick={ClickInfor}>
-            Thông tin cửa hàng
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickOrder}>Đơn hàng</SideMenuComponent>
-          <SideMenuComponent onClick={ClickDiscount}>
-            Khuyến mãi
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickStatus}>
-            Trạng thái
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickCategory}>
-            Loại sản phẩm
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickUser}>
-            Danh sách người dùng
-          </SideMenuComponent>
-          <SideMenuComponent onClick={ClickReport}>Thống kê</SideMenuComponent>
+          <SideMenuComponent_AdminManage
+           activeTab={activeTab}
+           handleTabClick={handleTabClick}
+           />
         </div>
         <div className="right-area-UpdateStatus">
           <h2
