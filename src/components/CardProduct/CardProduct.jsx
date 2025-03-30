@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slides/cartSlide";
 import { useState } from "react";
 
-const CardProduct = ({ id, type, img, title, price,onClick}) => {
+const CardProduct = ({ id, type, img, title, price, onClick }) => {
   const dispatch = useDispatch();
 
   //Hiệu ứng sản phẩm bay dô vỏ hàng
@@ -64,15 +64,16 @@ const CardProduct = ({ id, type, img, title, price,onClick}) => {
       className={type === "primary" ? styles.primary : styles.secondary}
     >
       <Card.Img
-       onClick={() => onClick(id)}
+        onClick={onClick}
         src={img}
         alt={title}
         style={{
           borderTopLeftRadius: "15px",
           borderTopRightRadius: "15px",
-          objectFit: "cover", // Ensure image covers the container
-          height: "200px", // Fixed height for image
-          width: "100%", // Image takes full width
+          objectFit: "cover",
+          height: "200px",
+          width: "100%",
+          cursor: "pointer",
         }}
       />
       <Card.Body>
@@ -100,7 +101,7 @@ const CardProduct = ({ id, type, img, title, price,onClick}) => {
               textAlign: "center",
             }}
           >
-            {`${price.toLocaleString('en-US')} VND`}
+            {`${price.toLocaleString("en-US")} VND`}
           </Card.Subtitle>
         )}
       </Card.Body>
@@ -152,7 +153,7 @@ const CardProduct = ({ id, type, img, title, price,onClick}) => {
             </Col>
             <Col>
               <TagPriceComponent style={{ marginTop: -40 }}>
-              {`${price.toLocaleString('en-US')} VND`}
+                {`${price.toLocaleString("en-US")} VND`}
               </TagPriceComponent>
             </Col>
           </Row>

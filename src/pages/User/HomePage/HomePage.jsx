@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllDiscount, deleteDiscount } from "../../../services/DiscountService"
 import { getAllNews } from '../../../services/NewsService';
 import img12 from "../../../assets/img/hero_2.jpg";
+import ChatbotComponent from '../../../components/ChatbotComponent/ChatbotComponent';
 const text = 'Là một hệ thống đội ngũ nhân viên và lãnh đạo chuyên nghiệp, gồm CBCNV và những người thợ đã có kinh nghiệm lâu năm trong các công ty đầu ngành. Mô hình vận hành hoạt động công ty được bố trí theo chiều ngang, làm gia tăng sự thuận tiện trong việc vận hành cỗ máy kinh doanh và gia tăng sự phối hợp thống nhất giữa các bộ phận trong công ty.';
 
 const HomePage = () => {
@@ -508,7 +509,9 @@ const HomePage = () => {
             style={{
               margin: 'auto'
             }}>Xem thêm </ButtonComponent>
+            <ChatbotComponent/>
         </div>
+        
       </div>
     </div>
   )
