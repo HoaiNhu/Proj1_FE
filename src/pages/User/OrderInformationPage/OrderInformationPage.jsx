@@ -44,16 +44,18 @@ const OrderInformationPage = () => {
         product: product.id, // Gắn ID của sản phẩm vào trường `product`
         quantity: product.quantity, // Số lượng
         total:
-          parseFloat(product.price.replace(/[^0-9.-]+/g, "")) *
-          product.quantity, // Tính tổng tiền
+          typeof product.price === "number"
+            ? product.price * product.quantity
+            : parseFloat(product.price.replace(/[^0-9.-]+/g, "")) *
+              product.quantity,
       })),
-      shippingAddress, // Thông tin giao hàng
-      paymentMethod: "Online Payment", // Phương thức thanh toán
-      userId: user?.id || null, // ID người dùng, nếu đăng nhập
-      deliveryDate, // Ngày giao hàng
-      deliveryTime, // Giờ giao hàng
-      orderNote, // Ghi chú đơn hàng
-      shippingPrice: 30000, // Phí vận chuyển cố định
+      shippingAddress,
+      paymentMethod: "Online Payment",
+      userId: user?.id || null,
+      deliveryDate,
+      deliveryTime,
+      orderNote,
+      shippingPrice: 30000,
       status,
       totalItemPrice,
       totalPrice,

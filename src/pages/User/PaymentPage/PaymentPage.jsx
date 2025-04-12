@@ -30,7 +30,10 @@ const PaymentPage = () => {
       ...item,
       img: product?.img || "default_image_url",
       name: product?.title || "Unknown Product",
-      price: parseFloat(product?.price.replace(/[^0-9.-]+/g, "")) || 0,
+      price:
+        typeof product?.price === "number"
+          ? product.price
+          : parseFloat((product?.price || "0").replace(/[^0-9.-]+/g, "")) || 0,
     };
   });
 
@@ -263,6 +266,7 @@ const PaymentPage = () => {
             resolvedOrderItems.map((product, index) => (
               <ProductInforCustom
                 key={index}
+                // id={product._id}
                 image={product.img}
                 name={product.name}
                 price={(product.price || 0).toLocaleString() + " VND"}
