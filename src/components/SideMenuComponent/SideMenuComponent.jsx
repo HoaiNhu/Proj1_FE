@@ -1,7 +1,7 @@
 import React from "react";
 import "./SideMenuComponent.css";
 
-const SideMenuComponent = ({ onClick, isActive, children }) => {
+const SideMenuComponent = ({ value, onClick, isActive, children }) => {
   return (
     <div className="side-menu sticky-left">
       <div
@@ -11,7 +11,7 @@ const SideMenuComponent = ({ onClick, isActive, children }) => {
       >
         <button
           className={`btn__component ${isActive ? "active" : ""}`}
-          onClick={onClick}
+          onClick={()=> onClick(value)}
         >
           {children}
         </button>

@@ -115,6 +115,7 @@ const ProductsPage = () => {
   const handleCategoryClick = (categoryId, categoryName) => {
     setCurrentCategory(categoryId);
     setCurrentCategoryName(categoryName);
+    console.log("Current", currentCategoryName)
     setCurrentPage(0);
     fetchProductsByCategory(0, 9, categoryId);
   };
@@ -123,8 +124,9 @@ const ProductsPage = () => {
   const handleAllProductsClick = () => {
     setCurrentCategory(null);
     setCurrentCategoryName("Tất cả sản phẩm");
+    console.log("Current", currentCategoryName)
     setCurrentPage(0);
-    fetchProductsByCategory(0, 9);
+    fetchAllProducts();
   };
 
   // Khi nhấn vào sản phẩm
@@ -176,7 +178,7 @@ const ProductsPage = () => {
                 key="all-products"
                 value={null}
                 onClick={handleAllProductsClick}
-                isActive={currentCategory === null}
+                isActive={currentCategory=== null}
               >
                 Tất cả sản phẩm
               </SideMenuComponent>
@@ -217,7 +219,7 @@ const ProductsPage = () => {
                       type={"primary"}
                       img={imageUrl}
                       title={product.productName}
-                      price={`${product.productPrice}`}
+                      price={product.productPrice}
                       id={product._id}
                       onClick={() => handleDetail(product._id)}
                     />
