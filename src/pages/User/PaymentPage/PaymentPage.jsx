@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./PaymentPage.css";
-import imageProduct from "../../../assets/img/hero_3.jpg";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import ProductInforCustom from "../../../components/ProductInfor/ProductInforCustom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as PaymentService from "../../../services/PaymentService";
+import { createPayment } from "../../../redux/slides/paymentSlide";
+import axios from "axios";
+import { getDetailsOrder } from "../../../services/OrderService";
 
 const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  // const dispatch = useDispatch();
   const orderDetails = useSelector((state) => state.order);
-  console.log("orderDetails", orderDetails);
-  const cart = useSelector((state) => state.cart); // Lấy danh sách sản phẩm từ Redux
+  const cart = useSelector((state) => state.cart);
 
   const lastOrder = orderDetails.orders?.[orderDetails.orders.length - 1] || {};
   const {
@@ -21,9 +23,9 @@ const PaymentPage = () => {
     shippingAddress,
     paymentMethod,
   } = lastOrder;
-  console.log("lastOrder", lastOrder);
 
-  // Tìm thông tin chi tiết của sản phẩm từ `cart.products` dựa trên `orderItems`
+  console.log("laddd order", lastOrder);
+
   const resolvedOrderItems = orderItems.map((item) => {
     const product = cart.products.find((p) => p.id === item.product);
     return {
@@ -37,22 +39,22 @@ const PaymentPage = () => {
     };
   });
 
-  const [paymentType, setPaymentType] = useState("bank"); // "bank" hoặc "wallet"
+  const [paymentType, setPaymentType] = useState("qr");
   const [paymentInfo, setPaymentInfo] = useState({
-    userBank: "",
+    userBank: "momo", // Khởi tạo mặc định là momo
     userBankNumber: "",
     phoneNumber: "",
-    wallet: "",
+    wallet: "momo",
   });
 
   const handlePaymentTypeChange = (e) => {
     setPaymentType(e.target.value);
     setPaymentInfo({
       ...paymentInfo,
-      userBank: "",
+      userBank: e.target.value === "qr" ? "momo" : "",
       userBankNumber: "",
-      wallet: "",
-    }); // Reset thông tin
+      wallet: e.target.value === "qr" ? "momo" : "",
+    });
   };
 
   const handleInputChange = (field) => (e) => {
@@ -61,90 +63,106 @@ const PaymentPage = () => {
     setPaymentInfo((prev) => ({ ...prev, [field]: value }));
   };
 
-  const [value, setValue] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState("");
-  const handleChange1 = (e) => {
-    const value2 = e.target.value;
-    // Kiểm tra chỉ nhập số và không vượt quá 10 ký tự
-    if (/^\d{0,10}$/.test(value2)) {
-      setPhoneNumber(value2);
-      setError("");
-    }
-  };
-  const handleChange2 = (e) => {
-    const inputValue = e.target.value;
-
-    // Chỉ cho phép nhập các ký tự số
-    if (/^\d*$/.test(inputValue)) {
-      setValue(inputValue);
-    }
-  };
-
-  const handleBlur = () => {
-    // Kiểm tra độ dài chính xác là 10 số
-    if (phoneNumber.length !== 10) {
-      setError("Số điện thoại phải bao gồm đúng 10 số.");
-    } else {
-      setError(""); // Xóa lỗi nếu nhập đúng
-    }
-  };
-  //Su kien click
   const handleClickBack = () => {
     navigate("/order-information", { state: { ...location.state } });
   };
-  console.log("orderId", lastOrder?.orderId);
 
   const handleClickPay = async () => {
-    if (!paymentInfo.userBank || !paymentInfo.userBankNumber) {
-      alert("Vui lòng điền đầy đủ thông tin thanh toán!");
+    if (!lastOrder?.orderId) {
+      alert("Không tìm thấy đơn hàng. Vui lòng quay lại và thử lại.");
       return;
     }
 
+    // Kiểm tra xem đơn hàng có tồn tại không
     try {
-      const paymentData = {
-        paymentCode: `PAY-${Date.now()}`, // Sinh mã thanh toán
-        userBank: paymentInfo.userBank,
-        userBankNumber: paymentInfo.userBankNumber,
-        paymentMethod: paymentType,
-        ...(paymentType === "bank"
-          ? {
-              userBank: paymentInfo.userBank,
-              userBankNumber: paymentInfo.userBankNumber,
-            }
-          : { wallet: paymentInfo.wallet }),
-        orderId: lastOrder?.orderId, // Gắn ID đơn hàng
-      };
+      const orderCheckResponse = await getDetailsOrder(lastOrder.orderId);
+      console.log("orderCheckResponse", orderCheckResponse);
 
-      localStorage.setItem("paymentData", JSON.stringify(paymentData));
+      if (!orderCheckResponse || !orderCheckResponse.data) {
+        alert(
+          "Đơn hàng không tồn tại hoặc đã bị hủy. Vui lòng quay lại và thử lại."
+        );
+        return;
+      }
 
-      const response = await PaymentService.createPayment(paymentData);
-
-      if (response?.status === "OK") {
-        alert("Đã lưu thông tin thanh toán!");
-
-        navigate("/banking-info", {
-          state: {
-            paymentCode: response.data.paymentCode, // Mã thanh toán từ API
-          },
-        });
-      } else {
-        alert("Thanh toán thất bại. Vui lòng thử lại.");
+      // Kiểm tra trạng thái thanh toán của đơn hàng
+      if (orderCheckResponse.data.paymentStatus === "SUCCESS") {
+        alert("Đơn hàng này đã được thanh toán trước đó.");
+        return;
       }
     } catch (error) {
-      console.error("Error in handleClickPay:", error);
-      alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+      console.error("Error checking order:", error);
+      alert("Không thể kiểm tra đơn hàng. Vui lòng thử lại sau.");
+      return;
+    }
+
+    const paymentData = {
+      paymentCode: `PAY-${Date.now()}`,
+      userBank: paymentInfo.userBank,
+      userBankNumber: paymentInfo.userBankNumber,
+      paymentMethod: paymentType,
+      orderId: lastOrder.orderId,
+      totalPrice: lastOrder.totalPrice,
+    };
+
+    if (paymentType === "paypal") {
+      try {
+        const response = await PaymentService.createPayment(paymentData);
+        console.log("PayPal response:", response);
+
+        if (response?.status === "OK") {
+          window.location.href = response.data.paymentUrl;
+        } else {
+          alert(
+            "Thanh toán PayPal thất bại: " +
+              (response.message || "Lỗi không xác định")
+          );
+        }
+      } catch (error) {
+        console.error("Error in handleClickPay (PayPal):", error);
+        alert("Đã xảy ra lỗi khi gọi PayPal. Vui lòng thử lại.");
+      }
+    } else if (paymentType === "qr") {
+      if (!paymentInfo.userBank) {
+        alert("Vui lòng chọn loại ví thanh toán!");
+        return;
+      }
+
+      if (!paymentInfo.userBankNumber) {
+        alert("Vui lòng nhập số điện thoại hoặc số tài khoản!");
+        return;
+      }
+
+      try {
+        const response = await PaymentService.createQrPayment(paymentData);
+        console.log("QR response:", response);
+
+        if (response?.status === "OK") {
+          navigate("/banking-info", {
+            state: {
+              qrCodeUrl: response.data.qrCodeUrl,
+              paymentCode: response.data.paymentCode,
+              expiresAt: response.data.expiresAt,
+              adminBankInfo: response.data.adminBankInfo,
+            },
+          });
+        } else {
+          alert(
+            "Tạo QR thất bại: " + (response.message || "Lỗi không xác định")
+          );
+        }
+      } catch (error) {
+        console.error("Error in handleClickPay (QR):", error);
+        alert("Đã xảy ra lỗi khi tạo QR. Vui lòng thử lại.");
+      }
     }
   };
 
   return (
     <div className="container-xl">
       <div className="container-xl-pay">
-        {/* =========================THONG TIN THANH TOAN=========================        */}
         <div className="PaymentInfor">
           <p className="pThongtin">Thông tin thanh toán</p>
-          {/* ==========Ngan hang-Vi dien tu========= */}
-          {/* Chọn hình thức thanh toán */}
           <div
             className="PaymentTypeHolder"
             style={{
@@ -156,96 +174,53 @@ const PaymentPage = () => {
             <label>
               <input
                 type="radio"
-                value="bank"
-                checked={paymentType === "bank"}
+                value="paypal"
+                checked={paymentType === "paypal"}
                 onChange={handlePaymentTypeChange}
               />
-              Ngân hàng
+              PayPal
             </label>
             <label>
               <input
                 type="radio"
-                value="wallet"
-                checked={paymentType === "wallet"}
+                value="qr"
+                checked={paymentType === "qr"}
                 onChange={handlePaymentTypeChange}
               />
-              Ví điện tử
+              Thanh toán QR
             </label>
           </div>
 
-          {/* Form Ngân hàng */}
-          {paymentType === "bank" && (
-            <div className="BankHolder ">
-              <select
-                className="Bank"
-                name="Bank"
-                value={paymentInfo.userBank}
-                onChange={handleInputChange("userBank")}
-                style={{
-                  width: "100%",
-                  margin: "10px 0",
-                }}
-              >
-                <option value="" disabled>
-                  Chọn ngân hàng
-                </option>
-                <option value="vietcombank">Vietcombank</option>
-                <option value="techcombank">Techcombank</option>
-              </select>
-              <input
-                type="text"
-                className="input1"
-                placeholder="Nhập số tài khoản"
-                value={paymentInfo.userBankNumber}
-                onChange={handleInputChange("userBankNumber")}
-                style={{
-                  width: "100%",
-                }}
-              />
-            </div>
-          )}
-
-          {/* Form Ví điện tử */}
-          {paymentType === "wallet" && (
+          {paymentType === "qr" && (
             <div className="WalletHolder">
               <select
                 className="E-wallet"
                 name="Wallet"
                 value={paymentInfo.userBank}
-                onChange={handleInputChange("wallet")}
-                style={{
-                  width: "100%",
-                  margin: "10px 0",
-                }}
+                onChange={handleInputChange("userBank")}
+                style={{ width: "100%", margin: "10px 0" }}
               >
-                <option value="" disabled>
-                  Chọn ví điện tử
-                </option>
-                <option value="momo">Momo</option>
-                <option value="zalopay">Zalo Pay</option>
+                <option value="momo">MoMo</option>
+                <option value="vnpay">VNPay</option>
+                <option value="techcombank">Techcombank</option>
               </select>
               <div className="inputSdt">
-                <span>
-                  <input
-                    type="text"
-                    className="input2"
-                    placeholder="Nhập số điện thoại"
-                    onBlur={handleBlur}
-                    //   onChange={handleChange1}
-                    //   value={phoneNumber}
-                    value={paymentInfo.userBankNumber}
-                    onChange={handleInputChange("phoneNumber")}
-                    style={{
-                      width: "100%",
-                    }}
-                  ></input>
-                </span>
-                <span style={{ color: "red", fontSize: "12px" }}>{error}</span>
+                <input
+                  type="text"
+                  className="input2"
+                  placeholder={
+                    paymentInfo.userBank === "momo"
+                      ? "Nhập số điện thoại MoMo"
+                      : "Nhập số tài khoản ngân hàng"
+                  }
+                  value={paymentInfo.userBankNumber}
+                  onChange={handleInputChange("userBankNumber")}
+                  style={{ width: "100%" }}
+                />
               </div>
             </div>
           )}
 
-          {/* ==================Button=========== */}
           <div className="Button-area-pay">
             <div className="button1">
               <ButtonComponent onClick={handleClickBack}>
@@ -260,13 +235,11 @@ const PaymentPage = () => {
           </div>
         </div>
 
-        {/* ======================= THONG TIN DON HANG (CO PHI VAN CHUYEN)===============       */}
         <div className="final-order">
           {resolvedOrderItems.length > 0 ? (
             resolvedOrderItems.map((product, index) => (
               <ProductInforCustom
                 key={index}
-                // id={product._id}
                 image={product.img}
                 name={product.name}
                 price={(product.price || 0).toLocaleString() + " VND"}
@@ -276,12 +249,11 @@ const PaymentPage = () => {
           ) : (
             <p>Không có sản phẩm nào trong đơn hàng</p>
           )}
-          {/* ===============TIEN CAN THANH TOAN============   */}
           <div className="footerAreaPayment">
             <div className="tamtinh" style={{ marginBottom: "10px" }}>
               <label style={{ paddingLeft: "10px" }}>Tạm tính:</label>
               <p className="tamtinh2">
-                {lastOrder.totalItemPrice.toLocaleString()} VND
+                {lastOrder.totalItemPrice?.toLocaleString() || 0} VND
               </p>
             </div>
             <div className="tamtinhVanChuyen">
@@ -291,7 +263,7 @@ const PaymentPage = () => {
               <p className="tamtinhVanChuyen2">
                 {(
                   lastOrder.totalItemPrice + lastOrder.shippingPrice
-                ).toLocaleString()}{" "}
+                )?.toLocaleString() || 0}{" "}
                 VND
               </p>
             </div>

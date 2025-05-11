@@ -44,6 +44,7 @@ import NewsDetailPage from "../pages/User/NewsDetailPage/NewsDetailPage";
 import SearchResultPage from "../pages/SearchResultPage/SearchResultPage";
 import NewsDetailPageAdmin from "../pages/Admin/CRUDNews/NewsDetailPageAdmin/NewsDetailPage";
 import UserTab from "../pages/User/UserTab/UserTab.jsx";
+import PaymentResultPage from "../pages/PaymentResultPage/PaymentResultPage";
 
 export const routes = [
   {
@@ -53,12 +54,12 @@ export const routes = [
     isShowFooter: true,
   },
 
-  {
-    path: "/order",
-    page: OrderPage,
-    isShowHeader: true,
-    isShowFooter: true,
-  },
+  // {
+  //   path: "/order",
+  //   page: OrderPage,
+  //   isShowHeader: true,
+  //   isShowFooter: true,
+  // },
 
   {
     path: "/products",
@@ -150,13 +151,12 @@ export const routes = [
     isShowFooter: true,
   },
 
-
   {
     path: "/admin/add-product",
     page: AddProductPage,
     isShowHeader: true,
     isShowFooter: true,
-    isPrivate: true
+    isPrivate: true,
   },
   {
     path: "/view-product-detail/",
@@ -192,7 +192,6 @@ export const routes = [
     page: DiscountListPage,
     isShowHeader: true,
     isShowFooter: true,
-    
   },
 
   {
@@ -216,7 +215,7 @@ export const routes = [
     page: AddStatusPage,
     isShowHeader: true,
     isShowFooter: true,
-    isPrivate: true
+    isPrivate: true,
   },
 
   {
@@ -351,7 +350,7 @@ export const routes = [
     page: ProductPageAdmin,
     isShowHeader: true,
     isShowFooter: true,
-    isPrivate: true
+    isPrivate: true,
   },
   {
     path: "*",
@@ -375,6 +374,12 @@ export const routes = [
   {
     path: "/search",
     page: SearchResultPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/payment-result",
+    page: PaymentResultPage,
     isShowHeader: true,
     isShowFooter: true,
   },

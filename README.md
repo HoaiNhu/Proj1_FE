@@ -68,3 +68,36 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# Hướng dẫn cấu hình thanh toán PayPal
+
+## Vấn đề hiện tại
+
+Hiện tại, hệ thống thanh toán PayPal đang gặp lỗi xác thực do thiếu thông tin xác thực hợp lệ. Để khắc phục vấn đề này, bạn cần thực hiện các bước sau:
+
+## Các bước cấu hình
+
+1. Tạo tài khoản PayPal Developer tại [https://developer.paypal.com/](https://developer.paypal.com/)
+
+2. Tạo ứng dụng trong PayPal Developer Dashboard để lấy Client ID và Client Secret
+
+3. Tạo file `.env` trong thư mục gốc của dự án Proj1_FE với nội dung sau:
+
+```
+# PayPal API Credentials
+REACT_APP_PAYPAL_CLIENT_ID=your_paypal_client_id_here
+REACT_APP_PAYPAL_CLIENT_SECRET=your_paypal_client_secret_here
+
+# API URL
+REACT_APP_API_URL=http://localhost:3001/api
+```
+
+4. Thay thế `your_paypal_client_id_here` và `your_paypal_client_secret_here` bằng thông tin xác thực thực tế từ tài khoản PayPal Developer của bạn
+
+5. Khởi động lại ứng dụng để áp dụng các thay đổi
+
+## Lưu ý
+
+- Không bao giờ chia sẻ thông tin xác thực PayPal của bạn
+- Đảm bảo file `.env` đã được thêm vào `.gitignore` để không bị đẩy lên repository
+- Nếu bạn đang sử dụng môi trường production, hãy cấu hình các biến môi trường tương ứng trên máy chủ

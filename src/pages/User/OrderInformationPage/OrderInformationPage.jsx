@@ -89,6 +89,56 @@ const OrderInformationPage = () => {
     }
   };
 
+  // const handleClickNext = async () => {
+  //   const orderData = {
+  //     orderItems: selectedProducts.map((product) => ({
+  //       product: product.id,
+  //       quantity: product.quantity,
+  //       total:
+  //         typeof product.price === "number"
+  //           ? product.price * product.quantity
+  //           : parseFloat(product.price.replace(/[^0-9.-]+/g, "")) *
+  //             product.quantity,
+  //     })),
+  //     shippingAddress,
+  //     paymentMethod: "Online Payment",
+  //     userId: user?.id || null,
+  //     deliveryDate,
+  //     deliveryTime,
+  //     orderNote,
+  //     shippingPrice: 30000,
+  //     status: "676180405f022353257b7ddd", // PENDING (dùng _id từ collection statuses)
+  //     totalItemPrice,
+  //     totalPrice,
+  //   };
+
+  //   console.log("orderData", orderData);
+
+  //   try {
+  //     const response = await mutation.mutateAsync(orderData);
+  //     console.log("Create order response:", response); // Debug
+
+  //     if (response?.data?._id) {
+  //       const fullOrderData = { ...orderData, _id: response.data._id }; // Sửa: dùng _id thay vì orderId
+
+  //       dispatch(addOrder(fullOrderData));
+
+  //       navigate("/payment", {
+  //         state: { ...fullOrderData },
+  //       });
+  //     } else {
+  //       console.error("Failed to create order:", response);
+  //       alert(
+  //         "Tạo đơn hàng thất bại: " +
+  //           (response?.message || "Lỗi không xác định")
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating order:", error);
+  //     alert("Đã xảy ra lỗi khi tạo đơn hàng.");
+  //   }
+  // };
+
   const [shippingAddress, setShippingAddress] = useState({
     familyName: "",
     userName: "",

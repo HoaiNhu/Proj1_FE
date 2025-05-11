@@ -1,159 +1,157 @@
-.container-xl-pay {
-    display: flex;
-}
-
 .PaymentInfor {
-    width: 670px;
-    height: 581px;
-    margin-left: 50px;
-    flex-shrink: 0;
-    border-radius: 15px;
-    margin-top: 30px;
-    background: var(--White, #FFF);
-    box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
+  width: 670px;
+  height: auto;
+  margin-left: 0;
+  flex-shrink: 0;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(32, 60, 22, 0.15);
+  padding: 20px;
 }
 
 .pThongtin {
-    color: #3A060E;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    padding-top: 20px;
-    padding-left: 40px;
+  color: #3a060e;
+  font-family: Poppins, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 20px;
 }
 
-.PayHolder {
-    display: flex;
-    margin-top: 40px;
-    margin-left: 40px;
+.PaymentTypeHolder {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 20px;
 }
 
-.Bank {
-    border: none;
-    display: flex;
-    width: 260px;
-    height: 60px;
-    padding: 16px 20px;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    border-radius: 15px;
-    background: #FFF;
-    color: #3A060E;
-    box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
+.PaymentTypeHolder label {
+  display: flex;
+  align-items: center;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  color: #3a060e;
+  cursor: pointer;
 }
 
+.PaymentTypeHolder input[type="radio"] {
+  margin-right: 10px;
+  accent-color: #3a060e;
+}
+
+.Bank,
 .E-wallet {
-    display: flex;
-    border: none;
-    width: 260px;
-    height: 60px;
-    padding: 16px 20px;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    border-radius: 15px;
-    background: #FFF;
-    margin-left: 55px;
-    color: #3A060E;
-    box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
-}
-
-.inputH1 {
-    display: flex;
-    margin-left: 40px;
-    margin-top: 96px;
+  border: none;
+  width: 100%;
+  height: 50px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  color: #3a060e;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  box-shadow: 0 0 4px rgba(32, 60, 22, 0.1);
+  margin-bottom: 15px;
 }
 
 .input1,
 .input2 {
-    width: 260px;
-    height: 60px;
-    flex-shrink: 0;
-    border: none;
-    border-radius: 15px;
-    color: #3A060E;
-    box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
-    margin-bottom: 10px;
+  width: 100%;
+  height: 50px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 10px;
+  background: #f9f9f9;
+  color: #3a060e;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  padding: 12px 20px;
+  box-shadow: 0 0 4px rgba(32, 60, 22, 0.1);
+  margin-bottom: 15px;
 }
 
 .inputSdt {
-    /* margin-left: 55px; */
-    display: grid;
-}
-
-.customBtn2 {
-    display: flex;
-    width: 130px;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 50px;
-    background: #3A060E;
-    color: #B1E321;
-    text-align: center;
-    font-family: Poppins;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 28px;
-    /* 175% */
+  display: grid;
+  gap: 10px;
 }
 
 .Button-area-pay {
-    margin-top: 60px;
-    display: flex;
-    margin-left: 328px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
 }
 
-.button2 {
-    margin-left: 20px;
+.button1 button,
+.button2 button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.button1 button {
+  background: #fff;
+  color: #3a060e;
+  border: 2px solid #3a060e;
+}
+
+.button1 button:hover {
+  background: #f5f5f5;
+}
+
+.button2 button {
+  background: #3a060e;
+  color: #b1e321;
+  border: none;
+}
+
+.button2 button:hover {
+  background: #4a0812;
 }
 
 .final-order {
-    width: 500px;
-    height: auto;
-    flex-shrink: 0;
-    margin-left: 30px;
-    margin-top: 30px;
-    border-radius: 15px;
-    background: var(--White, #FFF);
-    box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
-
-}
-.footerAreaPayment{
-    width: 500px;
-height: 146px;
-flex-shrink: 0;
-border-radius: 0px 0px 15px 15px;
-background: var(--button-color, #B1E321);
-margin-top:20px;
-padding-top: 10px;
+  width: 500px;
+  height: auto;
+  flex-shrink: 0;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(32, 60, 22, 0.15);
+  padding: 20px;
 }
 
-
-.tamtinh1,
-.tamtinhVanChuyen1{
-    color: #3A060E;
-font-family: Poppins;
-font-size: 18px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-margin-left: 20px;
+.footerAreaPayment {
+  width: 100%;
+  height: auto;
+  border-radius: 0 0 15px 15px;
+  background: #b1e321;
+  padding: 15px;
+  margin-top: 20px;
 }
+
+.tamtinh,
+.tamtinhVanChuyen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #3a060e;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
 .tamtinh2,
-.tamtinhVanChuyen2{
-    color: #3A060E;
-
-/* Font_Title */
-font-family: Poppins;
-font-size: 20px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
-margin-left: 350px;
+.tamtinhVanChuyen2 {
+  color: #3a060e;
+  font-family: Poppins, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
 }
