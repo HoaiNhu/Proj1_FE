@@ -19,6 +19,8 @@ import {
 import { getAllNews } from "../../../services/NewsService";
 import img12 from "../../../assets/img/hero_2.jpg";
 import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
+import { getAllCategory } from "../../../services/CategoryService";
+import { getAllproduct, getProductsByCategory } from "../../../services/productServices";
 const text =
   "Là một hệ thống đội ngũ nhân viên và lãnh đạo chuyên nghiệp, gồm CBCNV và những người thợ đã có kinh nghiệm lâu năm trong các công ty đầu ngành. Mô hình vận hành hoạt động công ty được bố trí theo chiều ngang, làm gia tăng sự thuận tiện trong việc vận hành cỗ máy kinh doanh và gia tăng sự phối hợp thống nhất giữa các bộ phận trong công ty.";
 
@@ -118,33 +120,23 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3001/api/category/get-all-category",
-          {
-            method: "GET", // Phương thức GET để lấy danh sách category
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await getAllCategory();
+        console.log ("RES", response)
+        // if (!response.ok) {
+        //   throw new Error("Failed to fetch categories");
+        // }
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-
-        const data = await response.json();
-        if (Array.isArray(data.data)) {
-          setCategories(data.data); // Lưu danh sách category vào state
+        // const data = await response.json();
+      
+          setCategories(response.data); // Lưu danh sách category vào state
           console.log("GGHH", categories);
           // Lấy category đầu tiên và fetch sản phẩm tương ứng
-          if (data.data.length > 0) {
-            const firstCategoryId = data.data[0]._id;
+          if (response.data.length > 0) {
+            const firstCategoryId = response.data[0]._id;
             setCurrentCategory(firstCategoryId); // Lưu category đầu tiên
             fetchProducts(0, 9, firstCategoryId); // Fetch sản phẩm của category đầu tiên
           }
-        } else {
-          console.error("Categories data is not in expected format");
-        }
+        
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -155,34 +147,18 @@ const HomePage = () => {
   // Fetch danh sách sản phẩm khi component được mount
   const fetchProducts = async (page = 0, limit = 9, categoryId = null) => {
     try {
-      const queryParams = new URLSearchParams({
-        page,
-        limit,
-      }).toString();
+      
 
-      let url = `http://localhost:3001/api/product/get-all-product?${queryParams}`;
-      if (categoryId) {
-        url = `http://localhost:3001/api/product/get-product-by-category/${categoryId}?${queryParams}`;
-      }
+    const response= await getProductsByCategory(categoryId);
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-
-      const data = await response.json();
-      console.log("FDS", data);
-      console.log("GVHNJ", data.data);
+      
+      console.log("FDS", response);
+      console.log("GVHNJ", response.data);
       // setCurrentPage(page); // Cập nhật trang hiện tại
       // setTotalPages(Math.ceil(data.data.lenght / limit)); // Tính tổng số trang
 
-      if (Array.isArray(data.data)) {
-        setProducts(data.data.slice(0, 4));
+      if (Array.isArray(response.data)) {
+        setProducts(response.data.slice(0, 4));
       } else {
         console.error("Products data is not in expected format");
       }
