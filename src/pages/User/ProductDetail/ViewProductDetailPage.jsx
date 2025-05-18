@@ -157,31 +157,101 @@ const ViewProductDetailPage = () => {
     console.log("PRODUCT", productPrice);
   };
 
+  // useEffect(() => {
+  //   const fetchRecommendations = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const userId = user.id || "guest";
+  //       console.log("USER ID", userId);
+  //       console.log("PRODUCT ID:", product.productId);
+  //       const response = await getRecommendations(userId, product.productId);
+  //       console.log("Recommendations response:", response);
+  //       const recommendations = response.data || [];
+
+  //       if (!Array.isArray(recommendations)) {
+  //         throw new Error("Recommendations is not an array");
+  //       }
+  //       const recommendedProducts = await Promise.all(
+  //         recommendations.map(async (id) => {
+  //           const res = await getDetailsproduct(id);
+  //           console.log("Product detail:", res.data);
+  //           return res.data;
+  //         })
+  //       );
+  //       setRelatedProducts(recommendedProducts.filter(Boolean));
+  //     } catch (error) {
+  //       console.error("Lỗi khi lấy khuyến nghị:", error);
+  //       setRelatedProducts([]);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   if (product.productId && user) {
+  //     fetchRecommendations();
+  //   }
+  // }, [product.productId, user]);
+
   useEffect(() => {
     const fetchRecommendations = async () => {
       setIsLoading(true);
       try {
-        const userId = user.id || "guest";
-        const recommendations = await getRecommendations(
-          userId,
-          product.productId
-        );
-        const recommendedProducts = await Promise.all(
-          recommendations.map(async (id) => {
-            const res = await getDetailsproduct(id);
-            return res.data;
-          })
-        );
+        const userId = user?.id || null;
+        console.log("USER ID", userId);
+        console.log("PRODUCT ID:", product.productId);
+
+        let recommendedProducts = [];
+
+        if (userId) {
+          const response = await getRecommendations(userId, product.productId);
+          console.log("Recommendations response:", response);
+          const recommendations = response.data || [];
+
+          if (Array.isArray(recommendations) && recommendations.length > 0) {
+            const fetched = await Promise.all(
+              recommendations.map(async (id) => {
+                const res = await getDetailsproduct(id);
+                return res.data;
+              })
+            );
+            recommendedProducts = fetched.filter(Boolean);
+          }
+        }
+
+        // Nếu không có userId hoặc không có khuyến nghị, fallback sang sản phẩm cùng category
+        if (recommendedProducts.length === 0 && product.productCategory) {
+          console.log("Fallback to category recommendations");
+          const queryParams = new URLSearchParams({
+            page: 0,
+            limit: 8,
+          }).toString();
+
+          const url = `http://localhost:3001/api/product/get-product-by-category/${product.productCategory}?${queryParams}`;
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          const data = await response.json();
+          const fallbackProducts = Array.isArray(data.data)
+            ? data.data.filter((p) => p._id !== product.productId)
+            : [];
+
+          recommendedProducts = fallbackProducts;
+        }
+
         setRelatedProducts(recommendedProducts);
       } catch (error) {
-        console.error("Lỗi khi lấy khuyến nghị:", error);
+        console.error("Lỗi khi lấy khuyến nghị hoặc fallback:", error);
         setRelatedProducts([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (product.productId && user) {
+    if (product.productId) {
       fetchRecommendations();
     }
   }, [product.productId, user]);

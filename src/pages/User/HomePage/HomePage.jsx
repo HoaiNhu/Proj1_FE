@@ -20,7 +20,10 @@ import { getAllNews } from "../../../services/NewsService";
 import img12 from "../../../assets/img/hero_2.jpg";
 import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
 import { getAllCategory } from "../../../services/CategoryService";
-import { getAllproduct, getProductsByCategory } from "../../../services/productServices";
+import {
+  getAllproduct,
+  getProductsByCategory,
+} from "../../../services/productServices";
 const text =
   "Là một hệ thống đội ngũ nhân viên và lãnh đạo chuyên nghiệp, gồm CBCNV và những người thợ đã có kinh nghiệm lâu năm trong các công ty đầu ngành. Mô hình vận hành hoạt động công ty được bố trí theo chiều ngang, làm gia tăng sự thuận tiện trong việc vận hành cỗ máy kinh doanh và gia tăng sự phối hợp thống nhất giữa các bộ phận trong công ty.";
 
@@ -121,22 +124,21 @@ const HomePage = () => {
     const fetchCategories = async () => {
       try {
         const response = await getAllCategory();
-        console.log ("RES", response)
+        console.log("RES", response);
         // if (!response.ok) {
         //   throw new Error("Failed to fetch categories");
         // }
 
         // const data = await response.json();
-      
-          setCategories(response.data); // Lưu danh sách category vào state
-          console.log("GGHH", categories);
-          // Lấy category đầu tiên và fetch sản phẩm tương ứng
-          if (response.data.length > 0) {
-            const firstCategoryId = response.data[0]._id;
-            setCurrentCategory(firstCategoryId); // Lưu category đầu tiên
-            fetchProducts(0, 9, firstCategoryId); // Fetch sản phẩm của category đầu tiên
-          }
-        
+
+        setCategories(response.data); // Lưu danh sách category vào state
+        console.log("GGHH", categories);
+        // Lấy category đầu tiên và fetch sản phẩm tương ứng
+        if (response.data.length > 0) {
+          const firstCategoryId = response.data[0]._id;
+          setCurrentCategory(firstCategoryId); // Lưu category đầu tiên
+          fetchProducts(0, 9, firstCategoryId); // Fetch sản phẩm của category đầu tiên
+        }
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -147,11 +149,8 @@ const HomePage = () => {
   // Fetch danh sách sản phẩm khi component được mount
   const fetchProducts = async (page = 0, limit = 9, categoryId = null) => {
     try {
-      
+      const response = await getProductsByCategory(categoryId);
 
-    const response= await getProductsByCategory(categoryId);
-
-      
       console.log("FDS", response);
       console.log("GVHNJ", response.data);
       // setCurrentPage(page); // Cập nhật trang hiện tại
@@ -250,7 +249,7 @@ const HomePage = () => {
             viewBox="0 0 111 127"
             fill="none"
           >
-            <g clip-path="url(#clip0_261_214)">
+            <g clipPath="url(#clip0_261_214)">
               <path
                 d="M39.4694 1.33946C41.402 -0.47128 44.4 -0.446476 46.3326 1.36427C53.171 7.78868 59.5882 14.7092 65.5842 22.2002C68.3096 18.6283 71.4067 14.734 74.7516 11.559C76.7089 9.72345 79.7317 9.72345 81.6891 11.5838C90.2618 19.7693 97.5214 30.5842 102.625 40.8533C107.655 50.9736 111 61.3172 111 68.6098C111 100.261 86.2728 127 55.5 127C24.3804 127 0 100.236 0 68.585C0 59.06 4.41027 47.4266 11.2487 35.9172C18.1614 24.2342 27.9234 12.0551 39.4694 1.33946ZM55.9212 103.188C62.1897 103.188 67.7397 101.451 72.9676 97.9785C83.3987 90.686 86.1984 76.1008 79.9299 64.641C78.815 62.4086 75.9656 62.2598 74.3551 64.1449L68.1114 71.4127C66.4761 73.2979 63.5277 73.2483 61.9915 71.2887C57.9033 66.0797 50.5942 56.7779 46.4317 51.4945C44.8708 49.5102 41.8975 49.4854 40.3118 51.4697C31.9373 62.0117 27.7252 68.6594 27.7252 76.1256C27.75 93.1168 40.2871 103.188 55.9212 103.188Z"
                 fill="#B1E321"

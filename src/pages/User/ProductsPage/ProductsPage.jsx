@@ -4,14 +4,18 @@ import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuCom
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getAllproduct, getProductsByCategory } from "../../../services/productServices";
+import {
+  getAllproduct,
+  getProductsByCategory,
+} from "../../../services/productServices";
 import { getAllCategory } from "../../../services/CategoryService";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
   const [categories, setCategories] = useState([]); // State lưu danh sách category
   const [currentCategory, setCurrentCategory] = useState(null); // State lưu category hiện tại
-  const [currentCategoryName, setCurrentCategoryName] = useState("Tất cả sản phẩm"); // State lưu tên category hiện tại
+  const [currentCategoryName, setCurrentCategoryName] =
+    useState("Tất cả sản phẩm"); // State lưu tên category hiện tại
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0); // Tổng số trang
   const [error, setError] = useState(""); // State lưu lỗi
@@ -35,8 +39,18 @@ const ProductsPage = () => {
   }, []);
 
   // Fetch danh sách sản phẩm theo category
-  const fetchProductsByCategory = async (page = 0, limit = 9, categoryId = null) => {
+  const fetchProductsByCategory = async (
+    page = 0,
+    limit = 9,
+    categoryId = null
+  ) => {
     try {
+      if (!categoryId) {
+        console.log("No category selected, skipping fetchProductsByCategory");
+        setProducts([]);
+        return;
+      }
+
       const queryParams = new URLSearchParams({ page, limit }).toString();
 
       const data = await getProductsByCategory(categoryId);
@@ -72,13 +86,16 @@ const ProductsPage = () => {
     }
   };
 
-
   // Khi component được mount
   useEffect(() => {
     if (previousCategoryId) {
       setCurrentCategory(previousCategoryId);
-      const selectedCategory = categories.find(cat => cat._id === previousCategoryId);
-      setCurrentCategoryName(selectedCategory?.categoryName || "Tất cả sản phẩm");
+      const selectedCategory = categories.find(
+        (cat) => cat._id === previousCategoryId
+      );
+      setCurrentCategoryName(
+        selectedCategory?.categoryName || "Tất cả sản phẩm"
+      );
       setCurrentPage(0);
       fetchProductsByCategory(0, 9, previousCategoryId);
     } else {
@@ -86,6 +103,15 @@ const ProductsPage = () => {
       fetchAllProducts(0, 9);
     }
   }, [previousCategoryId, categories]);
+
+  // Khi thay đổi trang hoặc danh mục
+  useEffect(() => {
+    if (currentCategory) {
+      fetchProductsByCategory(currentPage, 9, currentCategory);
+    } else {
+      fetchAllProducts(currentPage, 9);
+    }
+  }, [currentPage, currentCategory]);
 
   // Phân trang
   const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -115,7 +141,7 @@ const ProductsPage = () => {
   const handleCategoryClick = (categoryId, categoryName) => {
     setCurrentCategory(categoryId);
     setCurrentCategoryName(categoryName);
-    console.log("Current", currentCategoryName)
+    console.log("Current", currentCategoryName);
     setCurrentPage(0);
     fetchProductsByCategory(0, 9, categoryId);
   };
@@ -124,7 +150,7 @@ const ProductsPage = () => {
   const handleAllProductsClick = () => {
     setCurrentCategory(null);
     setCurrentCategoryName("Tất cả sản phẩm");
-    console.log("Current", currentCategoryName)
+    console.log("Current", currentCategoryName);
     setCurrentPage(0);
     fetchAllProducts();
   };
@@ -178,7 +204,7 @@ const ProductsPage = () => {
                 key="all-products"
                 value={null}
                 onClick={handleAllProductsClick}
-                isActive={currentCategory=== null}
+                isActive={currentCategory === null}
               >
                 Tất cả sản phẩm
               </SideMenuComponent>

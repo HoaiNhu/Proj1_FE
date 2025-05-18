@@ -49,9 +49,8 @@ export const getDetailsproduct = async (id, access_token) => {
         },
       }
     );
-    return res.data; // Trả dữ liệu nếu thành công
+    return res.data;
   } catch (error) {
-    // Nếu API trả về lỗi, ném lỗi với thông tin chi tiết
     if (error.response) {
       // API trả về response
       throw {
@@ -205,14 +204,15 @@ export const getRecommendations = async (userId, productId) => {
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_URL_BACKEND}/recommendation/recommend`,
-      { user_id: userId, product_id: productId },
+      { userId, productId },
       {
         headers: {
           "Content-Type": "application/json",
         },
       }
     );
-    return res.data.recommendations;
+    console.log("res.data-recommandation", res.data);
+    return res.data;
   } catch (error) {
     throw {
       message: error.response?.data?.message || "Không thể lấy khuyến nghị",
