@@ -200,3 +200,39 @@ export const getProductsByCategory = async (categoryId) => {
     }
   }
 };
+
+export const getRecommendations = async (userId, productId) => {
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL_BACKEND}/recommendation/recommend`,
+      { user_id: userId, product_id: productId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.data.recommendations;
+  } catch (error) {
+    throw {
+      message: error.response?.data?.message || "Không thể lấy khuyến nghị",
+    };
+  }
+};
+
+export const logSearch = async (userId, query) => {
+  try {
+    await axios.post(
+      `${process.env.REACT_APP_API_URL_BACKEND}/recommendation/interaction/log`,
+      {
+        userId,
+        interaction_type: "search",
+        value: query,
+        timestamp: new Date().toISOString(),
+      },
+      { headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Lỗi khi lưu lịch sử tìm kiếm:", error);
+  }
+};

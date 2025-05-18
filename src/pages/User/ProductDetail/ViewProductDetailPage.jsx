@@ -8,9 +8,15 @@ import QuantityBtn from "../../../components/QuantityBtn/QuantityBtn";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/slides/cartSlide";
 import RecommendationCarouselComponent from "../../../components/RecommendationCarouselComponent/RecommendationCarouselComponent";
-import { getProductsByCategory } from "../../../services/productServices";
+import {
+  getRecommendations,
+  getDetailsproduct,
+  getProductsByCategory,
+} from "../../../services/productServices";
 
 const ViewProductDetailPage = () => {
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   console.log("userrr", user.id);
@@ -39,8 +45,6 @@ const ViewProductDetailPage = () => {
   const [imagePreview, setImagePreview] = useState(
     product.productImage || null
   );
-
-  const [relatedProducts, setRelatedProducts] = useState([]);
 
   //Lay danh sach Category
   const [categories, setCategories] = useState([]); // State lưu danh sách category
@@ -153,6 +157,35 @@ const ViewProductDetailPage = () => {
     console.log("PRODUCT", productPrice);
   };
 
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      setIsLoading(true);
+      try {
+        const userId = user.id || "guest";
+        const recommendations = await getRecommendations(
+          userId,
+          product.productId
+        );
+        const recommendedProducts = await Promise.all(
+          recommendations.map(async (id) => {
+            const res = await getDetailsproduct(id);
+            return res.data;
+          })
+        );
+        setRelatedProducts(recommendedProducts);
+      } catch (error) {
+        console.error("Lỗi khi lấy khuyến nghị:", error);
+        setRelatedProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (product.productId && user) {
+      fetchRecommendations();
+    }
+  }, [product.productId, user]);
+
   return (
     <div>
       <div className="container-xl mb-3">
@@ -220,7 +253,13 @@ const ViewProductDetailPage = () => {
         </div> */}
         <div className="recommendProduct">
           <h3>Có thể bạn sẽ thích</h3>
-          <RecommendationCarouselComponent products={relatedProducts} />
+          {isLoading ? (
+            <div>Đang tải khuyến nghị...</div>
+          ) : relatedProducts.length === 0 ? (
+            <div>Không có khuyến nghị. Khám phá thêm sản phẩm!</div>
+          ) : (
+            <RecommendationCarouselComponent products={relatedProducts} />
+          )}
         </div>
       </div>
     </div>
