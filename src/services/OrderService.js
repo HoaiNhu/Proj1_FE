@@ -105,7 +105,6 @@ export const updateOrderStatus = async (orderId, statusId, access_token) => {
   }
 };
 
-
 export const getAllOrders = async (access_token) => {
   try {
     const res = await axios.get(
@@ -165,10 +164,9 @@ export const fetchCities = async () => {
   }
 };
 
-
 export const getOrdersByUser = async (access_token, userId) => {
   try {
-    console.log("SERVICE")
+    console.log("SERVICE");
     const res = await axios.get(
       `${process.env.REACT_APP_API_URL_BACKEND}/order/get-orders-by-user/${userId}`,
       {
@@ -178,13 +176,92 @@ export const getOrdersByUser = async (access_token, userId) => {
         },
       }
     );
-    console.log("SERVICE1", res.data)
+    console.log("SERVICE1", res.data);
     return res.data;
   } catch (error) {
     if (error.response) {
       throw {
         // status: error.response.data?.status || "ERR",
         message: error.response.data?.message || "Đã xảy ra lỗi.",
+      };
+    } else {
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};
+
+export const createProductRating = async (data, access_token) => {
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL_BACKEND}/rating/create`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        message:
+          error.response.data?.message ||
+          "Đã xảy ra lỗi khi đánh giá sản phẩm.",
+      };
+    } else {
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};
+
+export const getProductRatings = async (productId) => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL_BACKEND}/rating/product/${productId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        message:
+          error.response.data?.message ||
+          "Đã xảy ra lỗi khi lấy đánh giá sản phẩm.",
+      };
+    } else {
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};
+
+export const getUserProductRating = async (
+  productId,
+  orderId,
+  access_token
+) => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL_BACKEND}/rating/user/${productId}/${orderId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        message:
+          error.response.data?.message ||
+          "Đã xảy ra lỗi khi lấy đánh giá của người dùng.",
       };
     } else {
       throw { status: 500, message: "Không thể kết nối đến máy chủ." };

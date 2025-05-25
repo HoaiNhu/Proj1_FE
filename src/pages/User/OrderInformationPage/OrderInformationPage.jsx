@@ -309,7 +309,7 @@ const OrderInformationPage = () => {
                   <ProductInfor
                     image={product.img}
                     name={product.title}
-                    size={product.size + " cm" || "Không có"}
+                    size={product.size || "Không có"}
                   />
                 </td>
                 <td className="PriceProduct">{product.price}</td>

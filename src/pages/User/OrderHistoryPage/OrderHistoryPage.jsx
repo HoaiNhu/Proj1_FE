@@ -2,18 +2,32 @@ import { React, useEffect, useState } from "react";
 import "./OrderHistoryPage.css";
 import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuComponent";
 import OrderHistoryCardComponent from "../../../components/OrderHistoryCardComponent/OrderHistoryCardComponent";
-import { getOrdersByUser } from "../../../services/OrderService";
+import {
+  getOrdersByUser,
+  createProductRating,
+  getUserProductRating,
+} from "../../../services/OrderService";
 import img from "../../../assets/img/hero_1.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as UserService from "../../../services/UserService";
 import { resetUser, updateUser } from "../../../redux/slides/userSlide";
+import RatingStar from "../../../components/RatingStar/RatingStar";
+import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
 
 const OrderHistoryPage = () => {
-  const [showLoading, setShowLoading] = useState(false); // Thêm trạng thái riêng
+  const [showLoading, setShowLoading] = useState(false);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [ratingError, setRatingError] = useState("");
+  const [existingRating, setExistingRating] = useState(null);
+
   const access_token = localStorage.getItem("access_token");
   console.log("token", access_token);
   const user = useSelector((state) => state.user);
@@ -32,21 +46,69 @@ const OrderHistoryPage = () => {
     try {
       setLoading(true);
       console.log("Fetching orders...");
-      const access_token = localStorage.getItem("access_token");
-      const userId = user.id;
-
-      if (!access_token || !userId) {
-        throw new Error("Missing authentication details");
-      }
-
-      const response = await getOrdersByUser(access_token, userId);
+      const response = await getOrdersByUser(access_token, user.id);
       console.log("Orders fetched:", response.data);
-      setOrders(response.data);
+      setOrders(response.data.reverse());
     } catch (err) {
       console.error("Error fetching orders:", err);
       setError(err.message || "An error occurred.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRatingClick = async (product, orderId) => {
+    try {
+      // Kiểm tra xem người dùng đã đánh giá chưa
+      const ratingResponse = await getUserProductRating(
+        product._id,
+        orderId,
+        access_token
+      );
+      if (ratingResponse.status === "OK" && ratingResponse.data) {
+        setExistingRating(ratingResponse.data);
+        setRating(ratingResponse.data.rating);
+        setComment(ratingResponse.data.comment || "");
+      } else {
+        setExistingRating(null);
+        setRating(0);
+        setComment("");
+      }
+    } catch (error) {
+      console.error("Error checking existing rating:", error);
+    }
+
+    setSelectedProduct({ ...product, orderId });
+    setShowRatingModal(true);
+    setRatingError("");
+  };
+
+  const handleSubmitRating = async () => {
+    if (rating === 0) {
+      setRatingError("Vui lòng chọn số sao đánh giá");
+      return;
+    }
+
+    try {
+      const response = await createProductRating(
+        {
+          productId: selectedProduct._id,
+          orderId: selectedProduct.orderId,
+          rating,
+          comment,
+        },
+        access_token
+      );
+
+      if (response.status === "OK") {
+        setShowRatingModal(false);
+        // Refresh orders to update ratings
+        fetchOrderByUser();
+      } else {
+        setRatingError(response.message);
+      }
+    } catch (error) {
+      setRatingError(error.message || "Có lỗi xảy ra khi đánh giá");
     }
   };
 
@@ -133,7 +195,11 @@ const OrderHistoryPage = () => {
                 orders.map((order, index) => {
                   console.log(`Order ${index + 1}:`, order); // In ra từng đơn hàng trong console
                   return (
-                    <OrderHistoryCardComponent key={order._id} order={order} />
+                    <OrderHistoryCardComponent
+                      key={order._id}
+                      order={order}
+                      onRateClick={handleRatingClick}
+                    />
                   );
                 })
               ) : (
@@ -143,6 +209,60 @@ const OrderHistoryPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Rating Modal */}
+      <Modal show={showRatingModal} onHide={() => setShowRatingModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {existingRating ? "Chỉnh sửa đánh giá" : "Đánh giá sản phẩm"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedProduct && (
+            <>
+              <div className="product-info mb-3">
+                <h5>{selectedProduct.productName}</h5>
+                <p>Kích thước: {selectedProduct.productSize} cm</p>
+              </div>
+              <div className="rating-section mb-3">
+                <label className="mb-2 d-block">Chọn số sao:</label>
+                <RatingStar
+                  rating={rating}
+                  setRating={setRating}
+                  isEditable={true}
+                  size={30}
+                  showRating={false}
+                />
+              </div>
+              <Form.Group className="mb-3">
+                <Form.Label>Nhận xét của bạn:</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Nhập nhận xét của bạn về sản phẩm..."
+                  maxLength={500}
+                />
+                <Form.Text className="text-muted">
+                  {comment.length}/500 ký tự
+                </Form.Text>
+              </Form.Group>
+              {ratingError && (
+                <div className="text-danger mb-3">{ratingError}</div>
+              )}
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowRatingModal(false)}>
+            Hủy
+          </Button>
+          <Button variant="primary" onClick={handleSubmitRating}>
+            {existingRating ? "Cập nhật đánh giá" : "Gửi đánh giá"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

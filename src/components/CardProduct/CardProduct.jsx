@@ -5,8 +5,18 @@ import { Button, Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slides/cartSlide";
 import { useState } from "react";
+import RatingStar from "../RatingStar/RatingStar";
 
-const CardProduct = ({ id, type, img, title, price, onClick }) => {
+const CardProduct = ({
+  id,
+  type,
+  img,
+  title,
+  price,
+  onClick,
+  averageRating = 5.0,
+  totalRatings = 0,
+}) => {
   const dispatch = useDispatch();
 
   //Hiệu ứng sản phẩm bay dô vỏ hàng
@@ -89,6 +99,17 @@ const CardProduct = ({ id, type, img, title, price, onClick }) => {
         >
           {title}
         </Card.Title>
+        <div className="d-flex justify-content-center mb-2">
+          <RatingStar
+            rating={typeof averageRating === "number" ? averageRating : 5.0}
+            setRating={() => {}}
+            isEditable={false}
+            size={16}
+            showRating={true}
+            showCount={false}
+            totalRatings={typeof totalRatings === "number" ? totalRatings : 0}
+          />
+        </div>
         {type === "secondary" && (
           <Card.Subtitle
             style={{

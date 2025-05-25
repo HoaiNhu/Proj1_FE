@@ -23,7 +23,6 @@ import ContactPage from "../pages/User/ContactPage/ContactPage";
 import HomePage from "../pages/User/HomePage/HomePage";
 import IntroducePage from "../pages/User/IntroducePage/IntroducePage";
 import NewsPage from "../pages/User/NewsPage/NewsPage";
-import OrderPage from "../pages/User/OrderPage/OrderPage";
 import ProductsPage from "../pages/User/ProductsPage/ProductsPage";
 import UserInfoPage from "../pages/User/UserInfoPage/UserInfoPage";
 import CartPage from "../pages/User/CartPage/CartPage";
@@ -45,7 +44,7 @@ import SearchResultPage from "../pages/SearchResultPage/SearchResultPage";
 import NewsDetailPageAdmin from "../pages/Admin/CRUDNews/NewsDetailPageAdmin/NewsDetailPage";
 import UserTab from "../pages/User/UserTab/UserTab.jsx";
 import PaymentResultPage from "../pages/PaymentResultPage/PaymentResultPage";
-
+import OrderRatingPage from "../pages/User/OrderRatingPage/OrderRatingPage";
 export const routes = [
   {
     path: "/",
@@ -127,6 +126,13 @@ export const routes = [
   {
     path: "/order-history",
     page: OrderHistoryPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/order-rating/:orderId",
+    page: OrderRatingPage,
     isShowHeader: true,
     isShowFooter: true,
   },

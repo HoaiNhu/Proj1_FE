@@ -13,6 +13,9 @@ import {
   getDetailsproduct,
   getProductsByCategory,
 } from "../../../services/productServices";
+import RatingStar from "../../../components/RatingStar/RatingStar";
+import { getProductRatings } from "../../../services/OrderService";
+import { Card, ListGroup } from "react-bootstrap";
 
 const ViewProductDetailPage = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -264,6 +267,30 @@ const ViewProductDetailPage = () => {
     }
   }, [product.productId, user]);
 
+  const [ratings, setRatings] = useState([]);
+  const [loadingRatings, setLoadingRatings] = useState(false);
+
+  // Fetch ratings when product changes
+  useEffect(() => {
+    const fetchRatings = async () => {
+      if (product.productId) {
+        try {
+          setLoadingRatings(true);
+          const response = await getProductRatings(product.productId);
+          if (response.status === "OK") {
+            setRatings(response.data);
+          }
+        } catch (error) {
+          console.error("Error fetching ratings:", error);
+        } finally {
+          setLoadingRatings(false);
+        }
+      }
+    };
+
+    fetchRatings();
+  }, [product.productId]);
+
   return (
     <div>
       <div className="container-xl mb-3">
@@ -341,6 +368,59 @@ const ViewProductDetailPage = () => {
             <div>Không có khuyến nghị. Khám phá thêm sản phẩm!</div>
           ) : (
             <RecommendationCarouselComponent products={relatedProducts} />
+          )}
+        </div>
+
+        {/* Ratings Section */}
+        <div className="ratings-section mt-4">
+          <h3 className="mb-3">Đánh giá sản phẩm</h3>
+          <div className="overall-rating mb-4">
+            <div className="d-flex align-items-center gap-3">
+              <RatingStar
+                rating={product.averageRating || 5.0}
+                setRating={() => {}}
+                isEditable={false}
+                size={24}
+                showRating={true}
+                showCount={true}
+                totalRatings={product.totalRatings || 0}
+              />
+            </div>
+          </div>
+
+          {loadingRatings ? (
+            <div>Đang tải đánh giá...</div>
+          ) : ratings.length > 0 ? (
+            <ListGroup>
+              {ratings.map((rating, index) => (
+                <ListGroup.Item key={index} className="rating-item">
+                  <div className="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <strong>{rating.userName}</strong>
+                      <div className="mt-1">
+                        <RatingStar
+                          rating={rating.rating}
+                          setRating={() => {}}
+                          isEditable={false}
+                          size={16}
+                          showRating={false}
+                        />
+                      </div>
+                    </div>
+                    <small className="text-muted">
+                      {new Date(rating.createdAt).toLocaleDateString("vi-VN")}
+                    </small>
+                  </div>
+                  {rating.comment && (
+                    <p className="rating-comment mb-0 mt-2">{rating.comment}</p>
+                  )}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          ) : (
+            <div className="text-muted">
+              Chưa có đánh giá nào từ khách hàng.
+            </div>
           )}
         </div>
       </div>

@@ -84,7 +84,50 @@
   margin-bottom: 20px;
 }
 
-.button_area{
-display: flex;
-margin-left: 500px;
+.button_area {
+  display: flex;
+  margin-left: 500px;
+}
+
+/* Ratings Section Styles */
+.ratings-section {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.overall-rating {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.rating-item {
+  border: none !important;
+  border-bottom: 1px solid #eee !important;
+  padding: 15px !important;
+}
+
+.rating-item:last-child {
+  border-bottom: none !important;
+}
+
+.rating-comment {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.rating-item .text-muted {
+  font-size: 12px;
+}
+
+.rating-item strong {
+  color: #333;
+  font-size: 14px;
 }
