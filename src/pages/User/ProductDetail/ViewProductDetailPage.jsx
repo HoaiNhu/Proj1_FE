@@ -142,16 +142,24 @@ const ViewProductDetailPage = () => {
 
   // Hàm thêm sản phẩm vào giỏ hàng
   const handleAddToCart = () => {
-    const { productName, productPrice, productImage, productCategory } =
-      product;
+    const {
+      productId,
+      productName,
+      productPrice,
+      productImage,
+      productSize,
+      productCategory,
+    } = product;
     console.log("PRODUCT", product);
     // Dispatch action để thêm vào giỏ hàng
     dispatch(
       addToCart({
-        id: productCategory,
+        id: productId,
         img: productImage,
         title: productName,
         price: productPrice,
+        size: productSize,
+        category: productCategory,
       })
     );
     console.log("PRODUCT", productPrice);
@@ -313,7 +321,11 @@ const ViewProductDetailPage = () => {
         {/* info bot */}
         <div className="info__bot">
           <label className="description">Mô Tả</label>
-          <textarea className="product-description">
+          <textarea
+            className="product-description"
+            readOnly={true}
+            // defaultValue={"Chưa có mô tả"}
+          >
             {product.productDescription}
           </textarea>
         </div>

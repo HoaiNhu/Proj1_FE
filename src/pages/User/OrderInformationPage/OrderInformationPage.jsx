@@ -14,14 +14,23 @@ import { addOrder, setOrderDetails } from "../../../redux/slides/orderSlide";
 
 const OrderInformationPage = () => {
   const location = useLocation();
+  const { selectedProductDetails } = useSelector((state) => state.order);
   // const orderData = location.state || {};
   // dispatch(setOrderDetails(orderData));
 
   // const selectedProducts = location.state?.selectedProductDetails || [];
-  const selectedProducts = Array.isArray(location.state?.selectedProductDetails)
-    ? location.state.selectedProductDetails
-    : [];
-  console.log("selectedProducts1", selectedProducts);
+  // const selectedProducts = Array.isArray(location.state?.selectedProductDetails)
+  //   ? location.state.selectedProductDetails
+  //   : [];
+  // console.log("selectedProducts1", selectedProducts);
+  const selectedProducts = useMemo(() => {
+    return Array.isArray(selectedProductDetails) &&
+      selectedProductDetails.length > 0
+      ? selectedProductDetails
+      : Array.isArray(location.state?.selectedProductDetails)
+      ? location.state.selectedProductDetails
+      : [];
+  }, [selectedProductDetails, location.state]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -70,6 +79,15 @@ const OrderInformationPage = () => {
       if (response?.data?._id) {
         // Thêm orderId vào orderData
         const fullOrderData = { ...orderData, orderId: response.data._id };
+
+        // Lưu selectedProductDetails vào Redux
+        dispatch(
+          setOrderDetails({
+            selectedProductDetails: selectedProducts,
+            shippingAddress,
+            totalPrice,
+          })
+        );
 
         // Lưu vào localStorage thông tin đơn hàng
         // localStorage.setItem("orderData", JSON.stringify(fullOrderData));
@@ -291,7 +309,7 @@ const OrderInformationPage = () => {
                   <ProductInfor
                     image={product.img}
                     name={product.title}
-                    size={product.size || "N/A"}
+                    size={product.size + " cm" || "Không có"}
                   />
                 </td>
                 <td className="PriceProduct">{product.price}</td>

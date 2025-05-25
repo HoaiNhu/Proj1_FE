@@ -24,7 +24,7 @@ const CartPage = () => {
   // console.log("products", products);
 
   const calculatePrice = (price) => {
-    if (typeof price !== 'string') {
+    if (typeof price !== "string") {
       price = String(price); // Nếu price không phải là chuỗi, chuyển nó thành chuỗi
     }
     return parseFloat(price.replace(/[^0-9.-]+/g, ""));
@@ -131,7 +131,7 @@ const CartPage = () => {
                   <ProductInfor
                     image={product.img}
                     name={product.title}
-                    size={product.size}
+                    size={product.size + " cm" || "Không có"}
                   />
                 </td>
                 <td className="PriceProduct">

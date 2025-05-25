@@ -8,11 +8,12 @@ import * as PaymentService from "../../../services/PaymentService";
 import { createPayment } from "../../../redux/slides/paymentSlide";
 import axios from "axios";
 import { getDetailsOrder } from "../../../services/OrderService";
+import { clearSelectedProductDetails } from "../../../redux/slides/orderSlide";
 
 const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const orderDetails = useSelector((state) => state.order);
   const cart = useSelector((state) => state.cart);
 
@@ -64,7 +65,8 @@ const PaymentPage = () => {
   };
 
   const handleClickBack = () => {
-    navigate("/order-information", { state: { ...location.state } });
+    // navigate("/order-information", { state: { ...location.state } });
+    navigate("/order-information");
   };
 
   const handleClickPay = async () => {
@@ -111,6 +113,7 @@ const PaymentPage = () => {
         console.log("PayPal response:", response);
 
         if (response?.status === "OK") {
+          dispatch(clearSelectedProductDetails()); // Xóa selectedProductDetails
           window.location.href = response.data.paymentUrl;
         } else {
           alert(
@@ -138,6 +141,7 @@ const PaymentPage = () => {
         console.log("QR response:", response);
 
         if (response?.status === "OK") {
+          dispatch(clearSelectedProductDetails()); // Xóa selectedProductDetails
           navigate("/banking-info", {
             state: {
               qrCodeUrl: response.data.qrCodeUrl,
