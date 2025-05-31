@@ -24,6 +24,7 @@ const HeaderComponent = () => {
   const [showLoading, setShowLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [userImage, setUserImage] = useState("");
+  const [showPopover, setShowPopover] = useState(false);
 
   const handleNavigationLogin = () => {
     navigate("/login");
@@ -64,6 +65,20 @@ const HeaderComponent = () => {
     setUserName(user?.userName);
     setShowLoading(false);
   }, [user?.userName, user?.userImage]);
+
+  useEffect(() => {
+    let timer;
+    if (showPopover) {
+      timer = setTimeout(() => {
+        setShowPopover(false);
+      }, 3000);
+    }
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [showPopover]);
 
   //Click Search
   const handleSearch = (query) => {
@@ -111,130 +126,138 @@ const HeaderComponent = () => {
   );
 
   return (
-    <div className="bg-white sticky-top bg-shadow">
-      <div
-        className="container-xl text-center "
-        style={{ width: "width-screen" }}
-      >
-        <div className={styles.navbar}>
-          <div className="container-fluid">
-            {/* nav top */}
-            <div className="row">
-              <div className="col">
-                <a className="navbar-brand" href="/">
-                  <img src={img} alt="Avocado" className="navbar__img" />
-                </a>
-              </div>
-              <div className={`col ${styles.navbar__search__form}`}>
-                <SearchBoxComponent
-                  onSearch={handleSearch}
-                  onButtonClick={(query) => handleSearch(query)}
-                />
-                {/* <VoiceComponent onVoiceSearch={handleVoiceSearch} /> */}
-              </div>
+    <>
+      <div className={`${styles["bg-white"]} ${styles["bg-shadow"]}`}>
+        <div className="container-xl">
+          <div className={styles.navbar}>
+            <div className="container-fluid">
+              {/* nav top */}
+              <div className="row">
+                <div className="col">
+                  <a className="navbar-brand" href="/">
+                    <img src={img} alt="Avocado" className="navbar__img" />
+                  </a>
+                </div>
+                <div className={`col ${styles.navbar__search__form}`}>
+                  <SearchBoxComponent
+                    onSearch={handleSearch}
+                    onButtonClick={(query) => handleSearch(query)}
+                  />
+                  {/* <VoiceComponent onVoiceSearch={handleVoiceSearch} /> */}
+                </div>
 
-              <div className={`col ${styles.nav__cart}`}>
-                {user?.isAdmin === false && (
-                  <div className={styles.cart__icon__wrapper}>
-                    <CartIconComponent onClick={handleClickCart} />
-                    {cartQuantity > 0 && (
-                      <span className={styles.cart__quantity}>
-                        {cartQuantity}
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className={`col text-end ${styles.btn__container}`}>
-                <Loading isLoading={showLoading} />
-                {!showLoading && user?.isLoggedIn ? (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom"
-                    overlay={popover}
-                  >
-                    <div className={styles.user__icon}>
-                      {userImage ? (
-                        <img
-                          src={userImage}
-                          alt="avatar"
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            borderRadius: "50%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <UserIconComponent />
+                <div className={`col ${styles.nav__cart}`}>
+                  {user?.isAdmin === false && (
+                    <div className={styles.cart__icon__wrapper}>
+                      <CartIconComponent onClick={handleClickCart} />
+                      {cartQuantity > 0 && (
+                        <span className={styles.cart__quantity}>
+                          {cartQuantity}
+                        </span>
                       )}
-                      <span style={{ color: "var(--brown100)" }}>
-                        {user.userName || user.userEmail || "User"}
-                      </span>
                     </div>
-                  </OverlayTrigger>
-                ) : (
-                  <div className="d-flex gap-2">
-                    <Link to="/signup" className={styles.btn__signup}>
-                      Đăng kí
-                    </Link>
-                    <div className={styles.btn__signup}>
-                      <ButtonComponent onClick={handleNavigationLogin}>
-                        Đăng nhập
-                      </ButtonComponent>
+                  )}
+                </div>
+                <div className={`col text-end ${styles.btn__container}`}>
+                  <Loading isLoading={showLoading} />
+                  {!showLoading && user?.isLoggedIn ? (
+                    <OverlayTrigger
+                      trigger="click"
+                      placement="bottom"
+                      show={showPopover}
+                      onToggle={(nextShow) => setShowPopover(nextShow)}
+                      overlay={popover}
+                      rootClose
+                    >
+                      <div className={styles.user__icon}>
+                        {userImage ? (
+                          <img
+                            src={userImage}
+                            alt="avatar"
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        ) : (
+                          <UserIconComponent />
+                        )}
+                        <span style={{ color: "var(--brown100)" }}>
+                          {user.userName || user.userEmail || "User"}
+                        </span>
+                      </div>
+                    </OverlayTrigger>
+                  ) : (
+                    <div className="d-flex gap-2">
+                      <Link to="/signup" className={styles.btn__signup}>
+                        Đăng kí
+                      </Link>
+                      <div className={styles.btn__signup}>
+                        <ButtonComponent onClick={handleNavigationLogin}>
+                          Đăng nhập
+                        </ButtonComponent>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* nav bottom */}
-            <div className={`row ${styles.nav__bot}`}>
-              <div className={styles.nav__content}>
-                {/* nav admin */}
-                {user?.isAdmin ? (
-                  <>
-                    <ButtonNoBGComponent to="/">Trang chủ</ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/admin/products">
-                      Sản phẩm
-                    </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/admin/news">
-                      Tin tức
-                    </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/introduce">
-                      Giới thiệu
-                    </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/admin/introduce">
-                      Liên hệ
-                    </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/admin/store-info">
-                      Quản lí
-                    </ButtonNoBGComponent>
-                  </>
-                ) : (
-                  // nav user
-                  <>
-                    <ButtonNoBGComponent to="/">Trang chủ</ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/products">
-                      Sản phẩm
-                    </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/news">
-                      Tin tức
-                    </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/introduce">
-                      Giới thiệu
-                    </ButtonNoBGComponent>
-                    <ButtonNoBGComponent to="/contact">
-                      Liên hệ
-                    </ButtonNoBGComponent>
-                  </>
-                )}
+              {/* nav bottom */}
+              <div className={`row ${styles.nav__bot}`}>
+                <div className={styles.nav__content}>
+                  {/* nav admin */}
+                  {user?.isAdmin ? (
+                    <>
+                      <ButtonNoBGComponent to="/">
+                        Trang chủ
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/admin/products">
+                        Sản phẩm
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/admin/news">
+                        Tin tức
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/introduce">
+                        Giới thiệu
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/admin/introduce">
+                        Liên hệ
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/admin/store-info">
+                        Quản lí
+                      </ButtonNoBGComponent>
+                    </>
+                  ) : (
+                    // nav user
+                    <>
+                      <ButtonNoBGComponent to="/">
+                        Trang chủ
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/products">
+                        Sản phẩm
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/news">
+                        Tin tức
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/introduce">
+                        Giới thiệu
+                      </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/contact">
+                        Liên hệ
+                      </ButtonNoBGComponent>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      {/* Thêm div giả để tạo khoảng trống cho header */}
+      <div className={styles.headerPlaceholder}></div>
+    </>
   );
 };
 

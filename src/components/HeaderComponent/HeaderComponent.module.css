@@ -1,12 +1,19 @@
 .bg-white {
-  width: max-content;
+  width: 100%;
+  background-color: var(--white);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1020;
 }
 
-.sticky-top {
+/* .sticky-top {
   position: sticky !important;
   top: 0;
   z-index: 1020;
-}
+  width: 100%;
+} */
 
 .bg-shadow {
   box-shadow: 0px 0px 4px 0px var(--shadow);
@@ -15,8 +22,19 @@
 .navbar {
   display: flex;
   justify-content: space-between;
-  padding: 20px 0;
-  z-index: 1;
+  padding: 20px 0 0 0;
+  width: 100%;
+}
+
+/* Div giả để tạo khoảng trống cho header */
+.headerPlaceholder {
+  height: 190px; /* Chiều cao bằng với header */
+  width: 100%;
+}
+
+/* Xóa padding-top của body vì không cần thiết nữa */
+:global(body) {
+  padding-top: 0;
 }
 
 /* nav top */

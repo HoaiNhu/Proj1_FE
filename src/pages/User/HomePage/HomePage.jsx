@@ -394,6 +394,7 @@ const HomePage = () => {
               img={product.productImage}
               title={product.productName}
               price={product.productPrice}
+              averageRating={product.averageRating}
               onClick={() => handleDetailProduct(product._id)}
             />
           ))}
@@ -467,6 +468,7 @@ const HomePage = () => {
               marginLeft: 137,
               borderRadius: 15,
               flexShrink: 0,
+              objectFit: "cover",
             }}
           ></img>
 
@@ -509,6 +511,7 @@ const HomePage = () => {
                 marginTop: 20,
                 marginBottom: 25,
                 color: "#3A060E",
+                lineHeight: 1.5,
               }}
             />
             <div>
@@ -588,7 +591,7 @@ const HomePage = () => {
               margin: "auto",
             }}
           >
-            Xem thêm{" "}
+            Xem thêm
           </ButtonComponent>
           <ChatbotComponent />
         </div>

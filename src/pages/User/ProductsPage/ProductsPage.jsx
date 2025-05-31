@@ -54,6 +54,7 @@ const ProductsPage = () => {
       const queryParams = new URLSearchParams({ page, limit }).toString();
 
       const data = await getProductsByCategory(categoryId);
+      // console.log("data", data);
       setCurrentPage(page);
       setTotalPages(Math.ceil(data.total / limit));
 
