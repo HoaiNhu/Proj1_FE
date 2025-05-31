@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./OrderRatingPage.css";
-import { Button, Card, Form } from "react-bootstrap";
+import { Card, Form } from "react-bootstrap";
 import RatingStar from "../../../components/RatingStar/RatingStar";
+import BackIconComponent from "../../../components/BackIconComponent/BackIconComponent";
 import {
   createProductRating,
   getDetailsOrder,
 } from "../../../services/OrderService";
 import { useSelector } from "react-redux";
-
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 const OrderRatingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -93,17 +94,17 @@ const OrderRatingPage = () => {
   };
 
   const handleBack = () => {
-    navigate("/order-history");
+    navigate("/profile");
   };
 
   return (
     <div className="container-xl">
       <div className="rating-page">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2>Đánh giá sản phẩm</h2>
-          <Button variant="outline-secondary" onClick={handleBack}>
-            Quay lại
-          </Button>
+        <div className="rating-header">
+          <div className="back-icon-wrapper">
+            <BackIconComponent onClick={handleBack} />
+          </div>
+          <h2 className="rating-title">Đánh giá sản phẩm</h2>
         </div>
 
         <div className="order-info mb-4">
@@ -171,13 +172,13 @@ const OrderRatingPage = () => {
                         </Form.Text>
                       </Form.Group>
 
-                      <Button
+                      <ButtonComponent
                         variant="primary"
                         onClick={() => handleSubmitRating(item.product._id)}
                         disabled={!!item.rating}
                       >
-                        {item.rating ? "Đã đánh giá" : "Gửi đánh giá"}
-                      </Button>
+                        {item.rating ? "Đã đánh giá" : "Gửi"}
+                      </ButtonComponent>
 
                       {item.rating && (
                         <div className="mt-2">

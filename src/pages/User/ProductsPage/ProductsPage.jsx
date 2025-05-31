@@ -180,6 +180,8 @@ const ProductsPage = () => {
           productDescription,
           productCategory,
           productPrice,
+          averageRating: selectedProduct.averageRating,
+          totalRatings: selectedProduct.totalRatings,
         },
       });
     } else {

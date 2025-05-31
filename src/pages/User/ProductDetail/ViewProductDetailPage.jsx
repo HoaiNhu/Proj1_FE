@@ -37,6 +37,8 @@ const ViewProductDetailPage = () => {
       productCategory: "",
       productImage: null,
       productDescription: "",
+      averageRating: 0,
+      totalRatings: 0,
     }
   );
 
@@ -377,7 +379,7 @@ const ViewProductDetailPage = () => {
           <div className="overall-rating mb-4">
             <div className="d-flex align-items-center gap-3">
               <RatingStar
-                rating={product.averageRating || 5.0}
+                rating={product.averageRating}
                 setRating={() => {}}
                 isEditable={false}
                 size={24}

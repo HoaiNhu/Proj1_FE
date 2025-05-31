@@ -9,6 +9,8 @@ const initialState = {
   productImage: "",
   productDescription: "",
   access_token: "",
+  averageRating: 0,
+  totalRatings: 0,
   isLoggedIn: false,
 };
 export const productSlice = createSlice({
@@ -26,6 +28,8 @@ export const productSlice = createSlice({
         productImage = "",
         productDescription = "",
         access_token = "",
+        averageRating = 0,
+        totalRatings = 0,
       } = action?.payload;
 
       state.id = _id;
@@ -36,6 +40,8 @@ export const productSlice = createSlice({
       state.productImage = productImage;
       state.productDescription = productDescription;
       state.access_token = access_token;
+      state.averageRating = averageRating;
+      state.totalRatings = totalRatings;
       state.isLoggedIn = !!access_token; // Kiểm tra xem token có tồn tại hay không
     },
     resetproduct: (state) => {
@@ -47,6 +53,8 @@ export const productSlice = createSlice({
       state.productImage = "";
       state.productDescription = "";
       state.access_token = "";
+      state.averageRating = 0;
+      state.totalRatings = 0;
       state.isLoggedIn = false;
     },
     setProducts: (state, action) => action.payload,
