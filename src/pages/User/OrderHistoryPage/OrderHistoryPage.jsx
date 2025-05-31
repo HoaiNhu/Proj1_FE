@@ -6,6 +6,7 @@ import {
   getOrdersByUser,
   createProductRating,
   getUserProductRating,
+  updateProductRating,
 } from "../../../services/OrderService";
 import img from "../../../assets/img/hero_1.jpg";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,7 @@ import { resetUser, updateUser } from "../../../redux/slides/userSlide";
 import RatingStar from "../../../components/RatingStar/RatingStar";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 
 const OrderHistoryPage = () => {
   const [showLoading, setShowLoading] = useState(false);
@@ -90,20 +92,38 @@ const OrderHistoryPage = () => {
     }
 
     try {
-      const response = await createProductRating(
-        {
-          productId: selectedProduct._id,
-          orderId: selectedProduct.orderId,
-          rating,
-          comment,
-        },
-        access_token
-      );
+      let response;
+      const ratingData = {
+        productId: selectedProduct._id,
+        orderId: selectedProduct.orderId,
+        rating,
+        comment,
+      };
+
+      if (existingRating) {
+        // Nếu đã có đánh giá, cập nhật
+        response = await updateProductRating(
+          existingRating._id,
+          {
+            rating,
+            comment,
+          },
+          access_token
+        );
+      } else {
+        // Nếu chưa có đánh giá, tạo mới
+        response = await createProductRating(ratingData, access_token);
+      }
 
       if (response.status === "OK") {
         setShowRatingModal(false);
         // Refresh orders to update ratings
         fetchOrderByUser();
+        alert(
+          existingRating
+            ? "Cập nhật đánh giá thành công!"
+            : "Đánh giá thành công!"
+        );
       } else {
         setRatingError(response.message);
       }
@@ -210,11 +230,10 @@ const OrderHistoryPage = () => {
         </div>
       </div>
 
-      {/* Rating Modal */}
-      {/* <Modal show={showRatingModal} onHide={() => setShowRatingModal(false)}>
+      <Modal show={showRatingModal} onHide={() => setShowRatingModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {existingRating ? "Chỉnh sửa đánh giá" : "Đánh giá sản phẩm"}
+            {existingRating ? "Cập nhật đánh giá" : "Đánh giá sản phẩm"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -255,14 +274,17 @@ const OrderHistoryPage = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowRatingModal(false)}>
+          <ButtonComponent
+            variant="secondary"
+            onClick={() => setShowRatingModal(false)}
+          >
             Hủy
-          </Button>
-          <Button variant="primary" onClick={handleSubmitRating}>
+          </ButtonComponent>
+          <ButtonComponent variant="primary" onClick={handleSubmitRating}>
             {existingRating ? "Cập nhật đánh giá" : "Gửi đánh giá"}
-          </Button>
+          </ButtonComponent>
         </Modal.Footer>
-      </Modal> */}
+      </Modal>
     </div>
   );
 };

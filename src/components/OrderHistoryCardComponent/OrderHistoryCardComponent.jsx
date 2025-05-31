@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ProductRowComponent from "../ProductRowComponent/ProductRowComponent";
 import StatusComponent from "../StatusComponent/StatusComponent";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
@@ -7,9 +7,43 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import ProductInforCustom from "../../components/ProductInfor/ProductInforCustom";
 import RatingStar from "../RatingStar/RatingStar";
+import { getUserProductRating } from "../../services/OrderService";
+import { useSelector } from "react-redux";
 
 const OrderHistoryCardComponent = ({ order, onRateClick }) => {
   const navigate = useNavigate(); // Hook điều hướng
+  const [hasRating, setHasRating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const access_token = localStorage.getItem("access_token");
+  const user = useSelector((state) => state.user);
+
+  useEffect(() => {
+    const checkOrderRating = async () => {
+      if (order.status.statusName === "Đã giao" && user?.id) {
+        try {
+          setIsLoading(true);
+          // Kiểm tra đánh giá của sản phẩm đầu tiên trong đơn hàng
+          // (vì nếu có một sản phẩm được đánh giá thì đơn hàng đã được đánh giá)
+          const firstProduct = order.orderItems[0]?.product;
+          if (firstProduct) {
+            const response = await getUserProductRating(
+              firstProduct._id,
+              order._id,
+              access_token
+            );
+            setHasRating(response.status === "OK" && response.data !== null);
+          }
+        } catch (error) {
+          console.error("Error checking rating:", error);
+          setHasRating(false);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    checkOrderRating();
+  }, [order, user?.id, access_token]);
 
   const handleViewDetails = (id) => {
     console.log("ORDERID", id);
@@ -68,17 +102,16 @@ const OrderHistoryCardComponent = ({ order, onRateClick }) => {
       <div className="order-title d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center gap-3">
           <StatusComponent status={order.status.statusName} />
-          {order.status.statusName === "Đã giao" &&
-            !order.orderItems.some((item) => item.rating) && (
-              <ButtonComponent
-                variant="outline-primary"
-                size="sm"
-                className="rate-order-button"
-                onClick={() => handleRateOrder(order._id)}
-              >
-                Đánh giá
-              </ButtonComponent>
-            )}
+          {order.status.statusName === "Đã giao" && !isLoading && (
+            <ButtonComponent
+              variant="outline-primary"
+              size="sm"
+              className="rate-order-button"
+              onClick={() => handleRateOrder(order._id)}
+            >
+              {hasRating ? "Cập nhật đánh giá" : "Đánh giá"}
+            </ButtonComponent>
+          )}
         </div>
       </div>
       <div className="order-products">

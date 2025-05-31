@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./OrderRatingPage.css";
 import { Card, Form } from "react-bootstrap";
@@ -7,9 +7,12 @@ import BackIconComponent from "../../../components/BackIconComponent/BackIconCom
 import {
   createProductRating,
   getDetailsOrder,
+  updateProductRating,
+  getUserProductRating,
 } from "../../../services/OrderService";
 import { useSelector } from "react-redux";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
+
 const OrderRatingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,19 +21,77 @@ const OrderRatingPage = () => {
   const [ratings, setRatings] = useState({});
   const [comments, setComments] = useState({});
   const [ratingErrors, setRatingErrors] = useState({});
+  const [editingRatings, setEditingRatings] = useState({});
   const access_token = localStorage.getItem("access_token");
   const user = useSelector((state) => state.user);
 
-  if (!order || order._id !== orderId) {
-    return <div>Không tìm thấy thông tin đơn hàng!</div>;
-  }
+  useEffect(() => {
+    const fetchRatings = async () => {
+      if (order?.orderItems && user?.id) {
+        try {
+          const initialRatings = {};
+          const initialComments = {};
+
+          for (const item of order.orderItems) {
+            if (item.product) {
+              const response = await getUserProductRating(
+                item.product._id,
+                order._id,
+                access_token
+              );
+
+              if (response.status === "OK" && response.data) {
+                initialRatings[item.product._id] = response.data.rating;
+                initialComments[item.product._id] = response.data.comment || "";
+              }
+            }
+          }
+
+          setRatings(initialRatings);
+          setComments(initialComments);
+        } catch (error) {
+          console.error("Error fetching ratings:", error);
+        }
+      }
+    };
+
+    fetchRatings();
+  }, [order, user?.id, access_token]);
+
+  const handleEditClick = (productId) => {
+    setEditingRatings((prev) => ({
+      ...prev,
+      [productId]: true,
+    }));
+  };
+
+  const handleCancelEdit = (productId) => {
+    const originalRating = order.orderItems.find(
+      (item) => item.product._id === productId
+    )?.rating;
+
+    if (originalRating) {
+      setRatings((prev) => ({
+        ...prev,
+        [productId]: originalRating.rating,
+      }));
+      setComments((prev) => ({
+        ...prev,
+        [productId]: originalRating.comment || "",
+      }));
+    }
+
+    setEditingRatings((prev) => ({
+      ...prev,
+      [productId]: false,
+    }));
+  };
 
   const handleRatingChange = (productId, rating) => {
     setRatings((prev) => ({
       ...prev,
       [productId]: rating,
     }));
-    // Xóa lỗi khi người dùng đã chọn rating
     if (rating > 0) {
       setRatingErrors((prev) => ({
         ...prev,
@@ -56,37 +117,63 @@ const OrderRatingPage = () => {
     }
 
     try {
-      const response = await createProductRating(
-        {
-          productId,
-          orderId: order._id,
-          rating: ratings[productId],
-          comment: comments[productId] || "",
-        },
-        access_token
+      let response;
+      const ratingData = {
+        productId,
+        orderId: order._id,
+        rating: ratings[productId],
+        comment: comments[productId] || "",
+      };
+
+      const existingRating = order.orderItems.find(
+        (item) => item.product._id === productId && item.rating
       );
 
+      if (existingRating) {
+        response = await updateProductRating(
+          existingRating.rating._id,
+          {
+            rating: ratings[productId],
+            comment: comments[productId] || "",
+          },
+          access_token
+        );
+      } else {
+        response = await createProductRating(ratingData, access_token);
+      }
+
       if (response.status === "OK") {
-        // Xóa rating và comment đã gửi
-        setRatings((prev) => {
-          const newRatings = { ...prev };
-          delete newRatings[productId];
-          return newRatings;
+        const updatedOrderItems = order.orderItems.map((item) => {
+          if (item.product._id === productId) {
+            return {
+              ...item,
+              rating: response.data,
+            };
+          }
+          return item;
         });
-        setComments((prev) => {
-          const newComments = { ...prev };
-          delete newComments[productId];
-          return newComments;
-        });
-        alert("Đánh giá thành công!");
-        // Fetch lại chi tiết đơn hàng để cập nhật trạng thái đánh giá
-        const updatedOrder = await getDetailsOrder(order._id);
-        setOrder(updatedOrder.data);
-        // Nếu muốn chuyển về trang home sau khi đánh giá hết tất cả sản phẩm thì kiểm tra tại đây
-        // if (updatedOrder.data.orderItems.every((item) => item.rating)) {
-        //   navigate("/");
-        // }
-        navigate("/");
+
+        setOrder((prevOrder) => ({
+          ...prevOrder,
+          orderItems: updatedOrderItems,
+        }));
+
+        setEditingRatings((prev) => ({
+          ...prev,
+          [productId]: false,
+        }));
+
+        alert(
+          existingRating
+            ? "Cập nhật đánh giá thành công!"
+            : "Đánh giá thành công!"
+        );
+
+        const allRated = updatedOrderItems.every((item) => item.rating);
+        if (allRated) {
+          alert("Bạn đã đánh giá xong tất cả sản phẩm!");
+          navigate("/");
+        }
       }
     } catch (error) {
       alert(error.message || "Có lỗi xảy ra khi đánh giá");
@@ -134,66 +221,143 @@ const OrderRatingPage = () => {
                     </div>
 
                     <div className="rating-section mt-3">
-                      <div className="mb-2">
-                        <label>Chọn số sao:</label>
-                        <RatingStar
-                          rating={ratings[item.product._id] || 0}
-                          setRating={(rating) =>
-                            handleRatingChange(item.product._id, rating)
-                          }
-                          isEditable={true}
-                          size={24}
-                          showRating={false}
-                        />
-                        {ratingErrors[item.product._id] && (
-                          <div className="text-danger mt-1">
-                            {ratingErrors[item.product._id]}
+                      {editingRatings[item.product._id] ? (
+                        <>
+                          <div className="mb-2">
+                            <label>Chọn số sao:</label>
+                            <RatingStar
+                              rating={ratings[item.product._id] || 0}
+                              setRating={(rating) =>
+                                handleRatingChange(item.product._id, rating)
+                              }
+                              isEditable={true}
+                              size={24}
+                              showRating={false}
+                            />
+                            {ratingErrors[item.product._id] && (
+                              <div className="text-danger mt-1">
+                                {ratingErrors[item.product._id]}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
 
-                      <Form.Group className="mb-3">
-                        <Form.Label>Nhận xét của bạn:</Form.Label>
-                        <Form.Control
-                          as="textarea"
-                          rows={3}
-                          value={comments[item.product._id] || ""}
-                          onChange={(e) =>
-                            handleCommentChange(
-                              item.product._id,
-                              e.target.value
-                            )
-                          }
-                          placeholder="Nhập nhận xét của bạn về sản phẩm..."
-                          maxLength={500}
-                        />
-                        <Form.Text className="text-muted">
-                          {(comments[item.product._id] || "").length}/500 ký tự
-                        </Form.Text>
-                      </Form.Group>
+                          <Form.Group className="mb-3">
+                            <Form.Label>Nhận xét của bạn:</Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows={3}
+                              value={comments[item.product._id] || ""}
+                              onChange={(e) =>
+                                handleCommentChange(
+                                  item.product._id,
+                                  e.target.value
+                                )
+                              }
+                              placeholder="Nhập nhận xét của bạn về sản phẩm..."
+                              maxLength={500}
+                            />
+                            <Form.Text className="text-muted">
+                              {(comments[item.product._id] || "").length}/500 ký
+                              tự
+                            </Form.Text>
+                          </Form.Group>
 
-                      <ButtonComponent
-                        variant="primary"
-                        onClick={() => handleSubmitRating(item.product._id)}
-                        disabled={!!item.rating}
-                      >
-                        {item.rating ? "Đã đánh giá" : "Gửi"}
-                      </ButtonComponent>
+                          <div className="d-flex gap-2">
+                            <ButtonComponent
+                              variant="primary"
+                              onClick={() =>
+                                handleSubmitRating(item.product._id)
+                              }
+                            >
+                              Cập nhật đánh giá
+                            </ButtonComponent>
+                            <ButtonComponent
+                              variant="secondary"
+                              onClick={() => handleCancelEdit(item.product._id)}
+                            >
+                              Hủy
+                            </ButtonComponent>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {ratings[item.product._id] ? (
+                            <>
+                              <div className="mb-2">
+                                <RatingStar
+                                  rating={ratings[item.product._id]}
+                                  setRating={() => {}}
+                                  isEditable={false}
+                                  size={24}
+                                  showRating={true}
+                                />
+                                {comments[item.product._id] && (
+                                  <p className="mt-2">
+                                    {comments[item.product._id]}
+                                  </p>
+                                )}
+                              </div>
+                              <ButtonComponent
+                                variant="outline-primary"
+                                onClick={() =>
+                                  handleEditClick(item.product._id)
+                                }
+                              >
+                                Sửa đánh giá
+                              </ButtonComponent>
+                            </>
+                          ) : (
+                            <>
+                              <div className="mb-2">
+                                <label>Chọn số sao:</label>
+                                <RatingStar
+                                  rating={ratings[item.product._id] || 0}
+                                  setRating={(rating) =>
+                                    handleRatingChange(item.product._id, rating)
+                                  }
+                                  isEditable={true}
+                                  size={24}
+                                  showRating={false}
+                                />
+                                {ratingErrors[item.product._id] && (
+                                  <div className="text-danger mt-1">
+                                    {ratingErrors[item.product._id]}
+                                  </div>
+                                )}
+                              </div>
 
-                      {item.rating && (
-                        <div className="mt-2">
-                          <p>Đánh giá của bạn:</p>
-                          <RatingStar
-                            rating={item.rating.rating}
-                            setRating={() => {}}
-                            isEditable={false}
-                            size={16}
-                            showRating={true}
-                          />
-                          {item.rating.comment && (
-                            <p className="mt-2">{item.rating.comment}</p>
+                              <Form.Group className="mb-3">
+                                <Form.Label>Nhận xét của bạn:</Form.Label>
+                                <Form.Control
+                                  as="textarea"
+                                  rows={3}
+                                  value={comments[item.product._id] || ""}
+                                  onChange={(e) =>
+                                    handleCommentChange(
+                                      item.product._id,
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder="Nhập nhận xét của bạn về sản phẩm..."
+                                  maxLength={500}
+                                />
+                                <Form.Text className="text-muted">
+                                  {(comments[item.product._id] || "").length}
+                                  /500 ký tự
+                                </Form.Text>
+                              </Form.Group>
+
+                              <ButtonComponent
+                                variant="primary"
+                                onClick={() =>
+                                  handleSubmitRating(item.product._id)
+                                }
+                              >
+                                Gửi đánh giá
+                              </ButtonComponent>
+                            </>
                           )}
-                        </div>
+                        </>
                       )}
                     </div>
                   </Card.Body>

@@ -268,3 +268,20 @@ export const getUserProductRating = async (
     }
   }
 };
+
+export const updateProductRating = async (ratingId, data, access_token) => {
+  try {
+    const response = await axios.put(
+      `${process.env.REACT_APP_API_URL_BACKEND}/rating/update/${ratingId}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
