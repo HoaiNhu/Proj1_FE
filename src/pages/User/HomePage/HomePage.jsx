@@ -92,7 +92,7 @@ const HomePage = () => {
         const response = await getAllNews();
 
         if (Array.isArray(response.data)) {
-          setNewsList(response.data.slice(0, 3)); // Chỉ lấy 3 tin tức đầu
+          setNewsList(response.data.slice(0, 4)); // Chỉ lấy 3 tin tức đầu
         } else {
           setError("Dữ liệu trả về không hợp lệ.");
         }
@@ -559,7 +559,7 @@ const HomePage = () => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3,1fr)",
+            gridTemplateColumns: "repeat(4,1fr)",
             marginLeft: "137px",
             marginRight: "137px",
             gap: "25px",

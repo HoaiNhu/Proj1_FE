@@ -78,11 +78,14 @@ const ReportPage = () => {
       revenue += order.totalPrice;
 
       order.orderItems.forEach((item) => {
-        const productId = item.product._id;
+        const productId = item._id;
         console.log("productId", productId);
 
         const product = products.find((p) => p._id === productId);
-        // console.log("product", product);
+
+        console.log("danh sách sp", products);
+
+        console.log("product", product);
 
         if (!product) return;
 
@@ -191,27 +194,27 @@ const ReportPage = () => {
           new Date(order.createdAt).getDate() === parseInt(selectedDay, 10) ||
           (order.deliveryDate &&
             new Date(order.deliveryDate).getDate() ===
-            parseInt(selectedDay, 10))
+              parseInt(selectedDay, 10))
       );
     }
     if (selectedMonth) {
       filteredOrders = filteredOrders.filter(
         (order) =>
           new Date(order.createdAt).getMonth() + 1 ===
-          parseInt(selectedMonth, 10) ||
+            parseInt(selectedMonth, 10) ||
           (order.deliveryDate &&
             new Date(order.deliveryDate).getMonth() + 1 ===
-            parseInt(selectedMonth, 10))
+              parseInt(selectedMonth, 10))
       );
     }
     if (selectedYear) {
       filteredOrders = filteredOrders.filter(
         (order) =>
           new Date(order.createdAt).getFullYear() ===
-          parseInt(selectedYear, 10) ||
+            parseInt(selectedYear, 10) ||
           (order.deliveryDate &&
             new Date(order.deliveryDate).getFullYear() ===
-            parseInt(selectedYear, 10))
+              parseInt(selectedYear, 10))
       );
     }
 
@@ -231,7 +234,6 @@ const ReportPage = () => {
     setActiveTab(tab);
     navigate(navigatePath);
   };
-
 
   return (
     <div>
@@ -284,9 +286,9 @@ const ReportPage = () => {
               </div>
             </div>
 
-            <div class="report-total-container">
-              <div class="report-container">
-                <div class="report-title">
+            <div className="report-total-container">
+              <div className="report-container">
+                <div className="report-title">
                   <table>
                     <tr>
                       <th>TỔNG DOANH THU</th>
@@ -294,7 +296,7 @@ const ReportPage = () => {
                   </table>
                 </div>
 
-                <div class="report-data">
+                <div className="report-data">
                   <table>
                     <tr>
                       <td>{totalRevenue.toLocaleString()}</td>
@@ -303,8 +305,8 @@ const ReportPage = () => {
                 </div>
               </div>
 
-              <div class="report-container">
-                <div class="report-title">
+              <div className="report-container">
+                <div className="report-title">
                   <table>
                     <tr>
                       <th>TỔNG SẢN PHẨM BÁN RA</th>
@@ -312,7 +314,7 @@ const ReportPage = () => {
                   </table>
                 </div>
 
-                <div class="report-data">
+                <div className="report-data">
                   <table>
                     <tr>
                       <td>{totalQuantity}</td>

@@ -198,7 +198,7 @@ const OrderHistoryPage = () => {
                     <OrderHistoryCardComponent
                       key={order._id}
                       order={order}
-                      onRateClick={handleRatingClick}
+                      // onRateClick={handleRatingClick}
                     />
                   );
                 })
@@ -211,7 +211,7 @@ const OrderHistoryPage = () => {
       </div>
 
       {/* Rating Modal */}
-      <Modal show={showRatingModal} onHide={() => setShowRatingModal(false)}>
+      {/* <Modal show={showRatingModal} onHide={() => setShowRatingModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>
             {existingRating ? "Chỉnh sửa đánh giá" : "Đánh giá sản phẩm"}
@@ -262,7 +262,7 @@ const OrderHistoryPage = () => {
             {existingRating ? "Cập nhật đánh giá" : "Gửi đánh giá"}
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

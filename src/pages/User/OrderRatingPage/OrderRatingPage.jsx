@@ -3,14 +3,17 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./OrderRatingPage.css";
 import { Button, Card, Form } from "react-bootstrap";
 import RatingStar from "../../../components/RatingStar/RatingStar";
-import { createProductRating } from "../../../services/OrderService";
+import {
+  createProductRating,
+  getDetailsOrder,
+} from "../../../services/OrderService";
 import { useSelector } from "react-redux";
 
 const OrderRatingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { orderId } = useParams();
-  const order = location.state?.order;
+  const [order, setOrder] = useState(location.state?.order);
   const [ratings, setRatings] = useState({});
   const [comments, setComments] = useState({});
   const [ratingErrors, setRatingErrors] = useState({});
@@ -75,7 +78,13 @@ const OrderRatingPage = () => {
           return newComments;
         });
         alert("Đánh giá thành công!");
-        // Chuyển về trang home sau khi đánh giá thành công
+        // Fetch lại chi tiết đơn hàng để cập nhật trạng thái đánh giá
+        const updatedOrder = await getDetailsOrder(order._id);
+        setOrder(updatedOrder.data);
+        // Nếu muốn chuyển về trang home sau khi đánh giá hết tất cả sản phẩm thì kiểm tra tại đây
+        // if (updatedOrder.data.orderItems.every((item) => item.rating)) {
+        //   navigate("/");
+        // }
         navigate("/");
       }
     } catch (error) {

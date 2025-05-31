@@ -248,6 +248,8 @@ const ProductsPage = () => {
                       price={product.productPrice}
                       id={product._id}
                       onClick={() => handleDetail(product._id)}
+                      averageRating={product.averageRating}
+                      totalRatings={product.totalRatings}
                     />
                   );
                 })

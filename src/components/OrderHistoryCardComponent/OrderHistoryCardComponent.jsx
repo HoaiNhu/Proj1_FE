@@ -66,17 +66,20 @@ const OrderHistoryCardComponent = ({ order, onRateClick }) => {
   return (
     <div className="order-card">
       <div className="order-title d-flex justify-content-between align-items-center">
-        <StatusComponent status={order.status.statusName} />
-        {order.status.statusName === "Đã giao" && (
-          <ButtonComponent
-            variant="outline-primary"
-            size="sm"
-            className="rate-order-button"
-            onClick={() => handleRateOrder(order._id)}
-          >
-            Đánh giá
-          </ButtonComponent>
-        )}
+        <div className="d-flex align-items-center gap-3">
+          <StatusComponent status={order.status.statusName} />
+          {order.status.statusName === "Đã giao" &&
+            !order.orderItems.some((item) => item.rating) && (
+              <ButtonComponent
+                variant="outline-primary"
+                size="sm"
+                className="rate-order-button"
+                onClick={() => handleRateOrder(order._id)}
+              >
+                Đánh giá
+              </ButtonComponent>
+            )}
+        </div>
       </div>
       <div className="order-products">
         {Array.isArray(order.orderItems) && order.orderItems.length > 0 ? (
@@ -91,16 +94,6 @@ const OrderHistoryCardComponent = ({ order, onRateClick }) => {
                     quantity={item.quantity}
                     price={item.total}
                   />
-                  {order.status.statusName === "Đã giao" && !item.rating && (
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      className="rate-button"
-                      onClick={() => onRateClick(item.product, order._id)}
-                    >
-                      Đánh giá
-                    </Button>
-                  )}
                   {item.rating && (
                     <div className="product-rating">
                       <RatingStar
