@@ -16,6 +16,7 @@ const CardProduct = ({
   onClick,
   averageRating = 5.0,
   totalRatings = 0,
+  size,
 }) => {
   const dispatch = useDispatch();
 
@@ -58,9 +59,8 @@ const CardProduct = ({
     }
 
     // Dispatch the action to add to cart
-
     console.log("Received ID in CardProduct:", id); // Kiểm tra ID
-    dispatch(addToCart({ id, img, title, price }));
+    dispatch(addToCart({ id, img, title, price, size }));
   };
 
   return (

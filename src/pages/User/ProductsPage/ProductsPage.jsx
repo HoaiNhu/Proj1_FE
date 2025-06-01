@@ -250,6 +250,7 @@ const ProductsPage = () => {
                       title={product.productName}
                       price={product.productPrice}
                       id={product._id}
+                      size={product.productSize}
                       onClick={() => handleDetail(product._id)}
                       averageRating={product.averageRating}
                       totalRatings={product.totalRatings}

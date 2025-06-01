@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CartPage.css";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,23 @@ const CartPage = () => {
   };
 
   const products = useSelector((state) => state.cart.products);
-  // console.log("products", products);
+  console.log("products", products);
+
+  // Thêm useEffect để log thông tin sản phẩm
+  useEffect(() => {
+    console.log("=== THÔNG TIN SẢN PHẨM TRONG GIỎ HÀNG ===");
+    products.forEach((product, index) => {
+      console.log(`Sản phẩm ${index + 1}:`, {
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        size: product.size,
+        quantity: product.quantity,
+        img: product.img,
+      });
+    });
+    console.log("=====================================");
+  }, [products]);
 
   const calculatePrice = (price) => {
     if (typeof price !== "string") {
@@ -131,7 +147,7 @@ const CartPage = () => {
                   <ProductInfor
                     image={product.img}
                     name={product.title}
-                    size={product.size + " cm" || "Không có"}
+                    size={product.size ? `${product.size} cm` : "Không có"}
                   />
                 </td>
                 <td className="PriceProduct">
