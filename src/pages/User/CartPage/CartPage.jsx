@@ -85,7 +85,12 @@ const CartPage = () => {
       selectedProducts.includes(product.id)
     );
 
-    navigate("/order-information", { state: { selectedProductDetails } });
+    navigate("/order-information", {
+      state: {
+        selectedProductDetails,
+        selectedProductIds: selectedProducts, // Thêm danh sách ID sản phẩm đã chọn
+      },
+    });
   };
 
   // Hàm toggle chọn/deselect tất cả
