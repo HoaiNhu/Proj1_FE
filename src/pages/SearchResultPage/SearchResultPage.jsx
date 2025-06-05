@@ -87,7 +87,7 @@ const SearchResultPage = () => {
                 type={"primary"}
                 img={imageUrl} // Sử dụng URL ảnh đã xử lý
                 title={product.productName} // Hiển thị tên sản phẩm
-                price={`${product.productPrice}`} // Hiển thị giá sản phẩm
+                price={product.productPrice}// Hiển thị giá sản phẩm
                 id={product._id}
                 onClick={() => handleDetail(product._id)}
               />

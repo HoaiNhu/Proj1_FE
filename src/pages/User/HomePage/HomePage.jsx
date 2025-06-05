@@ -132,7 +132,7 @@ const HomePage = () => {
         // const data = await response.json();
 
         setCategories(response.data); // Lưu danh sách category vào state
-        console.log("GGHH", categories);
+    
         // Lấy category đầu tiên và fetch sản phẩm tương ứng
         if (response.data.length > 0) {
           const firstCategoryId = response.data[0]._id;
@@ -151,8 +151,6 @@ const HomePage = () => {
     try {
       const response = await getProductsByCategory(categoryId);
 
-      console.log("FDS", response);
-      console.log("GVHNJ", response.data);
       // setCurrentPage(page); // Cập nhật trang hiện tại
       // setTotalPages(Math.ceil(data.data.lenght / limit)); // Tính tổng số trang
 
