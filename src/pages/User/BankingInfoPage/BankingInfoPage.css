@@ -50,14 +50,14 @@ h2 {
   padding: 20px;
 } */
 
-.container-xl {
-  /* max-width: 1200px; */
-  margin: 0 auto;
-  padding: 20px;
-  /* background-color: #fff; */
-  border-radius: 20px;
-  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.05); */
-}
+/* .container-xl { */
+/* max-width: 1200px; */
+/* margin: 0 auto; */
+/* padding: 20px; */
+/* background-color: #fff; */
+/* border-radius: 20px; */
+/* box-shadow: 0 0 20px rgba(0, 0, 0, 0.05); */
+/* } */
 
 .title-row {
   display: flex;
@@ -119,7 +119,7 @@ h2 {
 .order-total {
   margin-top: 20px;
   padding: 15px;
-  background: #e9ecef;
+  /* background: #e9ecef; */
   border-radius: 10px;
   font-weight: 600;
   font-size: 18px;
