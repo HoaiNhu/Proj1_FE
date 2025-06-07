@@ -45,6 +45,7 @@ import NewsDetailPageAdmin from "../pages/Admin/CRUDNews/NewsDetailPageAdmin/New
 import UserTab from "../pages/User/UserTab/UserTab.jsx";
 import PaymentResultPage from "../pages/PaymentResultPage/PaymentResultPage";
 import OrderRatingPage from "../pages/User/OrderRatingPage/OrderRatingPage";
+import CreateArt from "../pages/User/CreateArt/CreateArt";
 export const routes = [
   {
     path: "/",
@@ -386,6 +387,13 @@ export const routes = [
   {
     path: "/payment-result",
     page: PaymentResultPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/create-cake",
+    page: CreateArt,
     isShowHeader: true,
     isShowFooter: true,
   },

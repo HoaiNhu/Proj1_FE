@@ -247,6 +247,9 @@ const HeaderComponent = () => {
                       <ButtonNoBGComponent to="/contact">
                         Liên hệ
                       </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/create-cake">
+                        Sáng tạo
+                      </ButtonNoBGComponent>
                     </>
                   )}
                 </div>
