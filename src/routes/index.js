@@ -46,6 +46,7 @@ import UserTab from "../pages/User/UserTab/UserTab.jsx";
 import PaymentResultPage from "../pages/PaymentResultPage/PaymentResultPage";
 import OrderRatingPage from "../pages/User/OrderRatingPage/OrderRatingPage";
 import CreateArt from "../pages/User/CreateArt/CreateArt";
+import QuizzPage from "../pages/User/QuizzPage/QuizzPage.jsx";
 export const routes = [
   {
     path: "/",
@@ -394,6 +395,12 @@ export const routes = [
   {
     path: "/create-cake",
     page: CreateArt,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/quizz",
+    page: QuizzPage,
     isShowHeader: true,
     isShowFooter: true,
   },

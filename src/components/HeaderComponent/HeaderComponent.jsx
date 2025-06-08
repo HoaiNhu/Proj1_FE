@@ -250,6 +250,9 @@ const HeaderComponent = () => {
                       <ButtonNoBGComponent to="/create-cake">
                         Sáng tạo
                       </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/quizz">
+                        Gợi ý
+                      </ButtonNoBGComponent>
                     </>
                   )}
                 </div>
