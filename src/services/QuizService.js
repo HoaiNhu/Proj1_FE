@@ -1,71 +1,124 @@
 import axios from "axios";
-
-const QUIZ_API = "/api/quiz";
-
-// Hàm helper để lấy token từ localStorage
-const getAuthHeader = () => {
-  const token = localStorage.getItem("access_token");
-  return token ? { token: `Bearer ${token}` } : {};
-};
+import { API_URL } from "../constants";
 
 class QuizService {
-  // Lấy danh sách câu hỏi
+  // Lấy danh sách quiz
   async getQuizzes() {
     try {
-      const response = await axios.get(QUIZ_API);
+      const response = await axios.get(`${API_URL}/quiz`);
       return response.data;
     } catch (error) {
-      throw new Error("Lỗi khi lấy danh sách câu hỏi: " + error.message);
+      throw new Error(
+        error.response?.data?.message || "Không thể lấy danh sách quiz"
+      );
     }
   }
 
-  // Lưu một câu trả lời
-  async saveResponse(quizId, answer, customAnswer = null) {
+  // Lưu câu trả lời của user
+  async saveUserResponse(responseData) {
     try {
+      const token = localStorage.getItem("access_token");
       const response = await axios.post(
-        `${QUIZ_API}/response`,
+        `${API_URL}/quiz/response`,
+        responseData,
         {
-          quizId,
-          answer,
-          customAnswer,
-        },
-        {
-          headers: getAuthHeader(),
+          headers: {
+            token: `Bearer ${token}`,
+          },
         }
       );
       return response.data;
     } catch (error) {
-      throw new Error("Lỗi khi lưu câu trả lời: " + error.message);
+      throw new Error(
+        error.response?.data?.message || "Không thể lưu câu trả lời"
+      );
     }
   }
 
   // Lưu nhiều câu trả lời cùng lúc
   async saveMultipleResponses(responses) {
     try {
+      const token = localStorage.getItem("access_token");
       const response = await axios.post(
-        `${QUIZ_API}/responses`,
+        `${API_URL}/quiz/responses`,
+        { responses },
         {
-          responses,
-        },
-        {
-          headers: getAuthHeader(),
+          headers: {
+            token: `Bearer ${token}`,
+          },
         }
       );
       return response.data;
     } catch (error) {
-      throw new Error("Lỗi khi lưu câu trả lời: " + error.message);
+      throw new Error(
+        error.response?.data?.message || "Không thể lưu câu trả lời"
+      );
     }
   }
 
   // Lấy lịch sử quiz của user
-  async getQuizHistory() {
+  async getUserQuizHistory() {
     try {
-      const response = await axios.get(`${QUIZ_API}/history`, {
-        headers: getAuthHeader(),
+      const token = localStorage.getItem("access_token");
+      const response = await axios.get(`${API_URL}/quiz/history`, {
+        headers: {
+          token: `Bearer ${token}`,
+        },
       });
       return response.data;
     } catch (error) {
-      throw new Error("Lỗi khi lấy lịch sử quiz: " + error.message);
+      throw new Error(
+        error.response?.data?.message || "Không thể lấy lịch sử quiz"
+      );
+    }
+  }
+
+  // Admin: Tạo quiz mới
+  async createQuiz(quizData) {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await axios.post(`${API_URL}/quiz`, quizData, {
+        headers: {
+          token: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        error.response?.data?.message || "Không thể tạo quiz mới"
+      );
+    }
+  }
+
+  // Admin: Cập nhật quiz
+  async updateQuiz(quizId, quizData) {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await axios.put(`${API_URL}/quiz/${quizId}`, quizData, {
+        headers: {
+          token: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        error.response?.data?.message || "Không thể cập nhật quiz"
+      );
+    }
+  }
+
+  // Admin: Xóa quiz (soft delete)
+  async deleteQuiz(quizId) {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await axios.delete(`${API_URL}/quiz/${quizId}`, {
+        headers: {
+          token: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Không thể xóa quiz");
     }
   }
 }

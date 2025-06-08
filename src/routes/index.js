@@ -47,6 +47,10 @@ import PaymentResultPage from "../pages/PaymentResultPage/PaymentResultPage";
 import OrderRatingPage from "../pages/User/OrderRatingPage/OrderRatingPage";
 import CreateArt from "../pages/User/CreateArt/CreateArt";
 import QuizzPage from "../pages/User/QuizzPage/QuizzPage.jsx";
+import AddQuizPage from "../pages/Admin/CRUDQuiz/AddQuizPage/AddQuizPage.jsx";
+import ListQuizPage from "../pages/Admin/CRUDQuiz/ListQuizPage/ListQuizPage.jsx";
+import UpdateQuizPage from "../pages/Admin/CRUDQuiz/UpdateQuizPage/UpdateQuizPage.jsx";
+import DeleteQuizPage from "../pages/Admin/CRUDQuiz/DeleteQuizPage/DeleteQuizPage.jsx";
 export const routes = [
   {
     path: "/",
@@ -377,7 +381,7 @@ export const routes = [
     path: "/admin/news-detail",
     page: NewsDetailPageAdmin,
     isShowHeader: true,
-    isShowFooter: true,
+    // isShowFooter: true,
   },
   {
     path: "/search",
@@ -398,10 +402,32 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+
   {
     path: "/quizz",
     page: QuizzPage,
     isShowHeader: true,
     isShowFooter: true,
+  },
+  {
+    path: "/admin/add-quiz",
+    page: AddQuizPage,
+    isShowHeader: true,
+  },
+  {
+    path: "/admin/list-quiz",
+    page: ListQuizPage,
+    isShowHeader: true,
+  },
+  {
+    path: "/admin/update-quiz/:quizId",
+    page: UpdateQuizPage,
+    isShowHeader: true,
+  },
+  {
+    path: "/admin/delete-quiz",
+    page: DeleteQuizPage,
+    isShowHeader: true,
+    // isShowFooter: true,
   },
 ];

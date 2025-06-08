@@ -3,58 +3,67 @@
   margin: 2rem auto;
   padding: 2rem;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .progress {
   text-align: center;
   margin-bottom: 2rem;
-  color: #666;
-  font-size: 1.1rem;
+  color: var(--brown100);
+  font-size: 1.6rem;
+  font-weight: bold;
 }
 
 .questionCard {
-  background: #f8f9fa;
+  background: #f9f9f9;
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid #e6e6e6;
 }
 
 .questionCard h2 {
+  display: block;
   margin-bottom: 2rem;
-  color: #333;
-  text-align: center;
+  color: var(--brown100);
+  /* text-align: center; */
+  font-size: 2.4rem;
 }
 
 .options {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  align-items: stretch;
 }
 
 .optionButton {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 1rem;
-  border: 2px solid #e9ecef;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.4rem;
+  border: 2px solid var(--green100);
   border-radius: 8px;
   background: white;
   cursor: pointer;
+  text-align: center;
+  font-size: 1.6rem;
   transition: all 0.2s ease;
+  color: var(--brown100);
 }
 
 .optionButton:hover {
-  border-color: #007bff;
+  background: var(--green100);
+  color: var(--brown100);
   transform: translateY(-2px);
 }
 
 .optionButton img {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 4px;
-  margin-bottom: 0.5rem;
 }
 
 .customAnswer {
@@ -67,23 +76,29 @@
 .customAnswer input {
   flex: 1;
   padding: 0.75rem;
-  border: 2px solid #e9ecef;
-  border-radius: 4px;
-  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1.6rem;
 }
 
 .customAnswer button {
   padding: 0.75rem 1.5rem;
-  background: #007bff;
-  color: white;
+  background: var(--brown100);
+  color: var(--green100);
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
+.customAnswer button:hover {
+  background: var(--green100);
+  color: var(--brown100);
+}
+
 .customAnswer button:disabled {
   background: #ccc;
+  color: white;
   cursor: not-allowed;
 }
 
@@ -96,7 +111,7 @@
 .resultsContainer h2 {
   text-align: center;
   margin-bottom: 2rem;
-  color: #333;
+  color: var(--brown100);
 }
 
 .recommendations {
@@ -107,14 +122,14 @@
 
 .cakeCard {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
 
 .cakeCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
 }
 
 .cakeCard img {
@@ -126,12 +141,12 @@
 .cakeCard h3 {
   padding: 1rem;
   margin: 0;
-  color: #333;
+  color: var(--brown100);
 }
 
 .cakeCard p {
   padding: 0 1rem 1rem;
-  color: #666;
+  color: #555;
   margin: 0;
 }
 
@@ -141,7 +156,7 @@
   align-items: center;
   min-height: 200px;
   font-size: 1.2rem;
-  color: #666;
+  color: var(--brown100);
 }
 
 .error {
@@ -151,8 +166,8 @@
   min-height: 200px;
   padding: 1rem;
   margin: 1rem;
-  background-color: #fff3f3;
-  border: 1px solid #ffcdd2;
+  background-color: #fff0f0;
+  border: 1px solid #ffa7a7;
   border-radius: 8px;
   color: #d32f2f;
   font-size: 1.1rem;

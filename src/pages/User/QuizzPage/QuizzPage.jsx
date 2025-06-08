@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuizzPage.module.css";
 import QuizService from "../../../services/QuizService";
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 
 const QuizzPage = () => {
   const navigate = useNavigate();
@@ -124,44 +125,46 @@ const QuizzPage = () => {
   }
 
   return (
-    <div className={styles.quizContainer}>
-      <div className={styles.progress}>
-        Câu hỏi {currentIndex + 1}/{questions.length}
-      </div>
+    <div className="container-xl">
+      <div className={styles.quizContainer}>
+        <div className={styles.progress}>
+          Câu hỏi {currentIndex + 1}/{questions.length}
+        </div>
 
-      <div className={styles.questionCard}>
-        <h2>{currentQuestion.question}</h2>
+        <div className={styles.questionCard}>
+          <h2>{currentQuestion.question}</h2>
 
-        <div className={styles.options}>
-          {currentQuestion.options.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => handleAnswer(option.value)}
-              className={styles.optionButton}
-            >
-              {option.imageUrl && (
-                <img src={option.imageUrl} alt={option.text} />
-              )}
-              <span>{option.text}</span>
-            </button>
-          ))}
-
-          {currentQuestion.allowCustomAnswer && (
-            <div className={styles.customAnswer}>
-              <input
-                type="text"
-                value={customAnswer}
-                onChange={(e) => setCustomAnswer(e.target.value)}
-                placeholder="Nhập câu trả lời của bạn..."
-              />
+          <div className={styles.options}>
+            {currentQuestion.options.map((option) => (
               <button
-                onClick={() => handleAnswer("custom")}
-                disabled={!customAnswer.trim()}
+                key={option.value}
+                onClick={() => handleAnswer(option.value)}
+                className={styles.optionButton}
               >
-                Gửi
+                {option.imageUrl && (
+                  <img src={option.imageUrl} alt={option.text} />
+                )}
+                <span>{option.text}</span>
               </button>
-            </div>
-          )}
+            ))}
+
+            {currentQuestion.allowCustomAnswer && (
+              <div className={styles.customAnswer}>
+                <input
+                  type="text"
+                  value={customAnswer}
+                  onChange={(e) => setCustomAnswer(e.target.value)}
+                  placeholder="Nhập câu trả lời của bạn..."
+                />
+                <ButtonComponent
+                  onClick={() => handleAnswer("custom")}
+                  disabled={!customAnswer.trim()}
+                >
+                  Gửi
+                </ButtonComponent>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
