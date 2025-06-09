@@ -13,7 +13,7 @@ const AddDiscountPage = () => {
   const accessToken = localStorage.getItem("access_token");
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
-  const [categories, setCategories] = useState([]); // State lưu danh sách category
+  const [products, setProducts] = useState([]); // State lưu danh sách category
   const [previewImage, setPreviewImage] = useState(null); // State để lưu URL của ảnh preview
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
@@ -22,7 +22,7 @@ const AddDiscountPage = () => {
     discountCode: "",
     discountName: "",
     discountValue: "",
-    applicableCategory: "",
+    discountProduct: [],
     discountImage: null,
     discountStartDate: "",
     discountEndDate: "",
@@ -68,7 +68,7 @@ const AddDiscountPage = () => {
     const fetchCategories = async () => {
       try {
 
-        const response = await fetch("http://localhost:3001/api/category/get-all-category", {
+        const response = await fetch("http://localhost:3001/api/product/get-all-product", {
           method: "GET", // Phương thức GET để lấy danh sách category
           headers: {
             "Content-Type": "application/json",
@@ -80,11 +80,11 @@ const AddDiscountPage = () => {
         }
 
         const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-        console.log("Categories data:", categories);
+        console.log("Categories data:", products);
 
         // Kiểm tra và gán mảng categories từ data.data
         if (Array.isArray(data.data)) {
-          setCategories(data.data); // Lưu danh sách category vào state
+          setProducts(data.data); // Lưu danh sách category vào state
         } else {
           console.error("Categories data is not in expected format");
         }
@@ -97,9 +97,19 @@ const AddDiscountPage = () => {
 
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setstateDiscount({ ...statediscount, [e.target.name]: e.target.value });
+    const { name, value, options } = e.target;
+
+    if (name === "discountProduct") {
+      const selectedOptions = Array.from(options)
+        .filter((option) => option.selected)
+        .map((option) => option.value);
+
+      setstateDiscount({ ...statediscount, [name]: selectedOptions });
+    } else {
+      setstateDiscount({ ...statediscount, [name]: value });
+    }
   };
+
 
   const mutation = useMutationHook(
     async (data) => {
@@ -132,7 +142,7 @@ const AddDiscountPage = () => {
     formData.append("discountCode", statediscount.discountCode);
     formData.append("discountName", statediscount.discountName);
     formData.append("discountValue", statediscount.discountValue);
-    formData.append("applicableCategory", statediscount.applicableCategory);
+    formData.append("discountProduct", JSON.stringify(statediscount.discountProduct));
     formData.append("discountImage", statediscount.discountImage);
     formData.append("discountStartDate", statediscount.discountStartDate);
     formData.append("discountEndDate", statediscount.discountEndDate);
@@ -151,6 +161,20 @@ const AddDiscountPage = () => {
     setActiveTab(tab);
     navigate(navigatePath);
   };
+  const handleProductCheckboxChange = (productId) => {
+    setstateDiscount((prevState) => {
+      const isSelected = prevState.discountProduct.includes(productId);
+      const updatedProducts = isSelected
+        ? prevState.discountProduct.filter((id) => id !== productId)
+        : [...prevState.discountProduct, productId];
+
+      return {
+        ...prevState,
+        discountProduct: updatedProducts,
+      };
+    });
+  };
+
   return (
     <div>
       <div className="container-xl">
@@ -211,7 +235,7 @@ const AddDiscountPage = () => {
                     onChange={handleInputChange}></FormComponent>
                 </div>
                 <div className="content__item">
-                  <label className="value__title">Giá trị khuyến mãi (VND)</label>
+                  <label className="value__title">Giá trị khuyến mãi (%)</label>
                   <FormComponent placeholder="Nhập giá trị khuyến mãi"
                     className="choose-property"
                     name="discountValue"
@@ -220,27 +244,30 @@ const AddDiscountPage = () => {
                   ></FormComponent>
                 </div>
                 <div className="content__item">
-                  <label className="category__title">Loại áp dụng</label>
-                  <br />
-                  <select
-                    name="applicableCategory"
-                    value={statediscount.applicableCategory}
-                    onChange={handleInputChange}
-                    className="choose-property"
-                    style={{ width: "36rem", height: "6rem", border: "none", color: "grey", borderRadius: "50px", boxShadow: "0px 2px 4px 0px #203c1640", padding: "15px" }}
-                    placeholder="Chọn loại sản phẩm"
-                  >
-                    <option value="" disabled>Chọn loại sản phẩm</option>
-                    {Array.isArray(categories) && categories.length > 0 ? (
-                      categories.map((category) => (
-                        <option key={category._id} value={category._id}>
-                          {category.categoryName}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>Không có loại sản phẩm</option>
-                    )}
-                  </select>
+                  <div className="content__item">
+                    <label className="name__title">Chọn sản phẩm áp dụng</label>
+                    <div className="product-list-checkbox" style={{ maxHeight: '200px', overflowY: 'auto', padding: '10px', border: '1px solid #ccc', borderRadius: '8px' }}>
+                      {products.length > 0 ? (
+                        products.map((product) => (
+                          <div key={product._id}>
+                            <label>
+                              <input
+                                type="checkbox"
+                                value={product._id}
+                                checked={statediscount.discountProduct.includes(product._id)}
+                                onChange={() => handleProductCheckboxChange(product._id)}
+                              />
+                              {` ${product.productName}`}
+                            </label>
+                          </div>
+                        ))
+                      ) : (
+                        <p>Không có sản phẩm</p>
+                      )}
+                    </div>
+                  </div>
+
+
                 </div>
                 <div className="content__item">
                   <label className="time-start__title">
