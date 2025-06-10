@@ -38,6 +38,7 @@ class QuizService {
   // Lưu nhiều câu trả lời cùng lúc
   async saveMultipleResponses(responses) {
     try {
+      console.log("saveMultipleResponses - Request data:", responses);
       const token = localStorage.getItem("access_token");
       const response = await axios.post(
         `${API_URL}/quiz/responses`,
@@ -48,8 +49,13 @@ class QuizService {
           },
         }
       );
+      console.log("saveMultipleResponses - Response:", response.data);
       return response.data;
     } catch (error) {
+      console.error(
+        "saveMultipleResponses error:",
+        error.response?.data || error.message
+      );
       throw new Error(
         error.response?.data?.message || "Không thể lưu câu trả lời"
       );
@@ -119,6 +125,34 @@ class QuizService {
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || "Không thể xóa quiz");
+    }
+  }
+
+  async getQuizRecommendations(userId, sessionId) {
+    try {
+      const token = localStorage.getItem("access_token");
+      const requestData = { user_id: userId, session_id: sessionId };
+      console.log("getQuizRecommendations - Request data:", requestData);
+
+      const response = await axios.post(
+        `${API_URL}/recommendation/recommend/quiz`,
+        requestData,
+        {
+          headers: {
+            token: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("getQuizRecommendations - Response:", response.data);
+      return response.data.data;
+    } catch (error) {
+      console.error(
+        "getQuizRecommendations error:",
+        error.response?.data || error.message
+      );
+      throw new Error(
+        error.response?.data?.detail || "Không thể lấy gợi ý từ quiz"
+      );
     }
   }
 }

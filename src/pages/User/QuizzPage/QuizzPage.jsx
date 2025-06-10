@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import styles from "./QuizzPage.module.css";
 import QuizService from "../../../services/QuizService";
+import { getDetailsproduct } from "../../../services/productServices";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
+import CardProduct from "../../../components/CardProduct/CardProduct";
 
 const QuizzPage = () => {
   const navigate = useNavigate();
@@ -15,9 +18,9 @@ const QuizzPage = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sessionId] = useState(crypto.randomUUID()); // Generate unique session ID
 
   useEffect(() => {
-    // Kiểm tra đăng nhập
     const token = localStorage.getItem("access_token");
     if (!token) {
       setError("Vui lòng đăng nhập để tham gia quiz");
@@ -35,8 +38,6 @@ const QuizzPage = () => {
       } catch (error) {
         if (error.message.includes("401")) {
           setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-          // Có thể chuyển hướng về trang login
-          // navigate("/login");
         } else {
           setError(error.message);
         }
@@ -63,6 +64,7 @@ const QuizzPage = () => {
           questionId: currentQuestion._id,
           answer,
           customAnswer: answer === "custom" ? customAnswer : null,
+          sessionId: sessionId,
         },
       ];
       setAnswers(newAnswers);
@@ -73,22 +75,82 @@ const QuizzPage = () => {
         setCustomAnswer("");
       } else {
         console.log("Sending answers to server:", newAnswers);
-        const result = await QuizService.saveMultipleResponses(newAnswers);
-        console.log("Server response:", result);
-        setRecommendations(result.recommendations || []);
-        setShowResults(true);
+
+        try {
+          // Lưu câu trả lời
+          await QuizService.saveMultipleResponses(newAnswers);
+          console.log("Answers saved successfully");
+
+          // Lấy userId từ JWT token
+          const tokenData = jwtDecode(token);
+          console.log("JWT Token data:", tokenData);
+          const userId = tokenData.id; // Sử dụng trường 'id' từ JWT token
+          console.log("Extracted userId:", userId);
+
+          if (!userId) {
+            setError(
+              "Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại."
+            );
+            return;
+          }
+
+          // Lấy gợi ý
+          const recs = await QuizService.getQuizRecommendations(
+            userId,
+            sessionId
+          );
+          console.log("Recommendations received:", recs);
+
+          // Fetch thông tin chi tiết của từng sản phẩm
+          const productDetails = await Promise.all(
+            recs.map(async (productId) => {
+              try {
+                const token = localStorage.getItem("access_token");
+                const response = await getDetailsproduct(productId, token);
+                return response.data; // Chỉ lấy phần data
+              } catch (error) {
+                console.error(`Error fetching product ${productId}:`, error);
+                return null;
+              }
+            })
+          );
+
+          // Lọc bỏ các sản phẩm null
+          const validProducts = productDetails.filter(
+            (product) => product !== null
+          );
+          console.log("Product details:", validProducts);
+
+          setRecommendations(validProducts);
+          setShowResults(true);
+        } catch (error) {
+          console.error("Error in final step:", error);
+          setError(error.message);
+        }
       }
     } catch (error) {
       console.error("Full error object:", error);
       if (error.message.includes("401")) {
         setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-        // Có thể chuyển hướng về trang login
-        // navigate("/login");
       } else {
         setError(error.message);
       }
       console.error("Error handling answer:", error);
     }
+  };
+
+  const handleProductClick = (product) => {
+    navigate("/view-product-detail", {
+      state: {
+        productId: product._id,
+        productName: product.productName,
+        productSize: product.productSize,
+        productImage: product.productImage,
+        productDescription: product.productDescription,
+        productCategory: product.productCategory,
+        productPrice: product.productPrice,
+      },
+    });
   };
 
   if (loading) {
@@ -104,18 +166,40 @@ const QuizzPage = () => {
       <div className={styles.resultsContainer}>
         <h2>Gợi ý bánh dành cho bạn</h2>
         {recommendations.length > 0 ? (
-          <div className={styles.recommendations}>
-            {recommendations.map((cake) => (
-              <div key={cake._id} className={styles.cakeCard}>
-                <img src={cake.imageUrl} alt={cake.name} />
-                <h3>{cake.name}</h3>
-                <p>{cake.description}</p>
-              </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4,1fr)",
+              marginLeft: "auto",
+              marginRight: "auto",
+              gap: "30px",
+              paddingBottom: 50,
+              maxWidth: "1200px",
+              justifyContent: "center",
+            }}
+          >
+            {recommendations.map((product) => (
+              <CardProduct
+                key={product._id}
+                id={product._id}
+                type="primary"
+                img={product.productImage}
+                title={product.productName}
+                price={product.productPrice}
+                discount={product.productDiscount}
+                averageRating={product.averageRating}
+                onClick={() => handleProductClick(product)}
+              />
             ))}
           </div>
         ) : (
           <p>Chúng tôi đang cập nhật gợi ý cho bạn...</p>
         )}
+        <div style={{ textAlign: "center", marginTop: "2rem" }}>
+          <ButtonComponent onClick={() => navigate("/")}>
+            Về trang chủ
+          </ButtonComponent>
+        </div>
       </div>
     );
   }
@@ -130,10 +214,8 @@ const QuizzPage = () => {
         <div className={styles.progress}>
           Câu hỏi {currentIndex + 1}/{questions.length}
         </div>
-
         <div className={styles.questionCard}>
           <h2>{currentQuestion.question}</h2>
-
           <div className={styles.options}>
             {currentQuestion.options.map((option) => (
               <button
@@ -147,7 +229,6 @@ const QuizzPage = () => {
                 <span>{option.text}</span>
               </button>
             ))}
-
             {currentQuestion.allowCustomAnswer && (
               <div className={styles.customAnswer}>
                 <input

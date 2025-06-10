@@ -247,9 +247,9 @@ const HeaderComponent = () => {
                       <ButtonNoBGComponent to="/contact">
                         Liên hệ
                       </ButtonNoBGComponent>
-                      <ButtonNoBGComponent to="/create-cake">
+                      {/* <ButtonNoBGComponent to="/create-cake">
                         Sáng tạo
-                      </ButtonNoBGComponent>
+                      </ButtonNoBGComponent> */}
                       <ButtonNoBGComponent to="/quizz">
                         Gợi ý
                       </ButtonNoBGComponent>
