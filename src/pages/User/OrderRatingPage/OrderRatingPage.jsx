@@ -26,6 +26,10 @@ const OrderRatingPage = () => {
   const user = useSelector((state) => state.user);
 
   useEffect(() => {
+    console.log("Ratings changed:", ratings);
+  }, [ratings]);
+
+  useEffect(() => {
     const fetchRatings = async () => {
       if (order?.orderItems && user?.id) {
         try {
@@ -88,10 +92,14 @@ const OrderRatingPage = () => {
   };
 
   const handleRatingChange = (productId, rating) => {
-    setRatings((prev) => ({
-      ...prev,
-      [productId]: rating,
-    }));
+    console.log("handleRatingChange called with:", { productId, rating });
+    setRatings((prev) => {
+      console.log("Previous ratings:", prev);
+      return {
+        ...prev,
+        [productId]: rating,
+      };
+    });
     if (rating > 0) {
       setRatingErrors((prev) => ({
         ...prev,
@@ -108,6 +116,7 @@ const OrderRatingPage = () => {
   };
 
   const handleSubmitRating = async (productId) => {
+    console.log("handleSubmitRating called with:", productId);
     if (!ratings[productId]) {
       setRatingErrors((prev) => ({
         ...prev,
@@ -117,6 +126,12 @@ const OrderRatingPage = () => {
     }
 
     try {
+      console.log("Submitting rating with data:", {
+        productId,
+        orderId: order._id,
+        rating: ratings[productId],
+        comment: comments[productId] || "",
+      });
       let response;
       const ratingData = {
         productId,
@@ -281,7 +296,7 @@ const OrderRatingPage = () => {
                         </>
                       ) : (
                         <>
-                          {ratings[item.product._id] ? (
+                          {item.rating ? (
                             <>
                               <div className="mb-2">
                                 <RatingStar
