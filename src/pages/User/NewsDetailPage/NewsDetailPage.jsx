@@ -26,7 +26,7 @@ const NewsDetailPage = () => {
         <div className="news">
           {/* news top */}
           <div className="news__top">
-            <h1 className="news__title">Chi tiết tin tức</h1>
+            <h1 className="news__title">CHI TIẾT TIN TỨC</h1>
           </div>
 
           {/* news bot */}

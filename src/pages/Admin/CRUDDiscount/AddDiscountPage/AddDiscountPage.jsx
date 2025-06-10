@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-//import $ from "jquery";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../../../../components/ButtonComponent/ButtonComponent";
 import FormComponent from "../../../../components/FormComponent/FormComponent";
@@ -8,275 +7,251 @@ import { useMutationHook } from "../../../../hooks/useMutationHook";
 import { createDiscount } from "../../../../services/DiscountService";
 import "./AddDiscountPage.css";
 
-
 const AddDiscountPage = () => {
-  const accessToken = localStorage.getItem("access_token");
-  const [startDateTime, setStartDateTime] = useState("");
-  const [endDateTime, setEndDateTime] = useState("");
-  const [categories, setCategories] = useState([]); // State lưu danh sách category
-  const [previewImage, setPreviewImage] = useState(null); // State để lưu URL của ảnh preview
-  const startDateRef = useRef(null);
-  const endDateRef = useRef(null);
   const navigate = useNavigate();
-  const [statediscount, setstateDiscount] = useState({
+  const accessToken = localStorage.getItem("access_token");
+
+  const [discount, setDiscount] = useState({
     discountCode: "",
     discountName: "",
     discountValue: "",
-    applicableCategory: "",
+    discountProduct: [],
     discountImage: null,
     discountStartDate: "",
     discountEndDate: "",
   });
+  const [products, setProducts] = useState([]);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [activeTab, setActiveTab] = useState("discount");
+  const [disabledProductIds, setDisabledProductIds] = useState([]);
 
-  // useEffect(() => {
-  //   // Initialize Bootstrap Datepicker cho ngày bắt đầu
-  //   $(startDateRef.current)
-  //     .datepicker({
-  //       format: "dd/mm/yyyy", // Định dạng dd/MM/yyyy
-  //       autoclose: true, // Tự động đóng khi chọn ngày
-  //       todayHighlight: true, // Làm nổi bật ngày hôm nay
-  //     })
-  //     .on("changeDate", (e) => {
-  //       setStartDateTime(e.format()); // Cập nhật giá trị state khi thay đổi
-  //     });
+  const startDateRef = useRef(null);
+  const endDateRef = useRef(null);
 
-  //   // Initialize Bootstrap Datepicker cho ngày kết thúc
-  //   $(endDateRef.current)
-  //     .datepicker({
-  //       format: "dd/mm/yyyy",
-  //       autoclose: true,
-  //       todayHighlight: true,
-  //     })
-  //     .on("changeDate", (e) => {
-  //       setEndDateTime(e.format());
-  //     });
-  // }, []);
-
-  const handleOnChangeImg = (event) => {
-    const file = event.target.files[0];
-    console.log("FILE", file)
-    setstateDiscount({ ...statediscount, discountImage: file })
-    const previewUrl = URL.createObjectURL(file); // Tạo URL preview từ file
-    setPreviewImage(previewUrl); // Cập nhật state previewImage
-  };
-
-  // const handleDateChange = (ref, setDate) => {
-  //   const value = ref.current?.value || "";
-  //   setstateDiscount();
-  // };
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchProducts = async () => {
       try {
-
-        const response = await fetch("http://localhost:3001/api/category/get-all-category", {
-          method: "GET", // Phương thức GET để lấy danh sách category
-          headers: {
-            "Content-Type": "application/json",
-          },
+        // Lấy tất cả sản phẩm
+        const response = await fetch("http://localhost:3001/api/product/get-all-product", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
         });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
+        const data = await response.json();
+        if (Array.isArray(data.data)) {
+          setProducts(data.data);
         }
 
-        const data = await response.json(); // Chuyển đổi dữ liệu từ JSON
-        console.log("Categories data:", categories);
-
-        // Kiểm tra và gán mảng categories từ data.data
-        if (Array.isArray(data.data)) {
-          setCategories(data.data); // Lưu danh sách category vào state
-        } else {
-          console.error("Categories data is not in expected format");
+        // Lấy danh sách sản phẩm đang có khuyến mãi
+        const discountedRes = await fetch(`${process.env.REACT_APP_API_URL_BACKEND}/discount/get-product-in-discount`);
+        const discountedData = await discountedRes.json();
+        if (Array.isArray(discountedData.data)) {
+          const ids = discountedData.data.map((item) => item._id);
+          setDisabledProductIds(ids);
         }
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Lỗi khi fetch dữ liệu:", error);
       }
     };
-    fetchCategories();
+
+    fetchProducts();
   }, []);
 
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setstateDiscount({ ...statediscount, [e.target.name]: e.target.value });
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setDiscount((prev) => ({ ...prev, discountImage: file }));
+      setPreviewImage(URL.createObjectURL(file));
+    }
   };
 
-  const mutation = useMutationHook(
-    async (data) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDiscount((prev) => ({ ...prev, [name]: value }));
+  };
 
-      const response = await createDiscount(data, accessToken);
-      console.log("RESKLT", response);
-      try {
-        const result = await response;
-        console.log("RESKLT", result);
-        if (result.status === "OK") {
-          alert("Thêm khuyến mãi thành công!");
-          navigate('/admin/discount-list')
+  const handleProductCheckboxChange = (productId) => {
+    setDiscount((prev) => {
+      const selected = prev.discountProduct.includes(productId);
+      const updatedProducts = selected
+        ? prev.discountProduct.filter((id) => id !== productId)
+        : [...prev.discountProduct, productId];
+      return { ...prev, discountProduct: updatedProducts };
+    });
+  };
 
-        } else {
-          alert(`Thêm khuyến mãi thất bại: ${result.message}`);
-        }
-      } catch (error) {
-        alert("Đã xảy ra lỗi khi thêm khuyến mãi!");
-        console.error(error.message);
+  const mutation = useMutationHook(async (formData) => {
+    try {
+      const response = await createDiscount(formData, accessToken);
+
+      if (response.status === "OK") {
+        alert("Thêm khuyến mãi thành công!");
+        navigate("/admin/discount-list");
+      } else {
+        alert(`Thêm khuyến mãi thất bại: ${response.message}`);
       }
+
       return response;
+    } catch (error) {
+      alert("Đã xảy ra lỗi khi thêm khuyến mãi!");
+      console.error(error);
+      throw error;
     }
-  );
-  const { data, isLoading, isSuccess, isError } = mutation;
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("state", statediscount)
+
     const formData = new FormData();
-    formData.append("discountCode", statediscount.discountCode);
-    formData.append("discountName", statediscount.discountName);
-    formData.append("discountValue", statediscount.discountValue);
-    formData.append("applicableCategory", statediscount.applicableCategory);
-    formData.append("discountImage", statediscount.discountImage);
-    formData.append("discountStartDate", statediscount.discountStartDate);
-    formData.append("discountEndDate", statediscount.discountEndDate);
-    // Kiểm tra FormData
-    for (let pair of formData.entries()) {
-      console.log("FORM", `${pair[0]}: ${pair[1]}`);
+    formData.append("discountCode", discount.discountCode);
+    formData.append("discountName", discount.discountName);
+    formData.append("discountValue", discount.discountValue);
+    formData.append("discountProduct", JSON.stringify(discount.discountProduct));
+    if (discount.discountImage) {
+      formData.append("discountImage", discount.discountImage);
     }
+    formData.append("discountStartDate", discount.discountStartDate);
+    formData.append("discountEndDate", discount.discountEndDate);
 
-    mutation.mutate(formData)
-    //  navigate('/admin/discount-list')
+    mutation.mutate(formData);
   };
 
-  const [activeTab, setActiveTab] = useState("discount");
-
-  const handleTabClick = (tab, navigatePath) => {
+  const handleTabClick = (tab, path) => {
     setActiveTab(tab);
-    navigate(navigatePath);
+    navigate(path);
   };
+
   return (
-    <div>
-      <div className="container-xl">
-        <div className="add-discount__container">
-          {/* side menu */}
-          <div className="side-menu__discount">
+    <div className="container-xl">
+      <div className="add-discount__container">
+        <div className="side-menu__discount">
+          <SideMenuComponent_AdminManage activeTab={activeTab} handleTabClick={handleTabClick} />
+        </div>
 
-            <SideMenuComponent_AdminManage
-              activeTab={activeTab}
-              handleTabClick={handleTabClick}
-            />
-
-          </div>
-          {/* info */}
-          <div className="add-discount__content">
-            <div className="discount__info">
-              {/* banner */}
-              <div className="banner">
-                <label className="banner__title">Banner khuyến mãi</label>
-                <br />
-                <input
-                  className="banner_image"
-                  type="file"
-                  onChange={handleOnChangeImg}
-                  accept="image/*"
-                  required
-                />
+        <div className="add-discount__content">
+          <div className="discount__info">
+            {/* Banner */}
+            <div className="banner">
+              <label className="banner__title">Banner khuyến mãi</label>
+              <input
+                className="banner_image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                required
+              />
+              {previewImage && (
                 <div className="banner__image">
-                  {previewImage && (
-                    <img
-                      src={previewImage}
-                      alt="Preview"
-                      className="banner__image"
-                    // style={{
-                    //   width: "36rem",
-                    //   height: "40rem",
-                    //   borderRadius: "15px"
-                    // }}
-                    />
-                  )}
+                  <img src={previewImage} alt="Preview" className="banner__image" />
                 </div>
+              )}
+            </div>
+
+            {/* Form */}
+            <div className="content">
+              <div className="content__item">
+                <label className="id__title">Mã khuyến mãi</label>
+                <FormComponent
+                  placeholder="Nhập mã khuyến mãi"
+                  name="discountCode"
+                  value={discount.discountCode}
+                  onChange={handleInputChange}
+                />
               </div>
-              {/* content */}
-              <div className="content">
-                <div className="content__item">
-                  <label className="id__title">Mã khuyến mãi</label>
-                  <FormComponent placeholder="Nhập mã khuyến mãi"
-                    name="discountCode"
-                    onChange={handleInputChange}
-                    value={statediscount.discountCode}
-                  ></FormComponent>
-                </div>
-                <div className="content__item">
-                  <label className="name__title">Tên khuyến mãi</label>
-                  <FormComponent placeholder="Nhập tên khuyến mãi"
-                    name="discountName"
-                    value={statediscount.discountName}
-                    onChange={handleInputChange}></FormComponent>
-                </div>
-                <div className="content__item">
-                  <label className="value__title">Giá trị khuyến mãi (VND)</label>
-                  <FormComponent placeholder="Nhập giá trị khuyến mãi"
-                    className="choose-property"
-                    name="discountValue"
-                    value={statediscount.discountValue}
-                    onChange={handleInputChange}
-                  ></FormComponent>
-                </div>
-                <div className="content__item">
-                  <label className="category__title">Loại áp dụng</label>
-                  <br />
-                  <select
-                    name="applicableCategory"
-                    value={statediscount.applicableCategory}
-                    onChange={handleInputChange}
-                    className="choose-property"
-                    style={{ width: "36rem", height: "6rem", border: "none", color: "grey", borderRadius: "50px", boxShadow: "0px 2px 4px 0px #203c1640", padding: "15px" }}
-                    placeholder="Chọn loại sản phẩm"
-                  >
-                    <option value="" disabled>Chọn loại sản phẩm</option>
-                    {Array.isArray(categories) && categories.length > 0 ? (
-                      categories.map((category) => (
-                        <option key={category._id} value={category._id}>
-                          {category.categoryName}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>Không có loại sản phẩm</option>
-                    )}
-                  </select>
-                </div>
-                <div className="content__item">
-                  <label className="time-start__title">
-                    Ngày bắt đầu: <strong>{startDateTime}</strong>
-                  </label>
-                  <input
-                    type="date"
-                    className="form-control discount__date"
-                    placeholder="Chọn ngày bắt đầu"
-                    ref={startDateRef}
-                    name="discountStartDate"
-                    onChange={handleInputChange}
-                    value={statediscount.discountStartDate}
-                  />
-                </div>
-                <div className="content__item">
-                  <label className="time-end__title">
-                    Ngày kết thúc: <strong>{endDateTime}</strong>
-                  </label>
-                  <input
-                    type="date"
-                    className="form-control discount__date"
-                    placeholder="Chọn ngày kết thúc"
-                    ref={endDateRef}
-                    name="discountEndDate"
-                    onChange={handleInputChange}
-                    value={statediscount.discountEndDate}
-                  />
+              <div className="content__item">
+                <label className="name__title">Tên khuyến mãi</label>
+                <FormComponent
+                  placeholder="Nhập tên khuyến mãi"
+                  name="discountName"
+                  value={discount.discountName}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="content__item">
+                <label className="value__title">Giá trị khuyến mãi (%)</label>
+                <FormComponent
+                  placeholder="Nhập giá trị khuyến mãi"
+                  name="discountValue"
+                  value={discount.discountValue}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="content__item">
+                <label className="name__title">Chọn sản phẩm áp dụng</label>
+                <div
+                  className="product-list-checkbox"
+                  style={{
+                    maxHeight: 200,
+                    overflowY: "auto",
+                    padding: 10,
+                    border: "1px solid #ccc",
+                    borderRadius: 8,
+                  }}
+                >
+                  {products.length > 0 ? (
+                    products.map((product) => {
+                      const isDisabled = disabledProductIds.includes(product._id);
+                      return (
+                        <div key={product._id}>
+                          <label style={{ color: isDisabled ? "#888" : "inherit" }}>
+                            <input
+                              type="checkbox"
+                              value={product._id}
+                              checked={discount.discountProduct.includes(product._id)}
+                              onChange={() => handleProductCheckboxChange(product._id)}
+                              disabled={isDisabled}
+                            />
+                            {` ${product.productName}`}
+                            {isDisabled && " (đã có khuyến mãi)"}
+                          </label>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p>Không có sản phẩm</p>
+                  )}
+
                 </div>
               </div>
 
-              {/* button */}
-              <div className="btn__add-discount">
-                <ButtonComponent onClick={handleSubmit}>Lưu</ButtonComponent>
-                <ButtonComponent onClick={() => navigate("/admin/discount-list")}>Thoát</ButtonComponent>
+              <div className="content__item">
+                <label className="time-start__title">
+                  Ngày bắt đầu: <strong>{discount.discountStartDate}</strong>
+                </label>
+                <input
+                  type="date"
+                  className="form-control discount__date"
+                  name="discountStartDate"
+                  ref={startDateRef}
+                  value={discount.discountStartDate}
+                  onChange={handleInputChange}
+                  placeholder="Chọn ngày bắt đầu"
+                />
               </div>
+
+              <div className="content__item">
+                <label className="time-end__title">
+                  Ngày kết thúc: <strong>{discount.discountEndDate}</strong>
+                </label>
+                <input
+                  type="date"
+                  className="form-control discount__date"
+                  name="discountEndDate"
+                  ref={endDateRef}
+                  value={discount.discountEndDate}
+                  onChange={handleInputChange}
+                  placeholder="Chọn ngày kết thúc"
+                />
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="btn__add-discount">
+              <ButtonComponent onClick={handleSubmit} disabled={mutation.isLoading}>
+                {mutation.isLoading ? "Đang lưu..." : "Lưu"}
+              </ButtonComponent>
+              <ButtonComponent onClick={() => navigate("/admin/discount-list")}>Thoát</ButtonComponent>
             </div>
           </div>
         </div>

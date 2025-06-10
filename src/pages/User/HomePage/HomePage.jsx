@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SliderComponent from "../../../components/SliderComponent/SliderComponent";
-import slider1 from "../../../assets/img/slider1.webp";
-import slider2 from "../../../assets/img/slider2.webp";
-import slider3 from "../../../assets/img/slider3.webp";
 import CardProduct from "../../../components/CardProduct/CardProduct";
-import image1 from "../../../assets/img/cake1.webp";
 import ButtonNoBGComponent from "../../../components/ButtonNoBGComponent/ButtonNoBGComponent";
-import story from "../../../assets/img/story.jpg";
 import LinesEllipsis from "react-lines-ellipsis";
 import CardNews from "../../../components/CardNews/CardNews";
 import news from "../../../assets/img/news.jpg";
@@ -52,7 +47,7 @@ const HomePage = () => {
         console.log("TYU", discounts);
         if (Array.isArray(discounts.data)) {
           setPromos(discounts.data); // Lưu danh sách khuyến mãi
-          console.log("HBJK");
+          console.log("HBJK", promos);
           const images = Array.isArray(discounts.data)
             ? discounts.data
                 .map((discount) => discount?.discountImage)
@@ -61,7 +56,7 @@ const HomePage = () => {
 
           console.log("IMG", images);
           setArrImg(images);
-          console.log("IMFGH", arrImgs);
+          console.log("ANh tren slider", arrImgs);
         } else {
           setError("Dữ liệu trả về không hợp lệ.");
         }
@@ -72,19 +67,40 @@ const HomePage = () => {
     fetchDiscounts();
   }, []);
 
-  // Hàm xử lý khi click vào một ảnh slider
-  const handleSliderImageClick = (clickedImage) => {
-    // Tìm khuyến mãi có ảnh đó
-    const promo = promos.find((promo) => promo.discountImage === clickedImage);
-    console.log("PROMOS", promo);
-    if (promo) {
-      const categoryIds = promo.applicableCategory || [];
-      console.log(categoryIds);
-      // Điều hướng đến trang sản phẩm với queryParams chứa categoryIds
-      navigate("/products", { state: { categoryIds } });
-    }
-  };
+  const handleSliderImageClick = async (clickedImage) => {
+  // Tìm khuyến mãi tương ứng với ảnh
+  const promo = promos.find((promo) => promo.discountImage === clickedImage);
+  console.log("PROMO:", promo);
 
+  if (promo) {
+    const productIds = promo.discountProduct || [];
+    console.log("Product IDs áp dụng:", productIds);
+
+    try {
+      // Gọi API lấy toàn bộ sản phẩm (hoặc nếu có API getProductsByIds thì tốt hơn)
+      const allProducts = await getAllproduct(); // hoặc API đúng hơn
+
+      // Lọc sản phẩm theo danh sách ID
+      const filteredProducts = allProducts.data.filter(product =>
+        productIds.includes(product._id)
+      );
+
+      console.log("Các sản phẩm áp dụng khuyến mãi:");
+      filteredProducts.forEach((product, index) => {
+        console.log(`Sản phẩm ${index + 1}:`, product);
+      });
+
+      // (Tuỳ chọn) điều hướng sang trang sản phẩm và truyền danh sách productIds
+      // navigate("/products", { state: { productIds } });
+    } catch (error) {
+      console.error("Lỗi khi lấy sản phẩm:", error);
+    }
+  }
+};
+
+
+
+  
   //Lấy danh sách tin tức:
   useEffect(() => {
     const fetchNews = async () => {
@@ -155,6 +171,7 @@ const HomePage = () => {
       // setTotalPages(Math.ceil(data.data.lenght / limit)); // Tính tổng số trang
 
       if (Array.isArray(response.data)) {
+        console.log("QWERTYU", response.data)
         setProducts(response.data.slice(0, 4));
       } else {
         console.error("Products data is not in expected format");
@@ -392,6 +409,7 @@ const HomePage = () => {
               img={product.productImage}
               title={product.productName}
               price={product.productPrice}
+              discount={product.discount}
               averageRating={product.averageRating}
               onClick={() => handleDetailProduct(product._id)}
             />

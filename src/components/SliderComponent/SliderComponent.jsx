@@ -15,19 +15,26 @@ const SliderComponent = ({ arrImg, onImageClick }) => {
     autoplaySpeed: 3000,
     arrows: false // Ẩn các nút mặc định của react-slick
   };
-
+console.log("adfg", arrImg)
 
 
   return (
-    <div className="slider-container" >
-      <Slider {...settings}>
-        {arrImg.map((image, index) => (
-          <div key={index} className="slider-item">
-            <img className="slider-image" src={image} alt="slider"
-            onClick={() => onImageClick(image)}  />
-          </div>
-        ))}
-      </Slider>
+    <div>
+    {Array.isArray(arrImg) && arrImg.length > 0 && (
+  <Slider {...settings}>
+    {arrImg.map((image, index) => (
+      <div key={index} className="slider-item">
+        <img
+          className="slider-image"
+          src={image}
+          alt={`slider-${index}`}
+          onClick={() => onImageClick(image)}
+        />
+      </div>
+    ))}
+  </Slider>
+)}
+
 </div>
       
 )};

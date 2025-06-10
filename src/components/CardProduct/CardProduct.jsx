@@ -13,6 +13,7 @@ const CardProduct = ({
   img,
   title,
   price,
+  discount,
   onClick,
   averageRating = 5.0,
   totalRatings = 0,
@@ -175,6 +176,7 @@ const CardProduct = ({
             <Col>
               <TagPriceComponent style={{ marginTop: -40 }}>
                 {`${price.toLocaleString("en-US")} VND`}
+                 {`${discount} VND`}
               </TagPriceComponent>
             </Col>
           </Row>
