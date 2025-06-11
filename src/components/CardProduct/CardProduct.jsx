@@ -60,8 +60,8 @@ const CardProduct = ({
 
   return (
     <Card
-    id={styles.CardProduct}
-    className={type === "secondary" ? styles.secondary : styles.primary}
+      id={styles.CardProduct}
+      className={type === "secondary" ? styles.secondary : styles.primary}
     >
       <Card.Img className={styles.ProductImage}
         onClick={onClick}
@@ -69,12 +69,12 @@ const CardProduct = ({
         alt={title}
       />
 
-      <Card.Body>
+      <Card.Body >
         <Card.Title className={styles.cardTitle}>{title}</Card.Title>
         <div className="d-flex justify-content-center mb-2">
           <RatingStar
             rating={Number(averageRating) || 5.0}
-            setRating={() => {}}
+            setRating={() => { }}
             isEditable={false}
             size={16}
             showRating={true}
@@ -84,29 +84,29 @@ const CardProduct = ({
         </div>
       </Card.Body>
 
-       <Row>
+      <Row>
         <Col className="text-center">
-  {discount > 0 ? (
-    <>
-      <p className={styles.priceProductOld}>
-        {`${price.toLocaleString("en-US")} VND`}
-      </p>
-      <p className={styles.priceProduct}>
-        {(price * (1 - discount / 100)).toLocaleString("en-US")} VND
-      </p>
-    </>
-  ) : (
-    <p className={styles.priceProduct}>
-      {`${price.toLocaleString("en-US")} VND`}
-    </p>
-  )}
-  <Button onClick={handleAddToCart} className={styles.cartButton}>
-    Thêm vào giỏ hàng <CartIcon />
-  </Button>
-</Col>
+          {discount > 0 ? (
+            <>
+              <p className={styles.priceProductOld}>
+                {`${price.toLocaleString("en-US")} VND`}
+              </p>
+              <p className={styles.priceProduct}>
+                {(price * (1 - discount / 100)).toLocaleString("en-US")} VND
+              </p>
+            </>
+          ) : (
+            <p className={styles.priceProduct}>
+              {`${price.toLocaleString("en-US")} VND`}
+            </p>
+          )}
+          <button onClick={handleAddToCart} className={styles.cartButton}>
+            Thêm vào giỏ hàng <CartIcon />
+          </button>
+        </Col>
 
-      
-    </Row>
+
+      </Row>
     </Card>
   );
 };

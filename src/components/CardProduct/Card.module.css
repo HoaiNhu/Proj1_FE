@@ -59,10 +59,14 @@
     font-weight: 500;
     width: 100%;
 }
-.cartButton:hover{
+.cartButton:hover,
+.cartButton:active
+{
     background-color: rgb(187, 248, 5);
     color: black;
 }
+
+
 
 #CardProduct{
         width: 29rem;
