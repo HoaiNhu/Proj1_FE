@@ -3,120 +3,115 @@ import "./CartPage.css";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useNavigate } from "react-router-dom";
 import ProductInfor from "../../../components/ProductInfor/ProductInfor";
-import imageProduct from "../../../assets/img/hero_3.jpg";
 import QuantityBtn from "../../../components/QuantityBtn/QuantityBtn";
 import DeleteBtn from "../../../components/DeleteBtn/DeleteBtn";
 import CheckboxComponent from "../../../components/CheckboxComponent/CheckboxComponent";
 import BackIconComponent from "../../../components/BackIconComponent/BackIconComponent";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  removeFromCart,
-  updateQuantity,
-} from "../../../redux/slides/cartSlide";
+import { removeFromCart } from "../../../redux/slides/cartSlide";
+import { getAllDiscount } from "../../../services/DiscountService"; // gọi API trực tiếp
+
 const CartPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
 
   const products = useSelector((state) => state.cart.products);
-  console.log("products", products);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [activeDiscounts, setActiveDiscounts] = useState([]);
 
-  // Thêm useEffect để log thông tin sản phẩm
+  // Fetch các discount còn hiệu lực
   useEffect(() => {
-    console.log("=== THÔNG TIN SẢN PHẨM TRONG GIỎ HÀNG ===");
-    products.forEach((product, index) => {
-      console.log(`Sản phẩm ${index + 1}:`, {
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        size: product.size,
-        quantity: product.quantity,
-        img: product.img,
+  const fetchActiveDiscounts = async () => {
+    try {
+      const data = await getAllDiscount();
+      console.log("VATA: ", data);
+      const now = Date.now();
+      const filtered = data.data.filter((discount) => {
+        const start = new Date(discount.discountStartDate).getTime();
+        const end = new Date(discount.discountEndDate).getTime();
+        return start <= now && end >= now;
       });
-    });
-    console.log("=====================================");
-  }, [products]);
+      console.log("VATAdasd: ", filtered);
+      setActiveDiscounts(filtered); // ✅ đúng cách
+    } catch (err) {
+      console.error("Lỗi khi lấy discount:", err);
+    }
+  };
+
+  fetchActiveDiscounts();
+}, []);
+
 
   const calculatePrice = (price) => {
-    if (typeof price !== "string") {
-      price = String(price); // Nếu price không phải là chuỗi, chuyển nó thành chuỗi
-    }
+    if (typeof price !== "string") return price;
     return parseFloat(price.replace(/[^0-9.-]+/g, ""));
   };
 
-  const totalAmount = products.reduce((acc, product) => {
-    return acc + calculatePrice(product.price) * product.quantity;
-  }, 0);
+  const getDiscountedPrice = (productId, originalPrice) => {
+    const price = calculatePrice(originalPrice);
 
-  //   const totalAmount = products.reduce((acc, product) => acc + product.price, 0);
-  // const calculateTotal = () => {
-  //   return products.reduce((total, product) => {
-  //     const quantity = product.quantity || 1; // Default to 1 if quantity is missing
-  //     // console.log("quantity", quantity);
-  //     const price = parseFloat(
-  //       product.price.toString().replace(/[^\d.-]/g, "")
-  //     ); // Remove 'VND' or other non-numeric chars
-  //     return total + price * quantity;
-  //   }, 0);
-  // };
-
-  // const totalAmount = calculateTotal();
-
-  //Chọn sản phẩm muốn mua
-
-  const isSelected = (productId) => selectedProducts.includes(productId);
-  const [selectedProducts, setSelectedProducts] = useState([]); //lưu sản phẩm được chọn
-  // Hàm toggle chọn/deselect sản phẩm
-  const toggleSelectRow = (productId) => {
-    setSelectedProducts((prev) => {
-      const updated = prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId];
-      console.log("Updated selected products:", updated);
-      return updated;
-    });
-  };
-
-  // Hàm xử lý khi nhấn "Mua ngay"
-  const handleBuyNow = () => {
-    const selectedProductDetails = products.filter((product) =>
-      selectedProducts.includes(product.id)
+    const matchedDiscount = activeDiscounts.find((discount) =>
+      discount.discountProduct?.some((pro) =>
+        typeof pro === "string" ? pro === productId : pro._id === productId
+      )
     );
 
+console.log("VALUEqe: ", matchedDiscount)
+    const discountValue = matchedDiscount?.discountValue || 0;
+    console.log("VALUE: ", discountValue)
+    return Math.round(price * (1 - discountValue / 100));
+  };
+
+  const totalAmount = products.reduce((acc, product) => {
+    const discountedPrice = getDiscountedPrice(product.id, product.price);
+    return acc + discountedPrice * product.quantity;
+  }, 0);
+
+  const isSelected = (productId) => selectedProducts.includes(productId);
+
+  const toggleSelectRow = (productId) => {
+    setSelectedProducts((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    setSelectedProducts(
+      selectedProducts.length === products.length
+        ? []
+        : products.map((product) => product.id)
+    );
+  };
+
+  const handleRemoveProduct = (id) => {
+    dispatch(removeFromCart({ id }));
+  };
+
+  const handleBuyNow = () => {
+    const selectedDetails = products.filter((product) =>
+      selectedProducts.includes(product.id)
+    );
     navigate("/order-information", {
       state: {
-        selectedProductDetails,
-        selectedProductIds: selectedProducts, // Thêm danh sách ID sản phẩm đã chọn
+        selectedProductDetails: selectedDetails,
+        selectedProductIds: selectedProducts,
       },
     });
   };
 
-  // Hàm toggle chọn/deselect tất cả
-  const toggleSelectAll = () => {
-    setSelectedProducts(
-      selectedProducts.length === products.length
-        ? [] // Bỏ chọn tất cả
-        : products.map((product) => product.id) // Chọn tất cả
-    );
-  };
-
-  // Hàm xử lý xóa sản phẩm
-  const handleRemoveProduct = (id) => {
-    dispatch(removeFromCart({ id }));
+  const handleNavigate = (path) => {
+    navigate(path);
   };
 
   return (
     <div className="container-xl cart-container">
       <div className="titleHolderCart">
-        <button
-          className="back_btn"
-          onClick={() => handleNavigate("/products")}
-        >
+        <button className="back_btn" onClick={() => handleNavigate("/products")}>
           <BackIconComponent />
         </button>
-        <h1 className="titleCart">Giỏ hàng</h1>
+        <h1 className="titleCart">GIỎ HÀNG</h1>
       </div>
 
       <div className="product_area">
@@ -137,46 +132,43 @@ const CartPage = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id} className="LineProduct">
-                <td>
-                  <CheckboxComponent
-                    isChecked={isSelected(product.id)} // Kiểm tra nếu sản phẩm được chọn
-                    onChange={() => {
-                      console.log("Checkbox clicked for:", product.id);
-                      toggleSelectRow(product.id);
-                    }} // Toggle chọn sản phẩm
-                  />
-                </td>
-                <td className="ProductInfor">
-                  <ProductInfor
-                    image={product.img}
-                    name={product.title}
-                    size={product.size ? `${product.size} cm` : "Không có"}
-                  />
-                </td>
-                <td className="PriceProduct">
-                  <p className="Price">{product.price}</p>
-                </td>
-                <td className="QuantityBtn">
-                  <QuantityBtn
-                    initialQuantity={product.quantity}
-                    productId={product.id}
-                  />
-                </td>
-                <td className="Money">
-                  <p className="MoneyProduct">
-                    {(
-                      calculatePrice(product.price) * product.quantity
-                    ).toLocaleString()}{" "}
-                    VND
-                  </p>
-                </td>
-                <td className="DeleteBtn">
-                  <DeleteBtn onClick={() => handleRemoveProduct(product.id)} />
-                </td>
-              </tr>
-            ))}
+            {products.map((product) => {
+              const discountedPrice = getDiscountedPrice(product.id, product.price);
+              return (
+                <tr key={product.id} className="LineProduct">
+                  <td>
+                    <CheckboxComponent
+                      isChecked={isSelected(product.id)}
+                      onChange={() => toggleSelectRow(product.id)}
+                    />
+                  </td>
+                  <td className="ProductInfor">
+                    <ProductInfor
+                      image={product.img}
+                      name={product.title}
+                      size={product.size ? `${product.size} cm` : "Không có"}
+                    />
+                  </td>
+                  <td className="PriceProduct">
+                    <p className="Price">{discountedPrice.toLocaleString()} VND</p>
+                  </td>
+                  <td className="QuantityBtn">
+                    <QuantityBtn
+                      initialQuantity={product.quantity}
+                      productId={product.id}
+                    />
+                  </td>
+                  <td className="Money">
+                    <p className="MoneyProduct">
+                      {(discountedPrice * product.quantity).toLocaleString()} VND
+                    </p>
+                  </td>
+                  <td className="DeleteBtn">
+                    <DeleteBtn onClick={() => handleRemoveProduct(product.id)} />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
@@ -186,10 +178,7 @@ const CartPage = () => {
             <p className="total">{totalAmount.toLocaleString()} VND</p>
           </div>
           <div className="Btnholder">
-            <button
-              className="Buy_more"
-              onClick={() => handleNavigate("/products")}
-            >
+            <button className="Buy_more" onClick={() => handleNavigate("/products")}>
               Mua thêm
             </button>
             <ButtonComponent
