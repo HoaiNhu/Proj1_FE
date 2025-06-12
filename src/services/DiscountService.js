@@ -5,7 +5,7 @@ import { data } from "jquery";
 export const axiosJWT = axios.create();
 
 export const createDiscount = async (data, access_token) => {
-  console.log("DATA", data);
+  console.log("DATA: ", data);
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_URL_BACKEND}/discount/create-discount`,
@@ -184,3 +184,30 @@ catch (error) {
   }
 };
 
+export const getBestsDiscount = async (id, access_token) => {
+  try {
+    const res = await axiosJWT.get(
+      `${process.env.REACT_APP_API_URL_BACKEND}/discount/get-best-discount-products`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
+        },
+      }
+    );
+    console.log("DETAILDISCOUNT", res.data)
+    return res.data; // Trả dữ liệu nếu thành công
+  } catch (error) {
+    // Nếu API trả về lỗi, ném lỗi với thông tin chi tiết
+    if (error.response) {
+      // API trả về response
+      throw {
+        // Discount: error.response.data?.Discount || "ERR",
+        message: error.response.data?.message || "Đã xảy ra lỗi.",
+      };
+    } else {
+      // Lỗi không có response (ví dụ lỗi mạng)
+      throw { Discount: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};

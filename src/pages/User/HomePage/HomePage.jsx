@@ -42,6 +42,7 @@ const HomePage = () => {
     const fetchDiscounts = async () => {
       try {
         const discounts = await getAllDiscount();
+        console.log("ALL DISCOUNTS: ", discounts.data)
         if (Array.isArray(discounts.data)) {
           setPromos(discounts.data); // Lưu danh sách khuyến mãi
           const images = Array.isArray(discounts.data)
@@ -49,6 +50,7 @@ const HomePage = () => {
               .map((discount) => discount?.discountImage)
               .filter(Boolean)
             : [];
+            console.log("I<MAD: ", images)
           setArrImg(images);
         } else {
           setError("Dữ liệu trả về không hợp lệ.");
@@ -57,6 +59,7 @@ const HomePage = () => {
         setError(err.message || "Không thể tải danh sách khuyến mãi.");
       }
     };
+    
     fetchDiscounts();
   }, []);
 
@@ -74,6 +77,9 @@ const HomePage = () => {
         const filteredProducts = allProducts.data.filter(product =>
           productIds.some(p => p._id === product._id)
         );
+        
+    console.log("KHUYEN MAI: ", filteredProducts)
+
 
         setPromoProducts(filteredProducts);
       } catch (error) {
@@ -195,7 +201,7 @@ const HomePage = () => {
 useEffect(() => {
   const fetchBestSellers = async () => {
     const allProduct = await getAllproduct(); // <- chờ fetch hoàn tất
-    console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
+    //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
 
     //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
     if (!Array.isArray(allProduct.data) || allProduct.data.length === 0) return;
@@ -226,7 +232,6 @@ console.log("ALL: ", allProduct.data)
 
     const isInTimeRange = start <= now && now <= end;
     const isProductIncluded = discount.discountProduct?.some(pro => pro._id === productId);
-
     return isInTimeRange && isProductIncluded;
   });
 
