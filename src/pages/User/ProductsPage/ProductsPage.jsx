@@ -2,35 +2,32 @@ import { React, useEffect, useState } from "react";
 import "./ProductsPage.css";
 import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuComponent";
 import CardProduct from "../../../components/CardProduct/CardProduct";
-import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   getAllproduct,
   getProductsByCategory,
 } from "../../../services/productServices";
 import { getAllCategory } from "../../../services/CategoryService";
+import { getAllDiscount } from "../../../services/DiscountService";
 
 const ProductsPage = () => {
-  const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
-  const [categories, setCategories] = useState([]); // State lưu danh sách category
-  const [currentCategory, setCurrentCategory] = useState(null); // State lưu category hiện tại
-  const [currentCategoryName, setCurrentCategoryName] =
-    useState("Tất cả sản phẩm"); // State lưu tên category hiện tại
-  const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
-  const [totalPages, setTotalPages] = useState(0); // Tổng số trang
-  const [error, setError] = useState(""); // State lưu lỗi
-
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState(null);
+  const [currentCategoryName, setCurrentCategoryName] = useState("Tất cả sản phẩm");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [discounts, setDiscounts] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
   const previousCategoryId = location.state?.categoryIds || null;
 
-  //=========Danh mục sản phẩm=======
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getAllCategory();
-        setCategories(data.data); // Lưu danh sách category vào state
+        setCategories(data.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -38,66 +35,49 @@ const ProductsPage = () => {
     fetchCategories();
   }, []);
 
-  // Fetch danh sách sản phẩm theo category
-  const fetchProductsByCategory = async (
-    page = 0,
-    limit = 9,
-    categoryId = null
-  ) => {
+  useEffect(() => {
+    const fetchDiscounts = async () => {
+      try {
+        const data = await getAllDiscount();
+        setDiscounts(data.data);
+      } catch (error) {
+        console.error("Error fetching discounts:", error);
+      }
+    };
+    fetchDiscounts();
+  }, []);
+
+  const fetchProductsByCategory = async (page = 0, limit = 9, categoryId = null) => {
     try {
       if (!categoryId) {
-        console.log("No category selected, skipping fetchProductsByCategory");
         setProducts([]);
         return;
       }
-
-      const queryParams = new URLSearchParams({ page, limit }).toString();
-
       const data = await getProductsByCategory(categoryId);
-      // console.log("data", data);
       setCurrentPage(page);
       setTotalPages(Math.ceil(data.total / limit));
-
-      if (Array.isArray(data.data)) {
-        setProducts(data.data);
-      } else {
-        console.error("Products data is not in expected format");
-      }
+      setProducts(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  // fetch danh sach san pham
-  const fetchAllProducts = async (page = 0, limit = 9, categoryId = null) => {
+  const fetchAllProducts = async (page = 0, limit = 9) => {
     try {
-      const queryParams = new URLSearchParams({ page, limit }).toString();
-
       const data = await getAllproduct();
       setCurrentPage(page);
       setTotalPages(Math.ceil(data.total / limit));
-
-      if (Array.isArray(data.data)) {
-        setProducts(data.data);
-      } else {
-        console.error("Products data is not in expected format");
-      }
+      setProducts(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  // Khi component được mount
   useEffect(() => {
-    if (previousCategoryId) {
+    if (previousCategoryId && categories.length > 0) {
       setCurrentCategory(previousCategoryId);
-      const selectedCategory = categories.find(
-        (cat) => cat._id === previousCategoryId
-      );
-      setCurrentCategoryName(
-        selectedCategory?.categoryName || "Tất cả sản phẩm"
-      );
-      setCurrentPage(0);
+      const selectedCategory = categories.find((cat) => cat._id === previousCategoryId);
+      setCurrentCategoryName(selectedCategory?.categoryName || "Tất cả sản phẩm");
       fetchProductsByCategory(0, 9, previousCategoryId);
     } else {
       setCurrentCategoryName("Tất cả sản phẩm");
@@ -105,7 +85,6 @@ const ProductsPage = () => {
     }
   }, [previousCategoryId, categories]);
 
-  // Khi thay đổi trang hoặc danh mục
   useEffect(() => {
     if (currentCategory) {
       fetchProductsByCategory(currentPage, 9, currentCategory);
@@ -114,7 +93,6 @@ const ProductsPage = () => {
     }
   }, [currentPage, currentCategory]);
 
-  // Phân trang
   const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pages = Array.from({ length: totalPages }, (_, index) => index);
     return (
@@ -133,35 +111,60 @@ const ProductsPage = () => {
     );
   };
 
-  // Reload sản phẩm khi chuyển trang hoặc category
-  useEffect(() => {
-    fetchProductsByCategory(currentPage, 9, currentCategory);
-  }, [currentPage, currentCategory]);
-
-  // Khi nhấn vào category
   const handleCategoryClick = (categoryId, categoryName) => {
     setCurrentCategory(categoryId);
     setCurrentCategoryName(categoryName);
-    console.log("Current", currentCategoryName);
     setCurrentPage(0);
     fetchProductsByCategory(0, 9, categoryId);
   };
 
-  // Khi nhấn vào Tất cả sản phẩm
   const handleAllProductsClick = () => {
     setCurrentCategory(null);
     setCurrentCategoryName("Tất cả sản phẩm");
-    console.log("Current", currentCategoryName);
     setCurrentPage(0);
     fetchAllProducts();
   };
 
-  // Khi nhấn vào sản phẩm
-  const handleDetail = (productId) => {
-    const selectedProduct = products.find(
-      (product) => product._id === productId
+const handlePromoProductsClick = async () => {
+  setCurrentCategoryName("Khuyến mãi");
+  setCurrentCategory(1);
+  setCurrentPage(0);
+
+  try {
+    const allProductResponse = await getAllproduct();
+    const allProducts = allProductResponse.data;
+
+    const discountedProductIds = new Set();
+    const now = Date.now();
+    discounts.forEach((discount) => {
+      const start = new Date(discount.discountStartDate).getTime();
+      const end = new Date(discount.discountEndDate).getTime();
+      if (start <= now && end >= now) {
+        discount.discountProduct?.forEach((product) => {
+          if (typeof product === "string") {
+            discountedProductIds.add(product);
+          } else if (product?._id) {
+            discountedProductIds.add(product._id);
+          }
+        });
+      }
+    });
+
+    const filtered = allProducts.filter((product) =>
+      discountedProductIds.has(product._id)
     );
 
+    setProducts(filtered); // ✅ chỉ chứa sản phẩm đang áp dụng mã
+    setTotalPages(1); // Hoặc tính lại phân trang nếu cần
+  } catch (err) {
+    console.error("Lỗi khi lọc sản phẩm khuyến mãi:", err);
+    setProducts([]);
+  }
+};
+
+
+  const handleDetail = (productId) => {
+    const selectedProduct = products.find((product) => product._id === productId);
     if (selectedProduct) {
       const {
         productName,
@@ -193,15 +196,12 @@ const ProductsPage = () => {
     <div>
       <div className="container-xl product-container">
         <div className="product">
-          {/* product top */}
           <div className="product__top">
             <h1 className="product__title">SẢN PHẨM</h1>
             <p className="product__current-category">{currentCategoryName}</p>
           </div>
 
-          {/* product bot */}
           <div className="product__bot">
-            {/* side menu */}
             <div className="side-menu__category">
               <SideMenuComponent
                 key="all-products"
@@ -211,15 +211,20 @@ const ProductsPage = () => {
               >
                 Tất cả sản phẩm
               </SideMenuComponent>
-
+              <SideMenuComponent
+                key="promo-product"
+                value={null}
+                onClick={handlePromoProductsClick}
+                isActive={currentCategory === 1}
+              >
+                Khuyến mãi
+              </SideMenuComponent>
               {Array.isArray(categories) && categories.length > 0 ? (
                 categories.map((category) => (
                   <SideMenuComponent
                     key={category._id}
                     value={category._id}
-                    onClick={() =>
-                      handleCategoryClick(category._id, category.categoryName)
-                    }
+                    onClick={() => handlePromoProductsClick(category._id, category.categoryName)}
                     isActive={currentCategory === category._id}
                   >
                     {category.categoryName}
@@ -230,30 +235,42 @@ const ProductsPage = () => {
               )}
             </div>
 
-            {/* product list */}
             <div className="container product__list">
               {products.length > 0 ? (
                 products.map((product) => {
                   const imageUrl = product.productImage.startsWith("http")
                     ? product.productImage
-                    : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace(
-                        "\\",
-                        "/"
-                      )}`;
+                    : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace("\\", "/")}`;
+
+                  const now = Date.now();
+                  const appliedDiscount = discounts.find((discount) => {
+                    const start = new Date(discount.discountStartDate).getTime();
+                    const end = new Date(discount.discountEndDate).getTime();
+                    return start <= now && end >= now &&
+                      discount.discountProduct?.some((pro) =>
+                        typeof pro === "string"
+                          ? pro === product._id
+                          : pro._id === product._id
+                      );
+                  });
+
+                  const discountPercent = appliedDiscount?.discountValue || 0;
 
                   return (
                     <CardProduct
                       key={product._id}
                       className="col productadmin__item"
-                      type={"primary"}
+                      type="primary"
                       img={imageUrl}
                       title={product.productName}
                       price={product.productPrice}
+                      discount={discountPercent}
                       id={product._id}
                       size={product.productSize}
                       onClick={() => handleDetail(product._id)}
                       averageRating={product.averageRating}
                       totalRatings={product.totalRatings}
+                     
                     />
                   );
                 })
@@ -264,7 +281,6 @@ const ProductsPage = () => {
           </div>
         </div>
 
-        {/* Pagination */}
         <div className="PageNumberHolder">
           <Pagination
             currentPage={currentPage}

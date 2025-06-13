@@ -7,10 +7,7 @@ import CardNews from "../../../components/CardNews/CardNews";
 import news from "../../../assets/img/news.jpg";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useNavigate } from "react-router-dom";
-import {
-  getAllDiscount,
-  deleteDiscount,
-} from "../../../services/DiscountService";
+import { getAllDiscount } from "../../../services/DiscountService";
 import { getAllNews } from "../../../services/NewsService";
 import img12 from "../../../assets/img/hero_2.jpg";
 import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
@@ -19,20 +16,21 @@ import {
   getAllproduct,
   getProductsByCategory,
 } from "../../../services/productServices";
+
 const text =
   "Là một hệ thống đội ngũ nhân viên và lãnh đạo chuyên nghiệp, gồm CBCNV và những người thợ đã có kinh nghiệm lâu năm trong các công ty đầu ngành. Mô hình vận hành hoạt động công ty được bố trí theo chiều ngang, làm gia tăng sự thuận tiện trong việc vận hành cỗ máy kinh doanh và gia tăng sự phối hợp thống nhất giữa các bộ phận trong công ty.";
 
 const HomePage = () => {
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [promoProducts, setPromoProducts] = useState([]);
   const [promos, setPromos] = useState([]);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
   const [arrImgs, setArrImg] = useState([]); // State lưu trữ mảng hình ảnh
   const [products, setProducts] = useState([]); // State lưu danh sách sản phẩm
   const [currentCategory, setCurrentCategory] = useState(null); // State lưu category hiện tại
+  const [selectedPromo, setSelectedPromo] = useState([]);
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
-  const [totalPages, setTotalPages] = useState(0); // Tổng số trang
+  const [bestSeller, setBestSeller]= useState([]);
   const navigate = useNavigate();
   const handleClick = (path) => {
     navigate(path);
@@ -44,19 +42,16 @@ const HomePage = () => {
     const fetchDiscounts = async () => {
       try {
         const discounts = await getAllDiscount();
-        console.log("TYU", discounts);
+        console.log("ALL DISCOUNTS: ", discounts.data)
         if (Array.isArray(discounts.data)) {
           setPromos(discounts.data); // Lưu danh sách khuyến mãi
-          console.log("HBJK", promos);
           const images = Array.isArray(discounts.data)
             ? discounts.data
-                .map((discount) => discount?.discountImage)
-                .filter(Boolean)
+              .map((discount) => discount?.discountImage)
+              .filter(Boolean)
             : [];
-
-          console.log("IMG", images);
+            console.log("I<MAD: ", images)
           setArrImg(images);
-          console.log("ANh tren slider", arrImgs);
         } else {
           setError("Dữ liệu trả về không hợp lệ.");
         }
@@ -64,43 +59,36 @@ const HomePage = () => {
         setError(err.message || "Không thể tải danh sách khuyến mãi.");
       }
     };
+    
     fetchDiscounts();
   }, []);
 
+  // Ví dụ, thay vì dùng promos trong handleSliderImageClick, bạn có thể:
   const handleSliderImageClick = async (clickedImage) => {
-  // Tìm khuyến mãi tương ứng với ảnh
-  const promo = promos.find((promo) => promo.discountImage === clickedImage);
-  console.log("PROMO:", promo);
+    const allPromos = promos; // HOẶC: truyền promos từ props hoặc callback
+    const promo = allPromos.find((promo) => promo.discountImage === clickedImage);
+    if (promo) {
+      setSelectedPromo(promo);
+      const productIds = promo.discountProduct || [];
+      try {
+        const allProducts = await getAllproduct();
+        //console.log("ALL PRODUCT: ", allProducts);
 
-  if (promo) {
-    const productIds = promo.discountProduct || [];
-    console.log("Product IDs áp dụng:", productIds);
+        const filteredProducts = allProducts.data.filter(product =>
+          productIds.some(p => p._id === product._id)
+        );
+        
+    console.log("KHUYEN MAI: ", filteredProducts)
 
-    try {
-      // Gọi API lấy toàn bộ sản phẩm (hoặc nếu có API getProductsByIds thì tốt hơn)
-      const allProducts = await getAllproduct(); // hoặc API đúng hơn
 
-      // Lọc sản phẩm theo danh sách ID
-      const filteredProducts = allProducts.data.filter(product =>
-        productIds.includes(product._id)
-      );
-
-      console.log("Các sản phẩm áp dụng khuyến mãi:");
-      filteredProducts.forEach((product, index) => {
-        console.log(`Sản phẩm ${index + 1}:`, product);
-      });
-
-      // (Tuỳ chọn) điều hướng sang trang sản phẩm và truyền danh sách productIds
-      // navigate("/products", { state: { productIds } });
-    } catch (error) {
-      console.error("Lỗi khi lấy sản phẩm:", error);
+        setPromoProducts(filteredProducts);
+      } catch (error) {
+        setPromoProducts([]);
+      }
     }
-  }
-};
+  };
 
 
-
-  
   //Lấy danh sách tin tức:
   useEffect(() => {
     const fetchNews = async () => {
@@ -121,9 +109,7 @@ const HomePage = () => {
 
   //Xem chi tiet
   const handleDetailNews = (newsId) => {
-    console.log("ID NEWS", newsId);
     const selectedNews = newsList.find((item) => item._id === newsId);
-    console.log("VB", selectedNews);
 
     if (selectedNews) {
       const { newsImage, newsTitle, newsContent } = selectedNews;
@@ -140,15 +126,9 @@ const HomePage = () => {
     const fetchCategories = async () => {
       try {
         const response = await getAllCategory();
-        console.log("RES", response);
-        // if (!response.ok) {
-        //   throw new Error("Failed to fetch categories");
-        // }
-
-        // const data = await response.json();
 
         setCategories(response.data); // Lưu danh sách category vào state
-    
+
         // Lấy category đầu tiên và fetch sản phẩm tương ứng
         if (response.data.length > 0) {
           const firstCategoryId = response.data[0]._id;
@@ -171,7 +151,6 @@ const HomePage = () => {
       // setTotalPages(Math.ceil(data.data.lenght / limit)); // Tính tổng số trang
 
       if (Array.isArray(response.data)) {
-        console.log("QWERTYU", response.data)
         setProducts(response.data.slice(0, 4));
       } else {
         console.error("Products data is not in expected format");
@@ -214,11 +193,54 @@ const HomePage = () => {
 
   //Click categoryName:
   const handleCategoryClick = (categoryId) => {
-    console.log("Category clicked:", categoryId);
     setCurrentCategory(categoryId); // Lưu categoryId để lọc sản phẩm
     setCurrentPage(0); // Reset trang về 0 khi chuyển qua category mới
     fetchProducts(0, 9, categoryId); // Fetch sản phẩm theo category
   };
+
+useEffect(() => {
+  const fetchBestSellers = async () => {
+    const allProduct = await getAllproduct(); // <- chờ fetch hoàn tất
+    //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
+
+    //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
+    if (!Array.isArray(allProduct.data) || allProduct.data.length === 0) return;
+console.log("ALL: ", allProduct.data)
+    const top4 = allProduct.data.sort((a, b) => (b.totalRating || 0) - (a.totalRating || 0))
+      .slice(0, 4);
+
+    console.log("Top 4 sản phẩm đánh giá cao nhất:", top4);
+    setBestSeller(top4); // <- cập nhật state
+  };
+
+  fetchBestSellers();
+}, []);
+
+  
+
+
+  
+  const promoProductList = selectedPromo.discountProduct || [];
+  const findPromoApplied = (productId) => {
+  if (!Array.isArray(promos) || promos.length === 0) return 0;
+
+  const now = Date.now();
+
+  const appliedDiscount = promos.find(discount => {
+    const start = new Date(discount.discountStartDate).getTime();
+    const end = new Date(discount.discountEndDate).getTime();
+
+    const isInTimeRange = start <= now && now <= end;
+    const isProductIncluded = discount.discountProduct?.some(pro => pro._id === productId);
+    return isInTimeRange && isProductIncluded;
+  });
+
+  // Lấy phần trăm giảm nếu có
+  const discountPercent = appliedDiscount?.discountValue || 0;
+
+  return discountPercent;
+};
+
 
   return (
     <div>
@@ -306,7 +328,7 @@ const HomePage = () => {
             gap: "18px",
           }}
         >
-          {products.map((product) => (
+          {bestSeller.map((product) => (
             <CardProduct
               key={product._id}
               id={product._id} // Thêm prop id vào đây
@@ -314,6 +336,8 @@ const HomePage = () => {
               img={product.productImage}
               title={product.productName}
               price={product.productPrice}
+              discount={findPromoApplied(product._id)}
+              averageRating={product.averageRating}
               onClick={() => handleDetailProduct(product._id)}
             />
           ))}
@@ -409,7 +433,7 @@ const HomePage = () => {
               img={product.productImage}
               title={product.productName}
               price={product.productPrice}
-              discount={product.discount}
+              discount={findPromoApplied(product._id)}
               averageRating={product.averageRating}
               onClick={() => handleDetailProduct(product._id)}
             />

@@ -41,13 +41,7 @@ const AddDiscountPage = () => {
           setProducts(data.data);
         }
 
-        // Lấy danh sách sản phẩm đang có khuyến mãi
-        const discountedRes = await fetch(`${process.env.REACT_APP_API_URL_BACKEND}/discount/get-product-in-discount`);
-        const discountedData = await discountedRes.json();
-        if (Array.isArray(discountedData.data)) {
-          const ids = discountedData.data.map((item) => item._id);
-          setDisabledProductIds(ids);
-        }
+
       } catch (error) {
         console.error("Lỗi khi fetch dữ liệu:", error);
       }
@@ -107,11 +101,15 @@ const AddDiscountPage = () => {
     formData.append("discountName", discount.discountName);
     formData.append("discountValue", discount.discountValue);
     formData.append("discountProduct", JSON.stringify(discount.discountProduct));
-    if (discount.discountImage) {
-      formData.append("discountImage", discount.discountImage);
-    }
+
+    formData.append("discountImage", discount.discountImage);
+
     formData.append("discountStartDate", discount.discountStartDate);
     formData.append("discountEndDate", discount.discountEndDate);
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+    console.log("FROM: ", formData)
 
     mutation.mutate(formData);
   };
