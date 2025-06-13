@@ -253,6 +253,9 @@ const HeaderComponent = () => {
                       <ButtonNoBGComponent to="/quizz">
                         Gợi ý
                       </ButtonNoBGComponent>
+                      <ButtonNoBGComponent to="/minigame">
+                        Game
+                      </ButtonNoBGComponent>
                     </>
                   )}
                 </div>

@@ -51,6 +51,7 @@ import AddQuizPage from "../pages/Admin/CRUDQuiz/AddQuizPage/AddQuizPage.jsx";
 import ListQuizPage from "../pages/Admin/CRUDQuiz/ListQuizPage/ListQuizPage.jsx";
 import UpdateQuizPage from "../pages/Admin/CRUDQuiz/UpdateQuizPage/UpdateQuizPage.jsx";
 import DeleteQuizPage from "../pages/Admin/CRUDQuiz/DeleteQuizPage/DeleteQuizPage.jsx";
+import MiniGamePage from "../pages/User/MiniGamePage/MiniGamePage.jsx";
 export const routes = [
   {
     path: "/",
@@ -429,5 +430,12 @@ export const routes = [
     page: DeleteQuizPage,
     isShowHeader: true,
     // isShowFooter: true,
+  },
+
+  {
+    path: "/minigame",
+    page: MiniGamePage,
+    isShowHeader: true,
+    isShowFooter: true,
   },
 ];
