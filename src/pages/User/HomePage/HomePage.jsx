@@ -197,7 +197,7 @@ const HomePage = () => {
   const handleCategoryClick = (categoryId) => {
     setCurrentCategory(categoryId); // Lưu categoryId để lọc sản phẩm
     setCurrentPage(0); // Reset trang về 0 khi chuyển qua category mới
-    fetchProducts(0, 9, categoryId); // Fetch sản phẩm theo category
+    fetchProducts(0, 9, categoryId);
   };
 
 useEffect(() => {

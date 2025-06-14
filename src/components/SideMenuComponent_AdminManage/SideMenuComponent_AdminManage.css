@@ -39,7 +39,7 @@
   color: var(--brown100);
 }
 
-.btn__component.active  {
+.btn__component.active-btn  {
   background: var(--green30);
   border-radius: 10px;
   color: var(--brown100); 

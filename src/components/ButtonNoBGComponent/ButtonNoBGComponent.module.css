@@ -22,7 +22,8 @@
   text-shadow: 1px 0 0 currentColor;
 }
 
-.active {
+.btn__noBG__component:active,
+.btn__noBG__component:focus {
   color: var(--brown100);
   /* font-size: 1.8rem; */
   transition: 0.25s;
