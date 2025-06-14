@@ -197,40 +197,42 @@ const HeaderComponent = () => {
                     </div>
                   )}
                 </div>
+                {/* Thêm cột mới cho Xu */}
+                <div
+                  className="col d-flex align-items-center justify-content-center"
+                  style={{ minWidth: "120px" }}
+                >
+                  {user?.isAdmin === false && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        padding: "5px 10px",
+                        // background: "#f8f9fa",
+                        borderRadius: "20px",
+                        // border: "1px solid #dee2e6",
+                      }}
+                    >
+                      <span style={{ fontSize: "1.6rem" }}>🪙</span>
+                      <span
+                        style={{
+                          fontSize: "1.6rem",
+                          fontWeight: "bold",
+                          color: "#3a060e",
+                        }}
+                      >
+                        {isLoadingCoins ? "..." : user.coins.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 <div className={`col text-end ${styles.btn__container}`}>
                   <Loading isLoading={showLoading} />
                   {!showLoading && user?.isLoggedIn ? (
                     <div className="d-flex align-items-center gap-3">
                       {/* Hiển thị số xu */}
-                      {user?.isAdmin === false && (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "5px",
-                            padding: "5px 10px",
-                            background: "#f8f9fa",
-                            borderRadius: "20px",
-                            border: "1px solid #dee2e6",
-                          }}
-                        >
-                          <span style={{ fontSize: "12px", color: "#6c757d" }}>
-                            Xu:
-                          </span>
-                          <span
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "bold",
-                              color: "#007bff",
-                            }}
-                          >
-                            {isLoadingCoins
-                              ? "..."
-                              : user.coins.toLocaleString()}
-                          </span>
-                        </div>
-                      )}
-
+                      {/* ĐÃ DI CHUYỂN PHẦN NÀY RA NGOÀI */}
                       <OverlayTrigger
                         trigger="click"
                         placement="bottom"
@@ -266,9 +268,9 @@ const HeaderComponent = () => {
                         Đăng kí
                       </Link>
                       <div className={styles.btn__signup}>
-                        <Link to="/login" className={styles.btn__login}>
+                        <ButtonComponent onClick={handleNavigationLogin}>
                           Đăng nhập
-                        </Link>
+                        </ButtonComponent>
                       </div>
                     </div>
                   )}

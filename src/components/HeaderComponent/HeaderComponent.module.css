@@ -83,7 +83,7 @@ img {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 20px 0;
+  /* margin: 0 20px 0; */
   padding: 8px;
   color: var(--brown100);
   transition: 0.25s;
