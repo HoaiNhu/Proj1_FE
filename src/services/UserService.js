@@ -219,3 +219,55 @@ export const fetchCities = async () => {
     return [];
   }
 };
+
+// Lấy thông tin xu của user
+export const getUserAssets = async (access_token) => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL_BACKEND}/user-assets`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        status: error.response.data?.status || "ERR",
+        message:
+          error.response.data?.message || "Đã xảy ra lỗi khi lấy thông tin xu.",
+      };
+    } else {
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};
+
+// Kiểm tra số xu hiện tại
+export const checkUserCoins = async (access_token) => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL_BACKEND}/user-assets/coins`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        status: error.response.data?.status || "ERR",
+        message:
+          error.response.data?.message || "Đã xảy ra lỗi khi kiểm tra xu.",
+      };
+    } else {
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};

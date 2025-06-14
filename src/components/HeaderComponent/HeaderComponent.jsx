@@ -6,12 +6,11 @@ import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import ButtonNoBGComponent from "../ButtonNoBGComponent/ButtonNoBGComponent";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Popover, OverlayTrigger, Button } from "react-bootstrap";
 import SideMenuComponent from "../SideMenuComponent/SideMenuComponent";
 import * as UserService from "../../services/UserService";
-import { useDispatch } from "react-redux";
-import { resetUser } from "../../redux/slides/userSlide";
+import { resetUser, updateUserCoins } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/Loading";
 import UserIconComponent from "../UserIconComponent/UserIconComponent";
 import CartIconComponent from "../CartIconComponent/CartIconComponent";
@@ -25,6 +24,7 @@ const HeaderComponent = () => {
   const [userName, setUserName] = useState("");
   const [userImage, setUserImage] = useState("");
   const [showPopover, setShowPopover] = useState(false);
+  const [isLoadingCoins, setIsLoadingCoins] = useState(false);
 
   const handleNavigationLogin = () => {
     navigate("/login");
@@ -36,6 +36,7 @@ const HeaderComponent = () => {
   // const { user, logout } = useAuth();
 
   const user = useSelector((state) => state.user);
+  const access_token = localStorage.getItem("access_token");
   // console.log("user", user);
 
   //Lấy số lượng sản phẩm trong giỏ
@@ -44,6 +45,34 @@ const HeaderComponent = () => {
     (total, item) => total + item.quantity,
     0
   ); // Tính tổng số lượng sản phẩm
+
+  // Lấy thông tin xu của user
+  const fetchUserCoins = async () => {
+    if (!user?.id || !access_token) {
+      console.log("Missing user ID or access token:", {
+        userId: user?.id,
+        hasToken: !!access_token,
+      });
+      return;
+    }
+
+    try {
+      setIsLoadingCoins(true);
+      console.log("Fetching user coins for user:", user.id);
+      const response = await UserService.checkUserCoins(access_token);
+      console.log("User coins response:", response);
+      if (response.status === "OK") {
+        console.log("Setting coins to:", response.data.coins);
+        dispatch(updateUserCoins(response.data.coins || 0));
+      } else {
+        console.log("Response status not OK:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching user coins:", error);
+    } finally {
+      setIsLoadingCoins(false);
+    }
+  };
 
   const handleLogout = async () => {
     setShowLoading(true);
@@ -68,6 +97,13 @@ const HeaderComponent = () => {
     setUserName(user?.userName);
     setShowLoading(false);
   }, [user?.userName, user?.userImage]);
+
+  // Lấy thông tin xu khi user đăng nhập
+  useEffect(() => {
+    if (user?.id && access_token) {
+      fetchUserCoins();
+    }
+  }, [user?.id, access_token]);
 
   useEffect(() => {
     let timer;
@@ -164,43 +200,75 @@ const HeaderComponent = () => {
                 <div className={`col text-end ${styles.btn__container}`}>
                   <Loading isLoading={showLoading} />
                   {!showLoading && user?.isLoggedIn ? (
-                    <OverlayTrigger
-                      trigger="click"
-                      placement="bottom"
-                      show={showPopover}
-                      onToggle={(nextShow) => setShowPopover(nextShow)}
-                      overlay={popover}
-                      rootClose
-                    >
-                      <div className={styles.user__icon}>
-                        {userImage ? (
-                          <img
-                            src={userImage}
-                            alt="avatar"
+                    <div className="d-flex align-items-center gap-3">
+                      {/* Hiển thị số xu */}
+                      {user?.isAdmin === false && (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "5px",
+                            padding: "5px 10px",
+                            background: "#f8f9fa",
+                            borderRadius: "20px",
+                            border: "1px solid #dee2e6",
+                          }}
+                        >
+                          <span style={{ fontSize: "12px", color: "#6c757d" }}>
+                            Xu:
+                          </span>
+                          <span
                             style={{
-                              width: "30px",
-                              height: "30px",
-                              borderRadius: "50%",
-                              objectFit: "cover",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color: "#007bff",
                             }}
-                          />
-                        ) : (
-                          <UserIconComponent />
-                        )}
-                        <span style={{ color: "var(--brown100)" }}>
-                          {user.userName || user.userEmail || "User"}
-                        </span>
-                      </div>
-                    </OverlayTrigger>
+                          >
+                            {isLoadingCoins
+                              ? "..."
+                              : user.coins.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+
+                      <OverlayTrigger
+                        trigger="click"
+                        placement="bottom"
+                        show={showPopover}
+                        onToggle={(nextShow) => setShowPopover(nextShow)}
+                        overlay={popover}
+                        rootClose
+                      >
+                        <div className={styles.user__icon}>
+                          {userImage ? (
+                            <img
+                              src={userImage}
+                              alt="avatar"
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          ) : (
+                            <UserIconComponent />
+                          )}
+                          <span style={{ color: "var(--brown100)" }}>
+                            {user.userName || user.userEmail || "User"}
+                          </span>
+                        </div>
+                      </OverlayTrigger>
+                    </div>
                   ) : (
                     <div className="d-flex gap-2">
                       <Link to="/signup" className={styles.btn__signup}>
                         Đăng kí
                       </Link>
                       <div className={styles.btn__signup}>
-                        <ButtonComponent onClick={handleNavigationLogin}>
+                        <Link to="/login" className={styles.btn__login}>
                           Đăng nhập
-                        </ButtonComponent>
+                        </Link>
                       </div>
                     </div>
                   )}

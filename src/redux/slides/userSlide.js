@@ -16,6 +16,7 @@ const initialState = {
   allUser: [], // Danh sách tất cả các status
   detailUser: {}, // Chi tiết một status cụ thể
   isAdmin: false,
+  coins: 0, // Số xu của user
 };
 
 export const userSlice = createSlice({
@@ -36,6 +37,7 @@ export const userSlice = createSlice({
         userImage = "",
         access_token = "",
         isAdmin,
+        coins = 0,
       } = action?.payload;
       // console.log("action", action.payload);
       state.id = _id;
@@ -51,6 +53,7 @@ export const userSlice = createSlice({
       state.access_token = access_token;
       state.isLoggedIn = !!access_token;
       state.isAdmin = isAdmin;
+      state.coins = coins;
     },
     resetUser: (state) => {
       state.id = "";
@@ -66,6 +69,7 @@ export const userSlice = createSlice({
       state.access_token = "";
       state.isAdmin = false;
       state.isLoggedIn = false;
+      state.coins = 0;
     },
 
     setAllUser: (state, action) => {
@@ -74,11 +78,21 @@ export const userSlice = createSlice({
     setDetailUser: (state, action) => {
       state.detailUser = action.payload;
     }, // Lưu chi tiết một user từ API
+
+    // Cập nhật số xu
+    updateUserCoins: (state, action) => {
+      state.coins = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { updateUser, resetUser, setAllUser, setDetailUser } =
-  userSlice.actions;
+export const {
+  updateUser,
+  resetUser,
+  setAllUser,
+  setDetailUser,
+  updateUserCoins,
+} = userSlice.actions;
 
 export default userSlice.reducer;

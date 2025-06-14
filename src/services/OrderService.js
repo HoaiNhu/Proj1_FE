@@ -285,3 +285,29 @@ export const updateProductRating = async (ratingId, data, access_token) => {
     throw error.response?.data || error;
   }
 };
+
+// Đổi xu thành tiền cho đơn hàng
+export const applyCoinsToOrder = async (orderId, coinsToUse, access_token) => {
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL_BACKEND}/order/apply-coins`,
+      { orderId, coinsToUse },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      throw {
+        status: error.response.data?.status || "ERR",
+        message: error.response.data?.message || "Đã xảy ra lỗi khi đổi xu.",
+      };
+    } else {
+      throw { status: 500, message: "Không thể kết nối đến máy chủ." };
+    }
+  }
+};

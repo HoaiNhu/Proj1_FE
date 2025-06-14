@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./PaymentPage.css";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import ProductInforCustom from "../../../components/ProductInfor/ProductInforCustom";
 import { useSelector, useDispatch } from "react-redux";
 import * as PaymentService from "../../../services/PaymentService";
+import * as UserService from "../../../services/UserService";
+import * as OrderService from "../../../services/OrderService";
 import { createPayment } from "../../../redux/slides/paymentSlide";
+import { updateUserCoins } from "../../../redux/slides/userSlide";
 import axios from "axios";
 import { getDetailsOrder } from "../../../services/OrderService";
 import { clearSelectedProductDetails } from "../../../redux/slides/orderSlide";
@@ -16,6 +19,7 @@ const PaymentPage = () => {
   const dispatch = useDispatch();
   const orderDetails = useSelector((state) => state.order);
   const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
 
   const lastOrder = orderDetails.orders?.[orderDetails.orders.length - 1] || {};
   const {
@@ -48,6 +52,44 @@ const PaymentPage = () => {
     wallet: "momo",
   });
 
+  // State cho tính năng đổi xu
+  const [coinsToUse, setCoinsToUse] = useState(0);
+  const [showCoinsSection, setShowCoinsSection] = useState(false);
+  const [isLoadingCoins, setIsLoadingCoins] = useState(false);
+  const [coinsApplied, setCoinsApplied] = useState(0);
+  const [finalTotalPrice, setFinalTotalPrice] = useState(0);
+
+  const access_token = localStorage.getItem("access_token");
+
+  // Tính toán tổng tiền ban đầu
+  const originalTotalPrice =
+    (lastOrder.totalItemPrice || 0) + (lastOrder.shippingPrice || 0);
+
+  useEffect(() => {
+    setFinalTotalPrice(originalTotalPrice - coinsApplied);
+  }, [originalTotalPrice, coinsApplied]);
+
+  // Lấy thông tin xu của user khi component mount
+  useEffect(() => {
+    if (user?.id && access_token) {
+      fetchUserCoins();
+    }
+  }, [user, access_token]);
+
+  const fetchUserCoins = async () => {
+    try {
+      setIsLoadingCoins(true);
+      const response = await UserService.checkUserCoins(access_token);
+      if (response.status === "OK") {
+        dispatch(updateUserCoins(response.data.coins || 0));
+      }
+    } catch (error) {
+      console.error("Error fetching user coins:", error);
+    } finally {
+      setIsLoadingCoins(false);
+    }
+  };
+
   const handlePaymentTypeChange = (e) => {
     setPaymentType(e.target.value);
     setPaymentInfo({
@@ -62,6 +104,87 @@ const PaymentPage = () => {
     const value = e.target.value;
     if (field === "phoneNumber" && !/^\d*$/.test(value)) return;
     setPaymentInfo((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Xử lý thay đổi số xu muốn sử dụng
+  const handleCoinsChange = (e) => {
+    const value = parseInt(e.target.value) || 0;
+    setCoinsToUse(value);
+  };
+
+  // Xử lý áp dụng xu
+  const handleApplyCoins = async () => {
+    if (!lastOrder?.orderId) {
+      alert("Không tìm thấy đơn hàng. Vui lòng quay lại và thử lại.");
+      return;
+    }
+
+    if (coinsToUse < 0) {
+      alert("Số xu không được âm");
+      return;
+    }
+
+    if (coinsToUse > user.coins) {
+      alert(
+        `Bạn chỉ có ${user.coins} xu, không đủ để sử dụng ${coinsToUse} xu`
+      );
+      return;
+    }
+
+    const maxCoinsCanUse = originalTotalPrice;
+    if (coinsToUse > maxCoinsCanUse) {
+      alert(`Số xu tối đa có thể sử dụng là ${maxCoinsCanUse} xu`);
+      return;
+    }
+
+    try {
+      const response = await OrderService.applyCoinsToOrder(
+        lastOrder.orderId,
+        coinsToUse,
+        access_token
+      );
+
+      if (response.status === "OK") {
+        setCoinsApplied(coinsToUse);
+        dispatch(updateUserCoins(response.data.remainingCoins));
+        alert(`Đã áp dụng ${coinsToUse} xu thành công!`);
+      } else {
+        alert(response.message || "Có lỗi xảy ra khi áp dụng xu");
+      }
+    } catch (error) {
+      console.error("Error applying coins:", error);
+      alert(error.message || "Có lỗi xảy ra khi áp dụng xu");
+    }
+  };
+
+  // Xử lý hủy áp dụng xu
+  const handleCancelCoins = async () => {
+    if (coinsApplied === 0) {
+      setCoinsToUse(0);
+      setShowCoinsSection(false);
+      return;
+    }
+
+    try {
+      const response = await OrderService.applyCoinsToOrder(
+        lastOrder.orderId,
+        0,
+        access_token
+      );
+
+      if (response.status === "OK") {
+        setCoinsApplied(0);
+        setCoinsToUse(0);
+        dispatch(updateUserCoins(response.data.remainingCoins));
+        setShowCoinsSection(false);
+        alert("Đã hủy áp dụng xu thành công!");
+      } else {
+        alert(response.message || "Có lỗi xảy ra khi hủy áp dụng xu");
+      }
+    } catch (error) {
+      console.error("Error canceling coins:", error);
+      alert(error.message || "Có lỗi xảy ra khi hủy áp dụng xu");
+    }
   };
 
   const handleClickBack = () => {
@@ -104,7 +227,7 @@ const PaymentPage = () => {
       userBankNumber: paymentInfo.userBankNumber,
       paymentMethod: paymentType,
       orderId: lastOrder.orderId,
-      totalPrice: lastOrder.totalPrice,
+      totalPrice: finalTotalPrice, // Sử dụng tổng tiền sau khi trừ xu
     };
 
     if (paymentType === "paypal") {
@@ -167,6 +290,128 @@ const PaymentPage = () => {
       <div className="container-xl-pay">
         <div className="PaymentInfor">
           <p className="pThongtin">Thông tin thanh toán</p>
+
+          {/* Phần đổi xu */}
+          {user?.id && (
+            <div
+              className="coins-section"
+              style={{
+                marginBottom: "20px",
+                padding: "15px",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "10px",
+                }}
+              >
+                <h4 style={{ margin: 0, color: "#333" }}>Đổi xu thành tiền</h4>
+                <button
+                  onClick={() => setShowCoinsSection(!showCoinsSection)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#007bff",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  {showCoinsSection ? "Ẩn" : "Hiện"}
+                </button>
+              </div>
+
+              {showCoinsSection && (
+                <div>
+                  <div style={{ marginBottom: "10px" }}>
+                    <span style={{ fontWeight: "bold" }}>Số xu hiện có: </span>
+                    <span style={{ color: "#007bff", fontWeight: "bold" }}>
+                      {isLoadingCoins
+                        ? "Đang tải..."
+                        : `${user.coins.toLocaleString()} xu`}
+                    </span>
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }}>
+                    <label style={{ display: "block", marginBottom: "5px" }}>
+                      Số xu muốn sử dụng (1 xu = 1 VND):
+                    </label>
+                    <input
+                      type="number"
+                      value={coinsToUse}
+                      onChange={handleCoinsChange}
+                      min="0"
+                      max={Math.min(user.coins, originalTotalPrice)}
+                      style={{
+                        width: "100%",
+                        padding: "8px",
+                        border: "1px solid #ddd",
+                        borderRadius: "4px",
+                      }}
+                      placeholder="Nhập số xu muốn sử dụng"
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }}>
+                    <span style={{ fontWeight: "bold" }}>Tiết kiệm được: </span>
+                    <span style={{ color: "#28a745", fontWeight: "bold" }}>
+                      {coinsToUse.toLocaleString()} VND
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <button
+                      onClick={handleApplyCoins}
+                      disabled={coinsToUse === 0}
+                      style={{
+                        padding: "8px 16px",
+                        background: coinsToUse === 0 ? "#ccc" : "#28a745",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: coinsToUse === 0 ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      Áp dụng xu
+                    </button>
+                    <button
+                      onClick={handleCancelCoins}
+                      style={{
+                        padding: "8px 16px",
+                        background: "#dc3545",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Hủy áp dụng
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {coinsApplied > 0 && (
+                <div
+                  style={{
+                    marginTop: "10px",
+                    padding: "10px",
+                    background: "#d4edda",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <span style={{ color: "#155724", fontWeight: "bold" }}>
+                    ✓ Đã áp dụng {coinsApplied.toLocaleString()} xu
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
           <div
             className="PaymentTypeHolder"
             style={{
@@ -261,14 +506,33 @@ const PaymentPage = () => {
               </p>
             </div>
             <div className="tamtinhVanChuyen">
-              <label style={{ paddingLeft: "10px" }}>
-                Tổng tiền (gồm phí vận chuyển):
-              </label>
+              <label style={{ paddingLeft: "10px" }}>Phí vận chuyển:</label>
               <p className="tamtinhVanChuyen2">
-                {(
-                  lastOrder.totalItemPrice + lastOrder.shippingPrice
-                )?.toLocaleString() || 0}{" "}
-                VND
+                {lastOrder.shippingPrice?.toLocaleString() || 0} VND
+              </p>
+            </div>
+            {coinsApplied > 0 && (
+              <div
+                className="coins-discount"
+                style={{ marginBottom: "10px", color: "#28a745" }}
+              >
+                <label style={{ paddingLeft: "10px" }}>Giảm giá từ xu:</label>
+                <p style={{ margin: 0, fontWeight: "bold" }}>
+                  -{coinsApplied.toLocaleString()} VND
+                </p>
+              </div>
+            )}
+            <div
+              className="total-payment"
+              style={{
+                borderTop: "1px solid #ddd",
+                paddingTop: "10px",
+                fontWeight: "bold",
+              }}
+            >
+              <label style={{ paddingLeft: "10px" }}>Tổng thanh toán:</label>
+              <p style={{ margin: 0, fontSize: "18px", color: "#dc3545" }}>
+                {finalTotalPrice.toLocaleString()} VND
               </p>
             </div>
           </div>

@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import GameService from "../../../services/GameService";
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import styles from "./MiniGamePage.module.css";
 import ButtonFormComponent from "../../../components/ButtonFormComponent/ButtonFormComponent";
+import { updateUserCoins } from "../../../redux/slides/userSlide";
 
 const MiniGamePage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [puzzle, setPuzzle] = useState(null);
   const [userAnswer, setUserAnswer] = useState("");
   const [result, setResult] = useState(null);
@@ -20,6 +25,36 @@ const MiniGamePage = () => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [showRegret, setShowRegret] = useState(false);
   const [flyingChar, setFlyingChar] = useState(null);
+  const [userCoins, setUserCoins] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Kiểm tra đăng nhập
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    setIsLoggedIn(!!token);
+
+    if (token) {
+      // Lấy số xu của user
+      const fetchUserCoins = async () => {
+        try {
+          console.log("MiniGame: Fetching user coins...");
+          const response = await GameService.checkCoins();
+          console.log("MiniGame: Coins response:", response);
+          if (response.success) {
+            console.log("MiniGame: Setting coins to:", response.data.coins);
+            setUserCoins(response.data.coins);
+            // Cập nhật xu trong Redux
+            dispatch(updateUserCoins(response.data.coins));
+          } else {
+            console.log("MiniGame: Response not successful:", response);
+          }
+        } catch (error) {
+          console.error("MiniGame: Error fetching user coins:", error);
+        }
+      };
+      fetchUserCoins();
+    }
+  }, [dispatch]);
 
   // Lấy ô chữ khi component mount
   useEffect(() => {
@@ -31,23 +66,28 @@ const MiniGamePage = () => {
           setMissingChars(response.data.missingChars || []);
           setHiddenIndices(response.data.hiddenIndices || []);
           setCurrentPuzzle(response.data.puzzle);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching puzzle:", error);
+        setLoading(false);
+      }
+    };
 
-          // Lấy lượt chơi từ localStorage
-          const today = new Date().toISOString().split("T")[0];
-          const savedAttempts = localStorage.getItem(
-            `puzzle_attempts_${today}`
-          );
-          const savedCompleted = localStorage.getItem(
-            `puzzle_completed_${today}`
-          );
+    const fetchUserProgress = async () => {
+      if (!isLoggedIn) return;
 
-          if (savedAttempts) {
-            setAttempts(parseInt(savedAttempts));
-          }
-          if (savedCompleted === "true") {
-            setIsCompleted(true);
+      try {
+        const progressResponse = await GameService.getUserPuzzleProgress();
+        if (progressResponse.success) {
+          const { attempts: serverAttempts, isCompleted: serverCompleted } =
+            progressResponse.data;
+          setAttempts(serverAttempts);
+          setIsCompleted(serverCompleted);
+
+          // Nếu đã hoàn thành, hiển thị đáp án và lấy thông tin sản phẩm
+          if (serverCompleted) {
             setShowAnswer(true);
-            // Nếu đã hoàn thành, lấy thông tin sản phẩm
             try {
               const productResponse = await GameService.getProductInfo();
               if (productResponse.success) {
@@ -58,18 +98,18 @@ const MiniGamePage = () => {
             }
           }
         }
-        setLoading(false);
       } catch (error) {
-        console.error("Error fetching puzzle:", error);
-        setLoading(false);
+        console.error("Error fetching user progress:", error);
       }
     };
+
     fetchPuzzle();
-  }, []);
+    fetchUserProgress();
+  }, [isLoggedIn]);
 
   // Xử lý click vào chữ cái gợi ý với hiệu ứng bay
   const handleHintClick = (char) => {
-    if (isCompleted || attempts >= maxAttempts) return;
+    if (isCompleted || attempts >= maxAttempts || !isLoggedIn) return;
 
     // Tìm vị trí ô trống đầu tiên chưa được điền
     const puzzleArray = currentPuzzle.split("");
@@ -97,6 +137,14 @@ const MiniGamePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!isLoggedIn) {
+      setResult({
+        success: false,
+        message: "Vui lòng đăng nhập để chơi game!",
+      });
+      return;
+    }
+
     if (attempts >= maxAttempts) {
       setResult({
         success: false,
@@ -108,24 +156,28 @@ const MiniGamePage = () => {
     try {
       const response = await GameService.submitAnswer(userAnswer);
       if (response.success) {
-        const { isCorrect, message } = response.data;
+        const {
+          isCorrect,
+          message,
+          coinsEarned,
+          totalCoins,
+          attempts: serverAttempts,
+          remainingAttempts,
+          isCompleted: serverCompleted,
+        } = response.data;
 
-        // Cập nhật lượt chơi
-        const newAttempts = attempts + 1;
-        setAttempts(newAttempts);
+        // Cập nhật số xu
+        setUserCoins(totalCoins);
+        // Cập nhật xu trong Redux
+        dispatch(updateUserCoins(totalCoins));
 
-        // Lưu vào localStorage
-        const today = new Date().toISOString().split("T")[0];
-        localStorage.setItem(
-          `puzzle_attempts_${today}`,
-          newAttempts.toString()
-        );
+        // Cập nhật lượt chơi từ server
+        setAttempts(serverAttempts);
+        setIsCompleted(serverCompleted);
 
         if (isCorrect) {
-          setIsCompleted(true);
           setShowAnswer(true);
           setShowCelebration(true);
-          localStorage.setItem(`puzzle_completed_${today}`, "true");
 
           // Ẩn hiệu ứng chúc mừng sau 3 giây
           setTimeout(() => {
@@ -141,7 +193,7 @@ const MiniGamePage = () => {
           } catch (error) {
             console.error("Error fetching product:", error);
           }
-        } else if (newAttempts >= maxAttempts) {
+        } else if (serverCompleted) {
           // Hết lượt chơi
           setShowAnswer(true);
           setShowRegret(true);
@@ -167,15 +219,57 @@ const MiniGamePage = () => {
       }
     } catch (error) {
       console.error("Error submitting answer:", error);
-      setResult({ success: false, message: "Đã có lỗi xảy ra!" });
+      if (error.response?.status === 401) {
+        setResult({
+          success: false,
+          message: "Vui lòng đăng nhập để chơi game!",
+        });
+      } else {
+        setResult({ success: false, message: "Đã có lỗi xảy ra!" });
+      }
     }
   };
 
   const remainingAttempts = maxAttempts - attempts;
 
+  // Khi nhấn vào sản phẩm
+  const handleDetailProduct = () => {
+    if (product) {
+      navigate("/view-product-detail", {
+        state: {
+          productId: product.id,
+          productName: product.name,
+          productSize: product.size || "Không có",
+          productImage: product.image,
+          productDescription: product.description || "Không có mô tả",
+          productCategory: product.category || "Không có",
+          productPrice: product.price,
+        },
+      });
+    } else {
+      alert("Không tìm thấy thông tin sản phẩm!");
+    }
+  };
+
   return (
     <div className="container-xl">
       <h2 className={styles.title}>Minigame Giải Mã Ô Chữ</h2>
+
+      {/* Hiển thị số xu */}
+      {isLoggedIn && (
+        <div className={styles.coinsDisplay}>
+          <span className={styles.coinsText}>
+            Xu hiện tại: {userCoins.toLocaleString()} xu
+          </span>
+        </div>
+      )}
+
+      {/* Thông báo đăng nhập */}
+      {!isLoggedIn && (
+        <div className={styles.loginNotice}>
+          <p>Vui lòng đăng nhập để chơi game và nhận xu!</p>
+        </div>
+      )}
 
       {/* Hiệu ứng chúc mừng */}
       {showCelebration && (
@@ -242,28 +336,31 @@ const MiniGamePage = () => {
           )}
 
           {/* Gợi ý chữ cái */}
-          {!isCompleted && puzzle.hintChars && puzzle.hintChars.length > 0 && (
-            <div className={styles.hints}>
-              <h4>Gợi ý chữ cái:</h4>
-              <div className={styles.hintChars}>
-                {puzzle.hintChars.map((char, index) => (
-                  <button
-                    key={index}
-                    className={styles.hintChar}
-                    onClick={() => handleHintClick(char)}
-                    disabled={attempts >= maxAttempts}
-                  >
-                    {char}
-                  </button>
-                ))}
+          {!isCompleted &&
+            puzzle.hintChars &&
+            puzzle.hintChars.length > 0 &&
+            isLoggedIn && (
+              <div className={styles.hints}>
+                <h4>Gợi ý chữ cái:</h4>
+                <div className={styles.hintChars}>
+                  {puzzle.hintChars.map((char, index) => (
+                    <button
+                      key={index}
+                      className={styles.hintChar}
+                      onClick={() => handleHintClick(char)}
+                      disabled={attempts >= maxAttempts}
+                    >
+                      {char}
+                    </button>
+                  ))}
+                </div>
+                <p className={styles.hintText}>
+                  Click vào chữ cái để điền vào ô trống
+                </p>
               </div>
-              <p className={styles.hintText}>
-                Click vào chữ cái để điền vào ô trống
-              </p>
-            </div>
-          )}
+            )}
 
-          {!isCompleted && (
+          {!isCompleted && isLoggedIn && (
             <>
               <div className={styles.attempts}>
                 <p>Lượt chơi còn lại: {remainingAttempts}</p>
@@ -318,7 +415,7 @@ const MiniGamePage = () => {
                   discount={product.discount}
                   averageRating={product.rating}
                   totalRatings={product.totalRatings || 0}
-                  onClick={() => {}} // Có thể thêm navigation đến trang chi tiết
+                  onClick={handleDetailProduct}
                 />
               </div>
             </div>
