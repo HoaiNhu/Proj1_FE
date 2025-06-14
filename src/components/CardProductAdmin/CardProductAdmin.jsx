@@ -11,7 +11,7 @@ const CardProductAdmin = ({
   title,
   discount,
   price,
-  onUpdate,
+  onClick,
   averageRating = 5.0,
   totalRatings = 0,
   size,
@@ -33,9 +33,9 @@ const CardProductAdmin = ({
 
 
   const handleUpdateClick = () => {
-    navigate("/update-product"); // Navigate to the update product page
-    if (onUpdate) {
-      onUpdate(); // Call the onUpdate function passed from the parent
+    navigate("/admin/update-product/"); // Navigate to the update product page
+    if (onClick) {
+      onClick(); // Call the onUpdate function passed from the parent
     }
   };
 
@@ -45,7 +45,6 @@ const CardProductAdmin = ({
       className={type === "secondary" ? styles.secondary : styles.primary}
     >
       <Card.Img className={styles.ProductImage}
-        onUpdate={onUpdate}
         src={img}
         alt={title} />
 
@@ -79,7 +78,7 @@ const CardProductAdmin = ({
               {`${price.toLocaleString("en-US")} VND`}
             </p>
           )}
-          <button onUpdate={handleUpdateClick} className={styles.cartButton}>
+          <button onClick={handleUpdateClick} className={styles.cartButton}>
             Chỉnh sửa <UpdateIcon />
           </button>
         </Col>

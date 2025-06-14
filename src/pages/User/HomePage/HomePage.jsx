@@ -64,31 +64,10 @@ const HomePage = () => {
   }, []);
 
   // Ví dụ, thay vì dùng promos trong handleSliderImageClick, bạn có thể:
-  const handleSliderImageClick = async (clickedImage) => {
-    const allPromos = promos; // HOẶC: truyền promos từ props hoặc callback
-    const promo = allPromos.find((promo) => promo.discountImage === clickedImage);
-    if (promo) {
-      setSelectedPromo(promo);
-      const productIds = promo.discountProduct || [];
-    console.log("KHUYEN MAI LIST: ", promos)
-
-      try {
-        const allProducts = await getAllproduct();
-        //console.log("ALL PRODUCT: ", allProducts);
-
-        const filteredProducts = allProducts.data.filter(product =>
-          productIds.some(p => p._id === product._id)
-        );
-        
-    console.log("KHUYEN MAI: ", filteredProducts)
-
-
-        setPromoProducts(filteredProducts);
-      } catch (error) {
-        setPromoProducts([]);
-      }
-    }
-  };
+  const handleSliderImageClick  = () => {
+      navigate("/products", { state: { showPromo: true } });
+    };
+  
 
 
   //Lấy danh sách tin tức:
