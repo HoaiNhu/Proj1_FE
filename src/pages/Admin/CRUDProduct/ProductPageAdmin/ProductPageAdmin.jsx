@@ -198,15 +198,18 @@ const ProductPageAdmin = () => {
 
                 return (
                   <CardProductAdmin
-                    key={product._id}
-                    className="col productadmin__item"
-                    type={"primary"}
-                    img={imageUrl}
-                    title={product.productName}
-                    price={`${product.productPrice.toLocaleString('en-US')} VND`}
-                    onUpdate={() => handleUpdate(product._id)}
-                    productId={product._id}
-                  />
+  key={product._id}
+  className="col productadmin__item"
+  type="primary"
+  img={imageUrl}
+  title={product.productName}
+  price={product.productPrice} // phải là số
+  discount={product.productDiscount || 0}
+  averageRating={product.averageRating}
+  totalRatings={product.totalRatings}
+  onUpdate={() => handleUpdate(product._id)} // truyền đúng hàm
+/>
+
                 );
               })
             ) : (

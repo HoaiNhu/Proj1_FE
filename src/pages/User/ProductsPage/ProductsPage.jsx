@@ -224,7 +224,7 @@ const handlePromoProductsClick = async () => {
                   <SideMenuComponent
                     key={category._id}
                     value={category._id}
-                    onClick={() => handlePromoProductsClick(category._id, category.categoryName)}
+                    onClick={() => handleCategoryClick(category._id, category.categoryName)}
                     isActive={currentCategory === category._id}
                   >
                     {category.categoryName}

@@ -70,6 +70,8 @@ const HomePage = () => {
     if (promo) {
       setSelectedPromo(promo);
       const productIds = promo.discountProduct || [];
+    console.log("KHUYEN MAI LIST: ", promos)
+
       try {
         const allProducts = await getAllproduct();
         //console.log("ALL PRODUCT: ", allProducts);
