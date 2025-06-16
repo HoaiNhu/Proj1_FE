@@ -79,6 +79,13 @@ const PaymentPage = () => {
     }
   }, [user, access_token]);
 
+  // Đồng bộ trạng thái đơn hàng với backend khi component mount
+  useEffect(() => {
+    if (lastOrder?.orderId && access_token) {
+      syncOrderWithBackend();
+    }
+  }, [lastOrder?.orderId, access_token]);
+
   const fetchUserCoins = async () => {
     try {
       setIsLoadingCoins(true);
@@ -90,6 +97,34 @@ const PaymentPage = () => {
       console.error("Error fetching user coins:", error);
     } finally {
       setIsLoadingCoins(false);
+    }
+  };
+
+  const syncOrderWithBackend = async () => {
+    try {
+      const response = await getDetailsOrder(lastOrder.orderId);
+      if (response?.status === "OK" && response.data) {
+        const backendOrder = response.data;
+
+        // Cập nhật lastOrder trong Redux với thông tin từ backend
+        dispatch(
+          updateOrder({
+            orderId: lastOrder.orderId,
+            updatedData: {
+              totalPrice: backendOrder.totalPrice,
+              coinsUsed: backendOrder.coinsUsed || 0,
+              // Có thể thêm các trường khác nếu cần
+            },
+          })
+        );
+
+        // Cập nhật coinsApplied nếu có xu đã được áp dụng
+        if (backendOrder.coinsUsed && backendOrder.coinsUsed > 0) {
+          setCoinsApplied(backendOrder.coinsUsed);
+        }
+      }
+    } catch (error) {
+      console.error("Error syncing order with backend:", error);
     }
   };
 

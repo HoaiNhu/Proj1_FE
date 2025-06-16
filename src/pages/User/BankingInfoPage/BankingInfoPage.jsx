@@ -6,6 +6,8 @@ import BackIconComponent from "../../../components/BackIconComponent/BackIconCom
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart } from "../../../redux/slides/cartSlide";
+import { updateOrder } from "../../../redux/slides/orderSlide";
+import { getDetailsOrder } from "../../../services/OrderService";
 
 const BankingInfoPage = () => {
   const navigate = useNavigate();
@@ -26,10 +28,41 @@ const BankingInfoPage = () => {
   const orderDetails = useSelector((state) => state.order);
   const lastOrder = orderDetails.orders?.[orderDetails.orders.length - 1] || {};
 
+  // Đồng bộ trạng thái đơn hàng với backend khi component mount
+  useEffect(() => {
+    if (lastOrder?.orderId) {
+      syncOrderWithBackend();
+    }
+  }, [lastOrder?.orderId]);
+
+  const syncOrderWithBackend = async () => {
+    try {
+      const response = await getDetailsOrder(lastOrder.orderId);
+      if (response?.status === "OK" && response.data) {
+        const backendOrder = response.data;
+
+        // Cập nhật lastOrder trong Redux với thông tin từ backend
+        dispatch(
+          updateOrder({
+            orderId: lastOrder.orderId,
+            updatedData: {
+              totalPrice: backendOrder.totalPrice,
+              coinsUsed: backendOrder.coinsUsed || 0,
+            },
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Error syncing order with backend:", error);
+    }
+  };
+
+  // Tính toán tổng tiền sau khi trừ xu
   const originalTotalPrice =
     (lastOrder.totalItemPrice || 0) + (lastOrder.shippingPrice || 0);
   const finalTotalPrice =
-    lastOrder.totalPrice || originalTotalPrice - coinsApplied;
+    lastOrder.totalPrice || originalTotalPrice - (lastOrder.coinsUsed || 0);
+  const coinsAppliedFromOrder = lastOrder.coinsUsed || 0;
 
   const resolvedOrderItems =
     lastOrder.orderItems?.map((item) => {
@@ -176,7 +209,7 @@ const BankingInfoPage = () => {
           <div className="order-total">
             Tổng tiền: {finalTotalPrice?.toLocaleString() || 0} VND
           </div>
-          {coinsApplied > 0 && (
+          {coinsAppliedFromOrder > 0 && (
             <div
               className="coins-info"
               style={{
@@ -196,7 +229,7 @@ const BankingInfoPage = () => {
                   Giảm giá từ xu:{" "}
                 </span>
                 <span style={{ color: "#28a745" }}>
-                  -{coinsApplied?.toLocaleString()} VND
+                  -{coinsAppliedFromOrder?.toLocaleString()} VND
                 </span>
               </div>
               <div>
