@@ -36,11 +36,10 @@ const OrderInformationPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const mutation = useMutationHook((data) => OrderService.createOrder(data));
-  const shippingPrice = 30000; // Phí vận chuyển cố định
-
   const user = useSelector((state) => state.user); // Lấy thông tin user từ Redux
 
   const isLoggedIn = !!user?.userEmail;
+  const shippingPrice = isLoggedIn ? 0 : 30000;
   const [wards, setWards] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [cities, setCities] = useState([]);
@@ -104,7 +103,6 @@ const OrderInformationPage = () => {
 
     // 2. Tính lại tổng tiền hàng và tổng tiền đơn
     const totalItemPrice = orderItems.reduce((sum, item) => sum + item.total, 0);
-    const shippingPrice = 30000;
     const totalPrice = totalItemPrice + shippingPrice;
 
     // 3. Ghép dữ liệu cho API
@@ -217,9 +215,9 @@ const OrderInformationPage = () => {
 
   // Tổng tiền hàng
   const toNumber = (price) =>
-  typeof price === "number"
-    ? price
-    : parseFloat(String(price).replace(/[^0-9.-]+/g, ""));
+    typeof price === "number"
+      ? price
+      : parseFloat(String(price).replace(/[^0-9.-]+/g, ""));
   console.log("selectedPro", selectedProducts);
 
   const totalItemPrice = selectedProducts.reduce((sum, product) => {
@@ -234,7 +232,7 @@ const OrderInformationPage = () => {
 
   const totalPrice = useMemo(
     () => totalItemPrice + shippingPrice,
-    [totalItemPrice]
+    [totalItemPrice, shippingPrice]
   );
 
   console.log("totalPrice", totalPrice);
@@ -368,10 +366,18 @@ const OrderInformationPage = () => {
           </tbody>
 
           <tfoot>
+            {/* --- phí vận chuyển --- */}
             <tr className="LineProduct">
-              <td colSpan="3">Phí vận chuyển:</td>
-              <td>{shippingPrice.toLocaleString()} VND</td>
+              <td >Phí vận chuyển: 
+            </td>
+              <td style={{ fontWeight: "bold", fontSize: "2rem" }}
+              >{shippingPrice.toLocaleString()} VND</td>
             </tr>
+
+            {/* --- gợi ý đăng nhập để free ship --- */}
+           
+
+            {/* --- tổng tiền --- */}
             <tr
               className="total-price d-flex align-items-center justify-content-between"
               style={{ padding: "20px" }}
@@ -391,14 +397,21 @@ const OrderInformationPage = () => {
               </td>
             </tr>
           </tfoot>
+
         </table>
       </div>
       <div className="question" style={{ margin: "10px 50px" }}>
         <p className="login-question">
-          Bạn đã có tài khoản?{" "}
-          <Link to="./login" target="_blank" className="login-link">
-            Đăng nhập
-          </Link>
+          {shippingPrice === 30000 && (
+              <span>
+                Bạn đã có tài khoản?{" "}
+                  <Link to="/login" className="login-link" target="blank">
+                   Đăng nhập 
+                  </Link>
+                  <span> để&nbsp;<strong>miễn phí vận chuyển</strong></span>
+              </span>
+            )}
+        
         </p>
       </div>
 

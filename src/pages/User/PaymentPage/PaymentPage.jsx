@@ -271,6 +271,7 @@ const PaymentPage = () => {
               paymentCode: response.data.paymentCode,
               expiresAt: response.data.expiresAt,
               adminBankInfo: response.data.adminBankInfo,
+              coinsApplied: response.data.coinsUsed
             },
           });
         } else {

@@ -61,7 +61,9 @@
   background: var(--White, #fff);
   box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
 }
-
+.login-link{
+  scale: 0.2;
+}
 .ProductInforHear,
 .PriceHeader,
 .QuantityHeader,
