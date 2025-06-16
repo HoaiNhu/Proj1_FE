@@ -241,7 +241,7 @@ const PaymentPage = () => {
         } else {
           alert(
             "Thanh toán PayPal thất bại: " +
-              (response.message || "Lỗi không xác định")
+            (response.message || "Lỗi không xác định")
           );
         }
       } catch (error) {
@@ -491,7 +491,7 @@ const PaymentPage = () => {
                 key={index}
                 image={product.img}
                 name={product.name}
-                price={(product.price || 0).toLocaleString() + " VND"}
+                price={(product.price * (1 - product.discountPercent / 100) || 0).toLocaleString() + " VND"}
                 quantity={product.quantity}
               />
             ))
@@ -530,10 +530,10 @@ const PaymentPage = () => {
                 fontWeight: "bold",
               }}
             >
-              <label style={{ paddingLeft: "10px" }}>Tổng thanh toán:</label>
-              <p style={{ margin: 0, fontSize: "18px", color: "#dc3545" }}>
+              <label style={{ paddingLeft: "10px" }}>Tổng:</label>
+              <span className="finalPrice">
                 {finalTotalPrice.toLocaleString()} VND
-              </p>
+              </span>
             </div>
           </div>
         </div>

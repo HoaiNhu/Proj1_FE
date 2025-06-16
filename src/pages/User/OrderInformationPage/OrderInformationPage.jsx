@@ -11,6 +11,7 @@ import { useMutationHook } from "../../../hooks/useMutationHook";
 import * as OrderService from "../../../services/OrderService";
 import * as UserService from "../../../services/UserService";
 import { addOrder, setOrderDetails } from "../../../redux/slides/orderSlide";
+import * as DiscountService from "../../../services/DiscountService";
 
 const OrderInformationPage = () => {
   const location = useLocation();
@@ -28,8 +29,8 @@ const OrderInformationPage = () => {
       selectedProductDetails.length > 0
       ? selectedProductDetails
       : Array.isArray(location.state?.selectedProductDetails)
-      ? location.state.selectedProductDetails
-      : [];
+        ? location.state.selectedProductDetails
+        : [];
   }, [selectedProductDetails, location.state]);
 
   const navigate = useNavigate();
@@ -43,44 +44,89 @@ const OrderInformationPage = () => {
   const [wards, setWards] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [cities, setCities] = useState([]);
+  const [activeDiscounts, setActiveDiscounts] = useState([])
 
   const handleClickBack = () => {
     navigate("/cart");
   };
+
+  useEffect(() => {
+    const fetchActiveDiscounts = async () => {
+      try {
+        const data = await DiscountService.getAllDiscount();
+        const now = Date.now();
+        const filtered = data.data.filter((discount) => {
+          const start = new Date(discount.discountStartDate).getTime();
+          const end = new Date(discount.discountEndDate).getTime();
+          return start <= now && end >= now;
+        });
+        setActiveDiscounts(filtered); // ✅ đúng cách
+      } catch (err) {
+        console.error("Lỗi khi lấy discount:", err);
+      }
+    };
+
+    fetchActiveDiscounts();
+  }, []);
+
+  // Lấy % giảm giá cho một product (đồng bộ)
+  const getDiscountValue = (productId) => {
+    const matched = activeDiscounts.find((discount) =>
+      discount.discountProduct?.some((pro) =>
+        typeof pro === "string" ? pro === productId : pro._id === productId
+      )
+    );
+    return matched?.discountValue || 0;      // Trả về 0 nếu không có khuyến mãi
+  };
+
+
+
   const handleClickNext = async () => {
-    const orderData = {
-      orderItems: selectedProducts.map((product) => ({
-        product: product.id, // Gắn ID của sản phẩm vào trường `product`
-        quantity: product.quantity, // Số lượng
-        total:
+    // 1. Tạo orderItems với Promise.all để chờ discount (nếu getDiscountValue async)
+    const orderItems = await Promise.all(
+      selectedProducts.map(async (product) => {
+        const discountPercent = getDiscountValue(product.id); // đã có biến
+        console.log("DISCOUNT VALUE: ", discountPercent)
+
+        const priceNum =
           typeof product.price === "number"
-            ? product.price * product.quantity
-            : parseFloat(product.price.replace(/[^0-9.-]+/g, "")) *
-              product.quantity,
-      })),
+            ? product.price
+            : parseFloat(product.price.replace(/[^0-9.-]+/g, ""));
+
+        return {
+          product: product.id,
+          quantity: product.quantity,
+          discountPercent,                                          // lưu %
+          total: priceNum * product.quantity * (1 - discountPercent / 100), // tính tiền
+        };
+      })
+    );
+
+    // 2. Tính lại tổng tiền hàng và tổng tiền đơn
+    const totalItemPrice = orderItems.reduce((sum, item) => sum + item.total, 0);
+    const shippingPrice = 30000;
+    const totalPrice = totalItemPrice + shippingPrice;
+
+    // 3. Ghép dữ liệu cho API
+    const orderData = {
+      orderItems,
       shippingAddress,
       paymentMethod: "Online Payment",
       userId: user?.id || null,
       deliveryDate,
       deliveryTime,
       orderNote,
-      shippingPrice: 30000,
+      shippingPrice,
       status,
       totalItemPrice,
       totalPrice,
     };
 
-    console.log("orderData", orderData);
-
     try {
-      // Gửi đến API và lấy phản hồi
       const response = await mutation.mutateAsync(orderData);
 
       if (response?.data?._id) {
-        // Thêm orderId vào orderData
         const fullOrderData = { ...orderData, orderId: response.data._id };
-
-        // Lưu selectedProductDetails vào Redux
         dispatch(
           setOrderDetails({
             selectedProductDetails: selectedProducts,
@@ -88,17 +134,9 @@ const OrderInformationPage = () => {
             totalPrice,
           })
         );
-
-        // Lưu vào localStorage thông tin đơn hàng
-        // localStorage.setItem("orderData", JSON.stringify(fullOrderData));
-
-        // Lưu vào Redux store
         dispatch(addOrder(fullOrderData));
 
-        // Điều hướng đến trang thanh toán
-        navigate("/payment", {
-          state: { ...fullOrderData },
-        });
+        navigate("/payment", { state: fullOrderData });
       } else {
         console.error("Failed to create order:", response);
       }
@@ -106,6 +144,7 @@ const OrderInformationPage = () => {
       console.error("Error creating order:", error);
     }
   };
+
 
   // const handleClickNext = async () => {
   //   const orderData = {
@@ -177,34 +216,21 @@ const OrderInformationPage = () => {
   const [status, setStatus] = useState("PENDING"); // Trạng thái đơn hàng
 
   // Tổng tiền hàng
+  const toNumber = (price) =>
+  typeof price === "number"
+    ? price
+    : parseFloat(String(price).replace(/[^0-9.-]+/g, ""));
   console.log("selectedPro", selectedProducts);
 
-  const totalItemPrice = Array.isArray(selectedProducts)
-    ? selectedProducts.reduce((acc, product) => {
-        console.log("produtcccc", product);
-        console.log("typeof product.price:", typeof product.price);
-        // const price = String(product.price) || 0;
-        // const priceStr =
-        //   typeof product.price === "number"
-        //     ? product.price.toString()
-        //     : product.price;
-        const price =
-          typeof product.price === "number"
-            ? product.price
-            : parseFloat(product.price.replace(/[^0-9.-]+/g, ""));
+  const totalItemPrice = selectedProducts.reduce((sum, product) => {
+    const discount = getDiscountValue(product.id);
+    const priceNum = toNumber(product.price);
+    return sum + priceNum * product.quantity * (1 - discount / 100);
+  }, 0);
 
-        // if (typeof product.price === "number") {
-        //   price = product.price; // Nếu là số, dùng trực tiếp
-        // } else if (typeof product.price === "string") {
-        //   price = parseFloat(product.price.replace(/[^0-9.-]+/g, ""));
-        // } else {
-        //   console.warn("Unexpected price type:", product.price);
-        // }
-        return acc + price * product.quantity;
-      }, 0)
-    : 0;
+  // Tổng tiền đơn = tiền hàng + ship
+  //const totalPrice = totalItemPrice + shippingPrice;
 
-  console.log("totalItemPrice", totalItemPrice);
 
   const totalPrice = useMemo(
     () => totalItemPrice + shippingPrice,
@@ -228,6 +254,10 @@ const OrderInformationPage = () => {
       }));
     }
   }, [isLoggedIn, user]);
+
+  // helpers.js (hoặc đặt ngay trong component)
+
+
 
   const handleInputChange = (field) => (e) => {
     const value = e.target.value;
@@ -303,31 +333,40 @@ const OrderInformationPage = () => {
             </tr>
           </thead>
           <tbody>
-            {selectedProducts.map((product) => (
-              <tr key={product.id} className="LineProduct">
-                <td className="ProductInfor">
-                  <ProductInfor
-                    image={product.img}
-                    name={product.title}
-                    size={product.size || "Không có"}
-                  />
-                </td>
-                <td className="PriceProduct">{product.price}</td>
-                <td className="QuantityBtn">x {product.quantity}</td>
-                <td className="Money">
-                  <p className="MoneyProduct">
-                    {(
-                      (typeof product.price === "number"
-                        ? product.price
-                        : parseFloat(product.price.replace(/[^0-9.-]+/g, ""))) *
-                      product.quantity
-                    ).toLocaleString()}{" "}
-                    VND
-                  </p>
-                </td>
-              </tr>
-            ))}
+            {selectedProducts.map((product) => {
+              const discount = getDiscountValue(product.id);
+              const priceNum = toNumber(product.price);
+              const finalUnit = priceNum * (1 - discount / 100);
+              const lineTotal = finalUnit * product.quantity;
+
+              return (
+                <tr key={product.id} className="LineProduct">
+                  <td className="ProductInfor">
+                    <ProductInfor
+                      image={product.img}
+                      name={product.title}
+                      size={product.size || "Không có"}
+                    />
+                  </td>
+
+                  {/* Đơn giá sau giảm */}
+                  <td className="PriceProduct">
+                    {finalUnit.toLocaleString()} VND
+                  </td>
+
+                  <td className="QuantityBtn">x {product.quantity}</td>
+
+                  {/* Thành tiền sau giảm */}
+                  <td className="Money">
+                    <p className="MoneyProduct">
+                      {lineTotal.toLocaleString()} VND
+                    </p>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
+
           <tfoot>
             <tr className="LineProduct">
               <td colSpan="3">Phí vận chuyển:</td>

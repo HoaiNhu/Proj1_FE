@@ -146,3 +146,9 @@
   gap: 24px;
   margin-top: 24px;
 }
+
+.finalPrice {
+  margin-left: 15px;
+  font-size: 18px;
+  color: rgb(150, 4, 4);
+}
