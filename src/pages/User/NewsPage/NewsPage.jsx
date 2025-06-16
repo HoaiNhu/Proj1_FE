@@ -1,7 +1,7 @@
 import CardNews from '../../../components/CardNews/CardNews'
 import news from '../../../assets/img/news.jpg'
 import './NewsPage.css'
-import DropdownComponent from '../../../components/DropdownComponent/DropdownComponent'
+import ChatbotComponent from '../../../components/ChatbotComponent/ChatbotComponent'
 import { React, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -90,6 +90,7 @@ const NewsPage = () => {
   return (
     <div>
       <div className="productadmin__top">
+         <ChatbotComponent />
         <h1 className="productadmin__title">TIN TỨC</h1>
       </div>
       <div className='container-xl'

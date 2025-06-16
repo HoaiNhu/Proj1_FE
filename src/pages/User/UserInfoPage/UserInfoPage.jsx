@@ -15,6 +15,7 @@ import Loading from "../../../components/LoadingComponent/Loading";
 import Message from "../../../components/MessageComponent/Message";
 import { getBase64 } from "../../../utils";
 import { useNavigate } from "react-router-dom";
+import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
 
 function UserInfoPage() {
   const user = useSelector((state) => state.user);
@@ -341,6 +342,7 @@ function UserInfoPage() {
   return (
     <div>
       <div className="container-xl">
+         <ChatbotComponent />
         <div className=" user-info__container">
           {statusMessage && (
             <Message

@@ -6,6 +6,7 @@ import CardProduct from "../../../components/CardProduct/CardProduct";
 import styles from "./MiniGamePage.module.css";
 import ButtonFormComponent from "../../../components/ButtonFormComponent/ButtonFormComponent";
 import { updateUserCoins } from "../../../redux/slides/userSlide";
+import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
 
 const MiniGamePage = () => {
   const dispatch = useDispatch();
@@ -253,6 +254,7 @@ const MiniGamePage = () => {
 
   return (
     <div className="container-xl">
+       <ChatbotComponent />
       <h2 className={styles.title}>Minigame Giải Mã Ô Chữ</h2>
 
       {/* Hiển thị số xu */}

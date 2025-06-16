@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import "./NewsDetailPage.css";
 import "../../../assets/css/style.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import img1 from "../../../assets/img/hero_2.jpg";
+import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 const NewsDetailPage = () => {
     const navigate = useNavigate();
@@ -23,6 +23,7 @@ const NewsDetailPage = () => {
     <div>
       <div className="container-xl ">
         {/* title */}
+         <ChatbotComponent />
         <div className="news">
           {/* news top */}
           <div className="news__top">

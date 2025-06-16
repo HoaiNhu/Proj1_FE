@@ -3,12 +3,14 @@ import "./IntroducePage.css";
 import "../../../assets/css/style.css";
 import img1 from "../../../assets/img/hero_2.jpg";
 import story from "../../../assets/img/story.jpg";
+import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
 
 const IntroducePage = () => {
   return (
     <div>
       <div className="container-xl introduce-container">
         {/* title */}
+         <ChatbotComponent />
         <div className="introduce">
           {/* introduce top */}
           <div className="introduce__top">

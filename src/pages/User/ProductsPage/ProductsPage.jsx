@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ProductsPage.css";
 import SideMenuComponent from "../../../components/SideMenuComponent/SideMenuComponent";
+import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -183,6 +184,7 @@ const ProductsPage = () => {
   return (
     <div>
       <div className="container-xl product-container">
+         <ChatbotComponent />
         <div className="product">
           <div className="product__top">
             <h1 className="product__title">SẢN PHẨM</h1>
