@@ -17,6 +17,7 @@ const BankingInfoPage = () => {
     expiresAt,
     adminBankInfo,
     selectedProductIds,
+    coinsApplied = 0,
   } = location.state || {};
   const [paymentStatus, setPaymentStatus] = useState("PENDING");
   const [orderStatus, setOrderStatus] = useState("");
@@ -24,6 +25,11 @@ const BankingInfoPage = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const orderDetails = useSelector((state) => state.order);
   const lastOrder = orderDetails.orders?.[orderDetails.orders.length - 1] || {};
+
+  const originalTotalPrice =
+    (lastOrder.totalItemPrice || 0) + (lastOrder.shippingPrice || 0);
+  const finalTotalPrice =
+    lastOrder.totalPrice || originalTotalPrice - coinsApplied;
 
   const resolvedOrderItems =
     lastOrder.orderItems?.map((item) => {
@@ -168,12 +174,41 @@ const BankingInfoPage = () => {
             <p>Không có sản phẩm nào trong đơn hàng</p>
           )}
           <div className="order-total">
-            Tổng tiền:{" "}
-            {(
-              lastOrder.totalItemPrice + lastOrder.shippingPrice
-            )?.toLocaleString() || 0}{" "}
-            VND
+            Tổng tiền: {finalTotalPrice?.toLocaleString() || 0} VND
           </div>
+          {coinsApplied > 0 && (
+            <div
+              className="coins-info"
+              style={{
+                marginTop: "10px",
+                padding: "10px",
+                background: "#d4edda",
+                borderRadius: "4px",
+                fontSize: "14px",
+              }}
+            >
+              <div style={{ marginBottom: "5px" }}>
+                <span style={{ fontWeight: "bold" }}>Tổng tiền gốc: </span>
+                <span>{originalTotalPrice?.toLocaleString()} VND</span>
+              </div>
+              <div style={{ marginBottom: "5px" }}>
+                <span style={{ fontWeight: "bold", color: "#28a745" }}>
+                  Giảm giá từ xu:{" "}
+                </span>
+                <span style={{ color: "#28a745" }}>
+                  -{coinsApplied?.toLocaleString()} VND
+                </span>
+              </div>
+              <div>
+                <span style={{ fontWeight: "bold" }}>
+                  Tổng tiền thanh toán:{" "}
+                </span>
+                <span style={{ fontWeight: "bold", color: "#007bff" }}>
+                  {finalTotalPrice?.toLocaleString()} VND
+                </span>
+              </div>
+            </div>
+          )}
           {timeLeft !== null && (
             <div className="expiry-time">
               <p>

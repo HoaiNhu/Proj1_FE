@@ -11,7 +11,10 @@ import { createPayment } from "../../../redux/slides/paymentSlide";
 import { updateUserCoins } from "../../../redux/slides/userSlide";
 import axios from "axios";
 import { getDetailsOrder } from "../../../services/OrderService";
-import { clearSelectedProductDetails } from "../../../redux/slides/orderSlide";
+import {
+  clearSelectedProductDetails,
+  updateOrder,
+} from "../../../redux/slides/orderSlide";
 
 const PaymentPage = () => {
   const location = useLocation();
@@ -147,6 +150,20 @@ const PaymentPage = () => {
       if (response.status === "OK") {
         setCoinsApplied(coinsToUse);
         dispatch(updateUserCoins(response.data.remainingCoins));
+
+        // Cập nhật lastOrder trong Redux với thông tin mới
+        dispatch(
+          updateOrder({
+            orderId: lastOrder.orderId,
+            updatedData: {
+              totalPrice:
+                response.data.updatedOrder?.totalPrice ||
+                originalTotalPrice - coinsToUse,
+              coinsUsed: coinsToUse,
+            },
+          })
+        );
+
         alert(`Đã áp dụng ${coinsToUse} xu thành công!`);
       } else {
         alert(response.message || "Có lỗi xảy ra khi áp dụng xu");
@@ -176,6 +193,19 @@ const PaymentPage = () => {
         setCoinsApplied(0);
         setCoinsToUse(0);
         dispatch(updateUserCoins(response.data.remainingCoins));
+
+        // Cập nhật lastOrder trong Redux với thông tin mới
+        dispatch(
+          updateOrder({
+            orderId: lastOrder.orderId,
+            updatedData: {
+              totalPrice:
+                response.data.updatedOrder?.totalPrice || originalTotalPrice,
+              coinsUsed: 0,
+            },
+          })
+        );
+
         setShowCoinsSection(false);
         alert("Đã hủy áp dụng xu thành công!");
       } else {
@@ -241,7 +271,7 @@ const PaymentPage = () => {
         } else {
           alert(
             "Thanh toán PayPal thất bại: " +
-            (response.message || "Lỗi không xác định")
+              (response.message || "Lỗi không xác định")
           );
         }
       } catch (error) {
@@ -271,7 +301,7 @@ const PaymentPage = () => {
               paymentCode: response.data.paymentCode,
               expiresAt: response.data.expiresAt,
               adminBankInfo: response.data.adminBankInfo,
-              coinsApplied: response.data.coinsUsed
+              coinsApplied: response.data.coinsUsed,
             },
           });
         } else {
@@ -492,7 +522,11 @@ const PaymentPage = () => {
                 key={index}
                 image={product.img}
                 name={product.name}
-                price={(product.price * (1 - product.discountPercent / 100) || 0).toLocaleString() + " VND"}
+                price={
+                  (
+                    product.price * (1 - product.discountPercent / 100) || 0
+                  ).toLocaleString() + " VND"
+                }
                 quantity={product.quantity}
               />
             ))
