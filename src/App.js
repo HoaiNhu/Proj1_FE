@@ -84,6 +84,62 @@ function App() {
     initAuth();
   }, []);
 
+  // Tự động refresh token trước khi hết hạn
+  useEffect(() => {
+    const setupAutoRefresh = () => {
+      const { decoded } = handleDecoded();
+
+      if (!decoded || !decoded.exp) return;
+
+      // Tính thời gian còn lại của token (tính bằng milliseconds)
+      const timeUntilExpiry = decoded.exp * 1000 - Date.now();
+
+      // Refresh token 1 phút trước khi hết hạn
+      const refreshTime = Math.max(timeUntilExpiry - 60000, 0);
+
+      console.log(
+        `Token sẽ hết hạn sau ${Math.floor(
+          timeUntilExpiry / 1000
+        )} giây. Sẽ refresh sau ${Math.floor(refreshTime / 1000)} giây.`
+      );
+
+      const refreshTimer = setTimeout(async () => {
+        try {
+          console.log("Tự động refresh token...");
+          const data = await UserService.refreshToken();
+          if (data?.access_token) {
+            localStorage.setItem("access_token", data.access_token);
+            console.log("Token đã được refresh thành công");
+
+            // Cập nhật user info với token mới
+            const newDecoded = jwtDecode(data.access_token);
+            if (newDecoded?.id) {
+              await handleGetDetailsUser(newDecoded.id, data.access_token);
+            }
+
+            // Thiết lập lại timer cho lần refresh tiếp theo
+            setupAutoRefresh();
+          }
+        } catch (error) {
+          console.error("Lỗi khi tự động refresh token:", error);
+          // Nếu refresh thất bại, có thể redirect về trang login
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          window.location.href = "/sign-in";
+        }
+      }, refreshTime);
+
+      // Cleanup timer khi component unmount
+      return () => clearTimeout(refreshTimer);
+    };
+
+    // Chỉ thiết lập auto refresh nếu user đã đăng nhập
+    if (user?.id) {
+      const cleanup = setupAutoRefresh();
+      return cleanup;
+    }
+  }, [user?.id]);
+
   //token hết hạn
   UserService.axiosJWT.interceptors.request.use(
     async (config) => {
@@ -98,7 +154,8 @@ function App() {
           decoded = jwtDecode(newAccessToken);
         } catch (error) {
           console.error("Lỗi khi làm mới token", error);
-          return Promise.reject(error);
+          // Không reject ngay, để request có thể tiếp tục với token cũ
+          // Nếu request thất bại, sẽ được xử lý trong response interceptor
         }
       }
 
@@ -106,6 +163,35 @@ function App() {
       return config;
     },
     (error) => Promise.reject(error)
+  );
+
+  // Thêm response interceptor để xử lý lỗi 401
+  UserService.axiosJWT.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        try {
+          const data = await UserService.refreshToken();
+          if (data?.access_token) {
+            localStorage.setItem("access_token", data.access_token);
+            originalRequest.headers["token"] = `Bearer ${data.access_token}`;
+            return UserService.axiosJWT(originalRequest);
+          }
+        } catch (refreshError) {
+          console.error("Không thể refresh token:", refreshError);
+          // Redirect về trang login nếu refresh thất bại
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          window.location.href = "/sign-in";
+        }
+      }
+
+      return Promise.reject(error);
+    }
   );
 
   const handleGetDetailsUser = async (id, token) => {
