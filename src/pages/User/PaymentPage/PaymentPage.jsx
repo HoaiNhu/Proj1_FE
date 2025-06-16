@@ -127,6 +127,7 @@ const PaymentPage = () => {
       return;
     }
 
+    // Kiểm tra số xu mới muốn áp dụng
     if (coinsToUse > user.coins) {
       alert(
         `Bạn chỉ có ${user.coins} xu, không đủ để sử dụng ${coinsToUse} xu`
@@ -134,21 +135,24 @@ const PaymentPage = () => {
       return;
     }
 
-    const maxCoinsCanUse = originalTotalPrice;
+    const maxCoinsCanUse = originalTotalPrice - coinsApplied; // Chỉ còn lại số xu có thể áp dụng
     if (coinsToUse > maxCoinsCanUse) {
-      alert(`Số xu tối đa có thể sử dụng là ${maxCoinsCanUse} xu`);
+      alert(`Số xu tối đa có thể áp dụng thêm là ${maxCoinsCanUse} xu`);
       return;
     }
 
     try {
+      // Gửi tổng số xu muốn áp dụng (bao gồm cả số xu đã áp dụng trước đó)
+      const totalCoinsToApply = coinsApplied + coinsToUse;
+
       const response = await OrderService.applyCoinsToOrder(
         lastOrder.orderId,
-        coinsToUse,
+        totalCoinsToApply, // Gửi tổng số xu muốn áp dụng
         access_token
       );
 
       if (response.status === "OK") {
-        setCoinsApplied(coinsToUse);
+        setCoinsApplied(totalCoinsToApply); // Cập nhật số xu đã áp dụng
         dispatch(updateUserCoins(response.data.remainingCoins));
 
         // Cập nhật lastOrder trong Redux với thông tin mới
@@ -158,13 +162,16 @@ const PaymentPage = () => {
             updatedData: {
               totalPrice:
                 response.data.updatedOrder?.totalPrice ||
-                originalTotalPrice - coinsToUse,
-              coinsUsed: coinsToUse,
+                originalTotalPrice - totalCoinsToApply,
+              coinsUsed: totalCoinsToApply,
             },
           })
         );
 
-        alert(`Đã áp dụng ${coinsToUse} xu thành công!`);
+        const coinsDeducted = response.data.coinsDeducted || coinsToUse;
+        alert(
+          `Đã áp dụng thêm ${coinsToUse} xu thành công! (Tổng: ${totalCoinsToApply} xu, Đã trừ: ${coinsDeducted} xu)`
+        );
       } else {
         alert(response.message || "Có lỗi xảy ra khi áp dụng xu");
       }
@@ -390,9 +397,42 @@ const PaymentPage = () => {
                   <div style={{ marginBottom: "10px" }}>
                     <span style={{ fontWeight: "bold" }}>Tiết kiệm được: </span>
                     <span style={{ color: "#28a745", fontWeight: "bold" }}>
-                      {coinsToUse.toLocaleString()} VND
+                      {(coinsApplied + coinsToUse).toLocaleString()} VND
                     </span>
                   </div>
+
+                  {coinsApplied > 0 && (
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        padding: "8px",
+                        background: "#e7f3ff",
+                        borderRadius: "4px",
+                        fontSize: "14px",
+                      }}
+                    >
+                      <div>
+                        Số xu đã áp dụng: {coinsApplied.toLocaleString()} xu
+                      </div>
+                      <div>
+                        Số xu muốn thêm: {coinsToUse.toLocaleString()} xu
+                      </div>
+                      <div style={{ fontWeight: "bold", color: "#007bff" }}>
+                        Tổng số xu sẽ áp dụng:{" "}
+                        {(coinsApplied + coinsToUse).toLocaleString()} xu
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          color: "#666",
+                          marginTop: "4px",
+                        }}
+                      >
+                        (Sẽ chỉ trừ thêm {coinsToUse.toLocaleString()} xu từ tài
+                        khoản)
+                      </div>
+                    </div>
+                  )}
 
                   <div style={{ display: "flex", gap: "10px" }}>
                     <button
@@ -438,6 +478,24 @@ const PaymentPage = () => {
                   <span style={{ color: "#155724", fontWeight: "bold" }}>
                     ✓ Đã áp dụng {coinsApplied.toLocaleString()} xu
                   </span>
+                  <div
+                    style={{
+                      marginTop: "5px",
+                      fontSize: "14px",
+                      color: "#155724",
+                    }}
+                  >
+                    Tiết kiệm được: {coinsApplied.toLocaleString()} VND
+                  </div>
+                  <div
+                    style={{
+                      marginTop: "2px",
+                      fontSize: "12px",
+                      color: "#666",
+                    }}
+                  >
+                    (Đã trừ {coinsApplied.toLocaleString()} xu từ tài khoản)
+                  </div>
                 </div>
               )}
             </div>
