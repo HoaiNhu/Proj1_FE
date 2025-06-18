@@ -220,6 +220,19 @@ export const fetchCities = async () => {
   }
 };
 
+// Lấy dữ liệu phường/xã cho một quận/huyện cụ thể
+export const fetchWards = async (districtCode) => {
+  try {
+    const res = await axios.get(
+      `https://provinces.open-api.vn/api/d/${districtCode}?depth=2`
+    );
+    return res.data.wards || [];
+  } catch (error) {
+    console.error("Error fetching wards:", error);
+    return [];
+  }
+};
+
 // Lấy thông tin xu của user
 export const getUserAssets = async (access_token) => {
   try {

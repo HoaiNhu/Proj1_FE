@@ -29,8 +29,8 @@ const OrderInformationPage = () => {
       selectedProductDetails.length > 0
       ? selectedProductDetails
       : Array.isArray(location.state?.selectedProductDetails)
-        ? location.state.selectedProductDetails
-        : [];
+      ? location.state.selectedProductDetails
+      : [];
   }, [selectedProductDetails, location.state]);
 
   const navigate = useNavigate();
@@ -43,7 +43,8 @@ const OrderInformationPage = () => {
   const [wards, setWards] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [cities, setCities] = useState([]);
-  const [activeDiscounts, setActiveDiscounts] = useState([])
+  const [activeDiscounts, setActiveDiscounts] = useState([]);
+  const [loadingWards, setLoadingWards] = useState(false);
 
   const handleClickBack = () => {
     navigate("/cart");
@@ -75,17 +76,15 @@ const OrderInformationPage = () => {
         typeof pro === "string" ? pro === productId : pro._id === productId
       )
     );
-    return matched?.discountValue || 0;      // Trả về 0 nếu không có khuyến mãi
+    return matched?.discountValue || 0; // Trả về 0 nếu không có khuyến mãi
   };
-
-
 
   const handleClickNext = async () => {
     // 1. Tạo orderItems với Promise.all để chờ discount (nếu getDiscountValue async)
     const orderItems = await Promise.all(
       selectedProducts.map(async (product) => {
         const discountPercent = getDiscountValue(product.id); // đã có biến
-        console.log("DISCOUNT VALUE: ", discountPercent)
+        // console.log("DISCOUNT VALUE: ", discountPercent);
 
         const priceNum =
           typeof product.price === "number"
@@ -95,14 +94,17 @@ const OrderInformationPage = () => {
         return {
           product: product.id,
           quantity: product.quantity,
-          discountPercent,                                          // lưu %
+          discountPercent, // lưu %
           total: priceNum * product.quantity * (1 - discountPercent / 100), // tính tiền
         };
       })
     );
 
     // 2. Tính lại tổng tiền hàng và tổng tiền đơn
-    const totalItemPrice = orderItems.reduce((sum, item) => sum + item.total, 0);
+    const totalItemPrice = orderItems.reduce(
+      (sum, item) => sum + item.total,
+      0
+    );
     const totalPrice = totalItemPrice + shippingPrice;
 
     // 3. Ghép dữ liệu cho API
@@ -142,7 +144,6 @@ const OrderInformationPage = () => {
       console.error("Error creating order:", error);
     }
   };
-
 
   // const handleClickNext = async () => {
   //   const orderData = {
@@ -200,13 +201,14 @@ const OrderInformationPage = () => {
     userAddress: "",
     userWard: "",
     userDistrict: "",
-    userCity: "",
+    userCity: 79,
     userPhone: "",
     userEmail: "",
   });
   // console.log("selectedProducts", selectedProducts);
-  console.log("user", user);
-  console.log("shippingAddress", shippingAddress);
+  // console.log("wards state:", wards);
+  console.log("wards state:", wards);
+  console.log("districts state:", districts);
 
   const [orderNote, setOrderNote] = useState(""); // Ghi chú đặt hàng
   const [deliveryDate, setDeliveryDate] = useState(""); // Ngày giao hàng
@@ -218,7 +220,7 @@ const OrderInformationPage = () => {
     typeof price === "number"
       ? price
       : parseFloat(String(price).replace(/[^0-9.-]+/g, ""));
-  console.log("selectedPro", selectedProducts);
+  // console.log("selectedPro", selectedProducts);
 
   const totalItemPrice = selectedProducts.reduce((sum, product) => {
     const discount = getDiscountValue(product.id);
@@ -229,13 +231,12 @@ const OrderInformationPage = () => {
   // Tổng tiền đơn = tiền hàng + ship
   //const totalPrice = totalItemPrice + shippingPrice;
 
-
   const totalPrice = useMemo(
     () => totalItemPrice + shippingPrice,
     [totalItemPrice, shippingPrice]
   );
 
-  console.log("totalPrice", totalPrice);
+  // console.log("totalPrice", totalPrice);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -246,16 +247,26 @@ const OrderInformationPage = () => {
         userAddress: user.userAddress || "",
         userWard: user.userWard || "",
         userDistrict: user.userDistrict || "",
-        userCity: user.userCity || "",
+        userCity: user.userCity || 79,
         userPhone: user.userPhone || "",
         userEmail: user.userEmail || "",
       }));
     }
   }, [isLoggedIn, user]);
 
+  // Tự động load districts khi userCity thay đổi
+  useEffect(() => {
+    if (cities.length > 0 && shippingAddress.userCity) {
+      const selectedCity = cities.find(
+        (city) => city.code === shippingAddress.userCity
+      );
+      if (selectedCity) {
+        setDistricts(selectedCity.districts || []);
+      }
+    }
+  }, [cities, shippingAddress.userCity]);
+
   // helpers.js (hoặc đặt ngay trong component)
-
-
 
   const handleInputChange = (field) => (e) => {
     const value = e.target.value;
@@ -269,12 +280,18 @@ const OrderInformationPage = () => {
     const fetchCities = async () => {
       const data = await UserService.fetchCities();
       setCities(data);
+
+      // Tự động load districts của TP.HCM (code: 79)
+      const hcmCity = data.find((city) => city.code === 79);
+      if (hcmCity) {
+        setDistricts(hcmCity.districts || []);
+      }
     };
     fetchCities();
   }, []);
 
   const handleCityChange = (e) => {
-    const cityCode = e.target.value;
+    const cityCode = Number(e.target.value);
     const selectedCity = cities.find((city) => city.code === cityCode);
     setDistricts(selectedCity?.districts || []);
     setWards([]);
@@ -286,12 +303,24 @@ const OrderInformationPage = () => {
     }));
   };
 
-  const handleDistrictChange = (e) => {
-    const districtCode = e.target.value;
+  const handleDistrictChange = async (e) => {
+    const districtCode = Number(e.target.value);
     const selectedDistrict = districts.find(
       (district) => district.code === districtCode
     );
-    setWards(selectedDistrict?.wards || []);
+
+    // Lấy dữ liệu phường/xã từ API
+    try {
+      setLoadingWards(true);
+      const wardsData = await UserService.fetchWards(districtCode);
+      setWards(wardsData);
+    } catch (error) {
+      console.error("Error fetching wards:", error);
+      setWards([]);
+    } finally {
+      setLoadingWards(false);
+    }
+
     setShippingAddress((prev) => ({
       ...prev,
       userDistrict: districtCode,
@@ -300,7 +329,11 @@ const OrderInformationPage = () => {
   };
 
   const handleWardChange = (e) => {
-    setShippingAddress((prev) => ({ ...prev, userWard: e.target.value }));
+    const wardCode = Number(e.target.value);
+    setShippingAddress((prev) => ({
+      ...prev,
+      userWard: wardCode,
+    }));
   };
 
   // Hàm cập nhật ngày và giờ giao hàng
@@ -368,14 +401,13 @@ const OrderInformationPage = () => {
           <tfoot>
             {/* --- phí vận chuyển --- */}
             <tr className="LineProduct">
-              <td >Phí vận chuyển: 
-            </td>
-              <td style={{ fontWeight: "bold", fontSize: "2rem" }}
-              >{shippingPrice.toLocaleString()} VND</td>
+              <td>Phí vận chuyển:</td>
+              <td style={{ fontWeight: "bold", fontSize: "2rem" }}>
+                {shippingPrice.toLocaleString()} VND
+              </td>
             </tr>
 
             {/* --- gợi ý đăng nhập để free ship --- */}
-           
 
             {/* --- tổng tiền --- */}
             <tr
@@ -397,21 +429,22 @@ const OrderInformationPage = () => {
               </td>
             </tr>
           </tfoot>
-
         </table>
       </div>
       <div className="question" style={{ margin: "10px 50px" }}>
         <p className="login-question">
           {shippingPrice === 30000 && (
+            <span>
+              Bạn đã có tài khoản?{" "}
+              <Link to="/login" className="login-link" target="blank">
+                Đăng nhập
+              </Link>
               <span>
-                Bạn đã có tài khoản?{" "}
-                  <Link to="/login" className="login-link" target="blank">
-                   Đăng nhập 
-                  </Link>
-                  <span> để&nbsp;<strong>miễn phí vận chuyển</strong></span>
+                {" "}
+                để&nbsp;<strong>miễn phí vận chuyển</strong>
               </span>
-            )}
-        
+            </span>
+          )}
         </p>
       </div>
 
@@ -526,11 +559,12 @@ const OrderInformationPage = () => {
             <div className="VillageHolder">
               <select
                 className="Village"
-                value={shippingAddress.userWard}
+                value={shippingAddress.userWard || ""}
                 onChange={handleWardChange}
+                disabled={loadingWards}
               >
                 <option value="" disabled>
-                  Chọn phường/xã
+                  {loadingWards ? "Đang tải..." : "Chọn phường/xã"}
                 </option>
                 {wards.map((ward) => (
                   <option key={ward.code} value={ward.code}>
