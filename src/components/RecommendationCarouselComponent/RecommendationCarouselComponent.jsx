@@ -58,18 +58,18 @@ const RecommendationCarouselComponent = ({ products }) => {
       {products && products.length > 0 ? (
         <Slider {...settings}>
           {products.map((product) => (
-            <div
-              key={product._id}
-              className="carousel-item"
-              style={{ cursor: "pointer" }}
-              onClick={() => handleDetail(product)}
-            >
+            <div key={product._id} className="carousel-item">
               <CardProduct
                 type="primary"
                 img={product.productImage}
                 title={product.productName}
                 price={product.productPrice}
                 id={product._id}
+                onClick={() => handleDetail(product)}
+                averageRating={product.averageRating || 5.0}
+                totalRatings={product.totalRatings || 0}
+                discount={product.discount || 0}
+                size={product.productSize}
               />
             </div>
           ))}

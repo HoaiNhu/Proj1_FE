@@ -5,6 +5,12 @@
 
 .carousel-item {
   padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-item:hover {
+  transform: translateY(-5px);
 }
 
 .slick-slide {

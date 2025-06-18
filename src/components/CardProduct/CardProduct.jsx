@@ -22,6 +22,8 @@ const CardProduct = ({
   const dispatch = useDispatch();
 
   const handleAddToCart = (e) => {
+    e.stopPropagation();
+
     const productElement = e.currentTarget.closest(".card");
     const navIcon = document.querySelector(".nav__icon");
 
@@ -56,25 +58,22 @@ const CardProduct = ({
     dispatch(addToCart({ id, img, title, price, size }));
   };
 
-
-
   return (
     <Card
       id={styles.CardProduct}
-      className={type === "secondary" ? styles.secondary : styles.primary}
+      className={`${type === "secondary" ? styles.secondary : styles.primary} ${
+        onClick ? styles.clickable : ""
+      }`}
+      onClick={onClick}
     >
-      <Card.Img className={styles.ProductImage}
-        onClick={onClick}
-        src={img}
-        alt={title}
-      />
+      <Card.Img className={styles.ProductImage} src={img} alt={title} />
 
-      <Card.Body >
+      <Card.Body>
         <Card.Title className={styles.cardTitle}>{title}</Card.Title>
         <div className="d-flex justify-content-center mb-2">
           <RatingStar
             rating={Number(averageRating) || 5.0}
-            setRating={() => { }}
+            setRating={() => {}}
             isEditable={false}
             size={16}
             showRating={true}
@@ -104,8 +103,6 @@ const CardProduct = ({
             Thêm vào giỏ hàng <CartIcon />
           </button>
         </Col>
-
-
       </Row>
     </Card>
   );
@@ -113,7 +110,13 @@ const CardProduct = ({
 
 // Cart SVG icon extracted for clarity
 const CartIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="34" height="32" viewBox="0 0 34 34" fill="none">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="34"
+    height="32"
+    viewBox="0 0 34 34"
+    fill="none"
+  >
     <path
       d="M5.58824 5.58826H8.15169C8.90164 5.58826 9.27662 5.58826 9.54788 5.80005C9.81914 6.01185 9.91008 6.37563 10.092 7.10319L10.4213 8.42036C10.6968 9.52241 10.8345 10.0734 11.1857 10.4508C11.3299 10.6057 11.4978 10.7368 11.683 10.8391C12.1343 11.0883 12.7023 11.0883 13.8382 11.0883V11.0883"
       stroke="brown"

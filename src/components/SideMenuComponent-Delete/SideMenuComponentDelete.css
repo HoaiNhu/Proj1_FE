@@ -1,5 +1,5 @@
 .btn__side-menu1 {
-  background-color: transparent;
+  background-color: var(--white);
   width: 24rem;
   height: auto;
   padding: 1rem;
