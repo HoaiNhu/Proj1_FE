@@ -46,6 +46,7 @@ const ReportPage = () => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedTable, setSelectedTable] = useState("product");
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
   const fetchOrders = async () => {
     try {
@@ -68,31 +69,28 @@ const ReportPage = () => {
     }
   };
 
-  const calculateStatistics = () => {
+  // Sửa: calculateStatistics nhận ordersInput (mặc định là orders)
+  const calculateStatistics = (ordersInput = orders) => {
     const productStats = {};
 
     let revenue = 0;
     let quantity = 0;
 
-    orders.forEach((order) => {
+    ordersInput.forEach((order) => {
       revenue += order.totalPrice;
 
       order.orderItems.forEach((item) => {
-        const productId = item._id;
-        console.log("productId", productId);
+        // Sửa: lấy id sản phẩm từ item.product._id
+        const productId = item.product?._id;
+        if (!productId) return;
 
-        const product = products.find((p) => p._id === productId);
-
-        console.log("danh sách sp", products);
-
-        console.log("product", product);
-
+        // Lấy thông tin sản phẩm từ item.product (ưu tiên) hoặc từ products (nếu cần)
+        const product =
+          item.product || products.find((p) => p._id === productId);
         if (!product) return;
 
         const itemRevenue = item.total;
         const itemQuantity = item.quantity;
-
-        // revenue += itemRevenue;
         quantity += itemQuantity;
 
         if (!productStats[productId]) {
@@ -103,10 +101,7 @@ const ReportPage = () => {
             quantity: 0,
             total: 0,
           };
-
-          // console.log("productStats", productStats)
         }
-
         productStats[productId].quantity += itemQuantity;
         productStats[productId].total += itemRevenue;
       });
@@ -114,7 +109,9 @@ const ReportPage = () => {
 
     const statsArray = Object.values(productStats).map((stat) => ({
       ...stat,
-      percentage: ((stat.total / revenue) * 100).toFixed(2) + "%",
+      percentage:
+        revenue > 0 ? ((stat.total / revenue) * 100).toFixed(2) + "%" : "0%",
+      _id: stat.code, // Thêm _id để dùng làm key
     }));
 
     setStatistics(statsArray);
@@ -122,8 +119,9 @@ const ReportPage = () => {
     setTotalQuantity(quantity);
   };
 
+  // Sửa: calculateOrderStatistics dùng filteredOrders
   const calculateOrderStatistics = () => {
-    return orders.map((order, index) => ({
+    return filteredOrders.map((order, index) => ({
       stt: index + 1,
       orderCode: order.orderCode,
       totalProducts: order.orderItems.reduce(
@@ -145,9 +143,18 @@ const ReportPage = () => {
 
   useEffect(() => {
     if (orders.length > 0 && products.length > 0) {
-      calculateStatistics();
+      setFilteredOrders(orders); // mặc định ban đầu là tất cả orders
+      calculateStatistics(orders);
     }
   }, [orders, products]);
+
+  // Khi filteredOrders thay đổi và đang ở bảng sản phẩm thì cập nhật statistics
+  useEffect(() => {
+    if (selectedTable === "product" && products.length > 0) {
+      calculateStatistics(filteredOrders);
+    }
+    // eslint-disable-next-line
+  }, [filteredOrders, selectedTable, products]);
 
   const toggleSelectRow = (id) => {
     setSelectedRows((prev) =>
@@ -155,12 +162,21 @@ const ReportPage = () => {
     );
   };
 
+  // Sửa: toggleSelectAll cho bảng sản phẩm dùng _id
   const toggleSelectAll = () => {
-    setSelectedRows(
-      selectedRows.length === statistics.length
-        ? []
-        : statistics.map((promo) => promo.id)
-    );
+    if (selectedTable === "product") {
+      setSelectedRows(
+        selectedRows.length === statistics.length
+          ? []
+          : statistics.map((stat) => stat._id)
+      );
+    } else {
+      setSelectedRows(
+        selectedRows.length === filteredOrders.length
+          ? []
+          : filteredOrders.map((order) => order.orderCode)
+      );
+    }
   };
 
   const isSelected = (id) => selectedRows.includes(id);
@@ -186,10 +202,10 @@ const ReportPage = () => {
   ];
 
   const handleView = () => {
-    let filteredOrders = [...orders];
+    let filtered = [...orders];
 
     if (selectedDay) {
-      filteredOrders = filteredOrders.filter(
+      filtered = filtered.filter(
         (order) =>
           new Date(order.createdAt).getDate() === parseInt(selectedDay, 10) ||
           (order.deliveryDate &&
@@ -198,7 +214,7 @@ const ReportPage = () => {
       );
     }
     if (selectedMonth) {
-      filteredOrders = filteredOrders.filter(
+      filtered = filtered.filter(
         (order) =>
           new Date(order.createdAt).getMonth() + 1 ===
             parseInt(selectedMonth, 10) ||
@@ -208,7 +224,7 @@ const ReportPage = () => {
       );
     }
     if (selectedYear) {
-      filteredOrders = filteredOrders.filter(
+      filtered = filtered.filter(
         (order) =>
           new Date(order.createdAt).getFullYear() ===
             parseInt(selectedYear, 10) ||
@@ -218,13 +234,22 @@ const ReportPage = () => {
       );
     }
 
-    if (selectedTable === "product") {
-      calculateStatistics(filteredOrders); // Lọc sản phẩm từ đơn hàng
-    } else {
-      setOrders(filteredOrders); // Lọc và hiển thị đơn hàng
+    console.log("Filtered Orders:", filtered);
+    console.log("Selected filters:", {
+      selectedDay,
+      selectedMonth,
+      selectedYear,
+      selectedTable,
+    });
+
+    setFilteredOrders(filtered);
+
+    if (selectedTable === "order") {
+      setOrders(filtered); // chỉ setOrders khi ở bảng đơn hàng
     }
 
-    console.log("Filtered Orders:", filteredOrders);
+    // Không gọi calculateStatistics ở đây nữa, đã có useEffect theo dõi filteredOrders
+    // console.log("Filtered Orders:", filtered);
   };
 
   const navigate = useNavigate();
@@ -348,15 +373,13 @@ const ReportPage = () => {
                 <tbody>
                   {statistics.map((stat, index) => (
                     <tr
-                      key={stat.id}
-                      className={
-                        isSelected(stat.id || stat._id) ? "highlight" : ""
-                      }
+                      key={stat._id}
+                      className={isSelected(stat._id) ? "highlight" : ""}
                     >
                       <td>
                         <CheckboxComponent
-                          isChecked={isSelected(statistics.id)}
-                          onChange={() => toggleSelectRow(statistics.id)}
+                          isChecked={isSelected(stat._id)}
+                          onChange={() => toggleSelectRow(stat._id)}
                         />
                       </td>
                       <td>{index + 1}</td>
@@ -380,7 +403,9 @@ const ReportPage = () => {
                   <tr>
                     <th>
                       <CheckboxComponent
-                        isChecked={selectedRows.length === orders.length}
+                        isChecked={
+                          selectedRows.length === filteredOrders.length
+                        }
                         onChange={toggleSelectAll}
                       />
                     </th>

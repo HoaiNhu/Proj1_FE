@@ -1,5 +1,5 @@
 .btn__side-menu1 {
-  background-color: var(--white);
+  background-color: transparent;
   width: 24rem;
   height: auto;
   padding: 1rem;
@@ -43,8 +43,7 @@
   background: var(--green30);
   border-radius: 10px;
 }
-.delete-categoryBtn{
+.delete-categoryBtn {
   border: none;
   background-color: white;
-  
 }
