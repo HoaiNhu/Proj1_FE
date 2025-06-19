@@ -61,7 +61,7 @@
   background: var(--White, #fff);
   box-shadow: 0px 0px 4px 0px var(--dropshadow, rgba(32, 60, 22, 0.25));
 }
-.login-link{
+.login-link {
   scale: 0.2;
 }
 .ProductInforHear,
@@ -115,7 +115,7 @@
 
   /* Font_Text_Big */
   font-family: Poppins;
-  font-size: 20px;
+  font-size: 2rem;
   width: auto;
 }
 
@@ -201,24 +201,29 @@
 .Province,
 .District,
 .Village {
-  display: flex;
-  width: 220px;
-  height: 60px;
+  /* display: flex; */
+  flex: 1 1 0;
+  height: 54px;
   padding: 16px 20px;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-  border-radius: 15px;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  /* flex-shrink: 0; */
+  border-radius: 50px;
   background: #fff;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
   color: #3a060e;
   border: none;
+  min-width: 200px;
+  margin: 0 8px;
 }
 
 .comboBoxHolder {
   display: flex;
+  /* flex: 1 1 0; */
   margin-left: 50px;
-  margin-top: 30px;
+  justify-content: space-between;
+  margin-right: 50px;
+  gap: 0;
 }
 
 .DistrictHolder,
@@ -228,18 +233,18 @@
 
 .TimeHolder {
   margin-left: -50px;
-  font-size: 25px;
+  font-size: 1.6rem;
 }
 
 .DateHolder {
-  margin-left: 232px;
+  /* margin-left: 232px; */
   font-size: 20px;
 }
 
 .clock,
 .Datepicker {
   display: flex;
-  width: 220px;
+  min-width: 200px;
   height: 60px;
   padding: 16px 20px;
   justify-content: space-between;
@@ -249,13 +254,11 @@
   width: 220px;
   height: 60px;
   padding: 16px 20px;
-  justify-content: space-between;
-  align-items: center;
   flex-shrink: 0;
   border: none;
-  border-radius: 15px;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
   color: #3a060e;
+  border-radius: 50px;
 }
 
 .lableHolder {
@@ -401,6 +404,7 @@ table {
 .Money {
   flex: 1;
   text-align: center;
+  margin-left: 10px;
 }
 
 .Price {

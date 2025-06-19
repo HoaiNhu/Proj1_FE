@@ -80,6 +80,11 @@ const OrderInformationPage = () => {
   };
 
   const handleClickNext = async () => {
+    if (!checkDeliveryDateTime()) {
+      alert("Ngày và giờ giao hàng phải lớn hơn thời điểm hiện tại!");
+      return;
+    }
+
     // 1. Tạo orderItems với Promise.all để chờ discount (nếu getDiscountValue async)
     const orderItems = await Promise.all(
       selectedProducts.map(async (product) => {
@@ -343,6 +348,13 @@ const OrderInformationPage = () => {
   // Hàm cập nhật ghi chú
   const handleOrderNoteChange = (e) => setOrderNote(e.target.value);
 
+  const checkDeliveryDateTime = () => {
+    if (!deliveryDate || !deliveryTime) return false;
+    const now = new Date();
+    const selected = new Date(`${deliveryDate}T${deliveryTime}`);
+    return selected >= now;
+  };
+
   return (
     <div className="container-xl cart-container">
       <div className="titleHolder">
@@ -376,7 +388,7 @@ const OrderInformationPage = () => {
                     <ProductInfor
                       image={product.img}
                       name={product.title}
-                      size={product.size || "Không có"}
+                      size={product.size || "Không có size"}
                     />
                   </td>
 

@@ -21,26 +21,25 @@ const CartPage = () => {
 
   // Fetch các discount còn hiệu lực
   useEffect(() => {
-  const fetchActiveDiscounts = async () => {
-    try {
-      const data = await getAllDiscount();
-      console.log("VATA: ", data);
-      const now = Date.now();
-      const filtered = data.data.filter((discount) => {
-        const start = new Date(discount.discountStartDate).getTime();
-        const end = new Date(discount.discountEndDate).getTime();
-        return start <= now && end >= now;
-      });
-      console.log("VATAdasd: ", filtered);
-      setActiveDiscounts(filtered); // ✅ đúng cách
-    } catch (err) {
-      console.error("Lỗi khi lấy discount:", err);
-    }
-  };
+    const fetchActiveDiscounts = async () => {
+      try {
+        const data = await getAllDiscount();
+        console.log("VATA: ", data);
+        const now = Date.now();
+        const filtered = data.data.filter((discount) => {
+          const start = new Date(discount.discountStartDate).getTime();
+          const end = new Date(discount.discountEndDate).getTime();
+          return start <= now && end >= now;
+        });
+        console.log("VATAdasd: ", filtered);
+        setActiveDiscounts(filtered); // ✅ đúng cách
+      } catch (err) {
+        console.error("Lỗi khi lấy discount:", err);
+      }
+    };
 
-  fetchActiveDiscounts();
-}, []);
-
+    fetchActiveDiscounts();
+  }, []);
 
   const calculatePrice = (price) => {
     if (typeof price !== "string") return price;
@@ -56,9 +55,9 @@ const CartPage = () => {
       )
     );
 
-console.log("VALUEqe: ", matchedDiscount)
+    console.log("VALUEqe: ", matchedDiscount);
     const discountValue = matchedDiscount?.discountValue || 0;
-    console.log("VALUE: ", discountValue)
+    console.log("VALUE: ", discountValue);
     return Math.round(price * (1 - discountValue / 100));
   };
 
@@ -89,7 +88,16 @@ console.log("VALUEqe: ", matchedDiscount)
     dispatch(removeFromCart({ id }));
   };
 
+  // Tính tổng số lượng sản phẩm được chọn
+  const totalSelectedQuantity = products
+    .filter((product) => selectedProducts.includes(product.id))
+    .reduce((acc, product) => acc + product.quantity, 0);
+
   const handleBuyNow = () => {
+    if (totalSelectedQuantity > 99) {
+      alert("Tổng số lượng sản phẩm không được vượt quá 99!");
+      return;
+    }
     const selectedDetails = products.filter((product) =>
       selectedProducts.includes(product.id)
     );
@@ -108,7 +116,10 @@ console.log("VALUEqe: ", matchedDiscount)
   return (
     <div className="container-xl cart-container">
       <div className="titleHolderCart">
-        <button className="back_btn" onClick={() => handleNavigate("/products")}>
+        <button
+          className="back_btn"
+          onClick={() => handleNavigate("/products")}
+        >
           <BackIconComponent />
         </button>
         <h1 className="titleCart">GIỎ HÀNG</h1>
@@ -133,7 +144,10 @@ console.log("VALUEqe: ", matchedDiscount)
           </thead>
           <tbody>
             {products.map((product) => {
-              const discountedPrice = getDiscountedPrice(product.id, product.price);
+              const discountedPrice = getDiscountedPrice(
+                product.id,
+                product.price
+              );
               return (
                 <tr key={product.id} className="LineProduct">
                   <td>
@@ -150,7 +164,9 @@ console.log("VALUEqe: ", matchedDiscount)
                     />
                   </td>
                   <td className="PriceProduct">
-                    <p className="Price">{discountedPrice.toLocaleString()} VND</p>
+                    <p className="Price">
+                      {discountedPrice.toLocaleString()} VND
+                    </p>
                   </td>
                   <td className="QuantityBtn">
                     <QuantityBtn
@@ -160,11 +176,14 @@ console.log("VALUEqe: ", matchedDiscount)
                   </td>
                   <td className="Money">
                     <p className="MoneyProduct">
-                      {(discountedPrice * product.quantity).toLocaleString()} VND
+                      {(discountedPrice * product.quantity).toLocaleString()}{" "}
+                      VND
                     </p>
                   </td>
                   <td className="DeleteBtn">
-                    <DeleteBtn onClick={() => handleRemoveProduct(product.id)} />
+                    <DeleteBtn
+                      onClick={() => handleRemoveProduct(product.id)}
+                    />
                   </td>
                 </tr>
               );
@@ -178,7 +197,10 @@ console.log("VALUEqe: ", matchedDiscount)
             <p className="total">{totalAmount.toLocaleString()} VND</p>
           </div>
           <div className="Btnholder">
-            <button className="Buy_more" onClick={() => handleNavigate("/products")}>
+            <button
+              className="Buy_more"
+              onClick={() => handleNavigate("/products")}
+            >
               Mua thêm
             </button>
             <ButtonComponent
