@@ -28,6 +28,7 @@ const MiniGamePage = () => {
   const [flyingChar, setFlyingChar] = useState(null);
   const [userCoins, setUserCoins] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [missingInput, setMissingInput] = useState("");
 
   // Kiểm tra đăng nhập
   useEffect(() => {
@@ -108,36 +109,63 @@ const MiniGamePage = () => {
     fetchUserProgress();
   }, [isLoggedIn]);
 
+  // Khi lấy puzzle mới, reset missingInput
+  useEffect(() => {
+    if (puzzle && puzzle.puzzle) {
+      setMissingInput("");
+    }
+  }, [puzzle]);
+
+  // Hàm tạo currentPuzzle từ missingInput
+  const getCurrentPuzzle = () => {
+    if (!puzzle || !puzzle.puzzle) return "";
+    let arr = puzzle.puzzle.split("");
+    let inputArr = missingInput.split("");
+    let idx = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (hiddenIndices.includes(i)) {
+        arr[i] = inputArr[idx] || "_";
+        idx++;
+      }
+    }
+    return arr.join("");
+  };
+
   // Xử lý click vào chữ cái gợi ý với hiệu ứng bay
   const handleHintClick = (char) => {
     if (isCompleted || attempts >= maxAttempts || !isLoggedIn) return;
+    if (missingInput.length >= hiddenIndices.length) return;
+    setFlyingChar({ char, targetIndex: hiddenIndices[missingInput.length] });
+    setTimeout(() => {
+      setMissingInput((prev) => prev + char);
+      setFlyingChar(null);
+    }, 1000);
+  };
 
-    // Tìm vị trí ô trống đầu tiên chưa được điền
-    const puzzleArray = currentPuzzle.split("");
-    const firstEmptyIndex = puzzleArray.findIndex(
-      (c, index) => c === "_" && hiddenIndices.includes(index)
-    );
+  // Thêm hàm này để đồng bộ currentPuzzle với input
+  const syncPuzzleWithInput = (inputValue) => {
+    if (!puzzle || !puzzle.puzzle) return;
+    let inputArr = inputValue.split("");
+    let puzzleArr = puzzle.puzzle.split(""); // Lấy chuỗi gốc ban đầu
+    let newPuzzleArr = [...puzzleArr];
 
-    if (firstEmptyIndex !== -1) {
-      // Hiệu ứng bay chữ cái
-      setFlyingChar({ char, targetIndex: firstEmptyIndex });
-
-      // Sau 1 giây, cập nhật ô chữ
-      setTimeout(() => {
-        const newPuzzleArray = [...puzzleArray];
-        newPuzzleArray[firstEmptyIndex] = char;
-        const newPuzzle = newPuzzleArray.join("");
-        setCurrentPuzzle(newPuzzle);
-        setUserAnswer(newPuzzle.replace(/\s/g, ""));
-        setFlyingChar(null);
-      }, 1000);
+    let inputIdx = 0;
+    for (let i = 0; i < puzzleArr.length; i++) {
+      if (hiddenIndices.includes(i)) {
+        if (inputIdx < inputArr.length) {
+          newPuzzleArr[i] = inputArr[inputIdx];
+          inputIdx++;
+        } else {
+          newPuzzleArr[i] = "_";
+        }
+      }
     }
+    setCurrentPuzzle(newPuzzleArr.join(""));
   };
 
   // Xử lý gửi đáp án
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!isLoggedIn) {
       setResult({
         success: false,
@@ -145,7 +173,6 @@ const MiniGamePage = () => {
       });
       return;
     }
-
     if (attempts >= maxAttempts) {
       setResult({
         success: false,
@@ -153,9 +180,19 @@ const MiniGamePage = () => {
       });
       return;
     }
-
+    // Ghép đáp án từ missingInput vào puzzle.puzzle
+    let arr = puzzle.puzzle.split("");
+    let inputArr = missingInput.split("");
+    let idx = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (hiddenIndices.includes(i)) {
+        arr[i] = inputArr[idx] || "_";
+        idx++;
+      }
+    }
+    const answer = arr.join("").replace(/\s/g, "");
     try {
-      const response = await GameService.submitAnswer(userAnswer);
+      const response = await GameService.submitAnswer(answer);
       if (response.success) {
         const {
           isCorrect,
@@ -216,7 +253,7 @@ const MiniGamePage = () => {
         }
 
         setResult({ success: isCorrect, message });
-        setUserAnswer(""); // Reset input
+        setMissingInput(""); // Reset input
       }
     } catch (error) {
       console.error("Error submitting answer:", error);
@@ -254,7 +291,7 @@ const MiniGamePage = () => {
 
   return (
     <div className="container-xl">
-       <ChatbotComponent />
+      <ChatbotComponent />
       <h2 className={styles.title}>Minigame Giải Mã Ô Chữ</h2>
 
       {/* Hiển thị số xu */}
@@ -301,8 +338,9 @@ const MiniGamePage = () => {
 
           {/* Hiển thị ô chữ */}
           <div className={styles.puzzle}>
-            {currentPuzzle &&
-              currentPuzzle.split("").map((char, index) => (
+            {getCurrentPuzzle()
+              .split("")
+              .map((char, index) => (
                 <span
                   key={index}
                   className={`${styles.puzzleChar} ${
@@ -371,17 +409,28 @@ const MiniGamePage = () => {
               <form onSubmit={handleSubmit} className={styles.form}>
                 <input
                   type="text"
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value.toUpperCase())}
-                  maxLength={puzzle.productLength}
-                  placeholder="Hoặc nhập đáp án đầy đủ"
+                  value={missingInput}
+                  onChange={(e) => {
+                    // Chỉ cho nhập ký tự chữ cái, tối đa hiddenIndices.length
+                    let value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z]/g, "");
+                    if (value.length > hiddenIndices.length)
+                      value = value.slice(0, hiddenIndices.length);
+                    setMissingInput(value);
+                  }}
+                  maxLength={hiddenIndices.length}
+                  placeholder="Nhập các ký tự còn thiếu"
                   className={styles.input}
                   disabled={attempts >= maxAttempts}
                 />
                 <ButtonFormComponent
                   type="submit"
                   className={styles.buttonSubmit}
-                  disabled={attempts >= maxAttempts || !userAnswer.trim()}
+                  disabled={
+                    attempts >= maxAttempts ||
+                    missingInput.length !== hiddenIndices.length
+                  }
                 >
                   Gửi đáp án
                 </ButtonFormComponent>
