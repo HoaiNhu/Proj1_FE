@@ -16,6 +16,8 @@ import {
   getAllproduct,
   getProductsByCategory,
 } from "../../../services/productServices";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const text =
   "Là một hệ thống đội ngũ nhân viên và lãnh đạo chuyên nghiệp, gồm CBCNV và những người thợ đã có kinh nghiệm lâu năm trong các công ty đầu ngành. Mô hình vận hành hoạt động công ty được bố trí theo chiều ngang, làm gia tăng sự thuận tiện trong việc vận hành cỗ máy kinh doanh và gia tăng sự phối hợp thống nhất giữa các bộ phận trong công ty.";
@@ -30,27 +32,34 @@ const HomePage = () => {
   const [currentCategory, setCurrentCategory] = useState(null); // State lưu category hiện tại
   const [selectedPromo, setSelectedPromo] = useState([]);
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
-  const [bestSeller, setBestSeller]= useState([]);
+  const [bestSeller, setBestSeller] = useState([]);
   const navigate = useNavigate();
   const handleClick = (path) => {
     navigate(path);
   };
   const [newsList, setNewsList] = useState([]);
 
+  useEffect(() => {
+    AOS.init({
+      duration: 2000, // thời gian chạy hiệu ứng (ms)
+      once: false, // chỉ animate 1 lần khi scroll tới
+    });
+  }, []);
+
   // Fetch danh sách khuyến mãi
   useEffect(() => {
     const fetchDiscounts = async () => {
       try {
         const discounts = await getAllDiscount();
-        console.log("ALL DISCOUNTS: ", discounts.data)
+        console.log("ALL DISCOUNTS: ", discounts.data);
         if (Array.isArray(discounts.data)) {
           setPromos(discounts.data); // Lưu danh sách khuyến mãi
           const images = Array.isArray(discounts.data)
             ? discounts.data
-              .map((discount) => discount?.discountImage)
-              .filter(Boolean)
+                .map((discount) => discount?.discountImage)
+                .filter(Boolean)
             : [];
-            console.log("I<MAD: ", images)
+          console.log("I<MAD: ", images);
           setArrImg(images);
         } else {
           setError("Dữ liệu trả về không hợp lệ.");
@@ -59,16 +68,14 @@ const HomePage = () => {
         setError(err.message || "Không thể tải danh sách khuyến mãi.");
       }
     };
-    
+
     fetchDiscounts();
   }, []);
 
   // Ví dụ, thay vì dùng promos trong handleSliderImageClick, bạn có thể:
-  const handleSliderImageClick  = () => {
-      navigate("/products", { state: { showPromo: true } });
-    };
-  
-
+  const handleSliderImageClick = () => {
+    navigate("/products", { state: { showPromo: true } });
+  };
 
   //Lấy danh sách tin tức:
   useEffect(() => {
@@ -179,49 +186,48 @@ const HomePage = () => {
     fetchProducts(0, 9, categoryId);
   };
 
-useEffect(() => {
-  const fetchBestSellers = async () => {
-    const allProduct = await getAllproduct(); // <- chờ fetch hoàn tất
-    //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
+  useEffect(() => {
+    const fetchBestSellers = async () => {
+      const allProduct = await getAllproduct(); // <- chờ fetch hoàn tất
+      //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
 
-    //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
-    if (!Array.isArray(allProduct.data) || allProduct.data.length === 0) return;
-console.log("ALL: ", allProduct.data)
-    const top4 = allProduct.data.sort((a, b) => (b.totalRating || 0) - (a.totalRating || 0))
-      .slice(0, 4);
+      //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
+      if (!Array.isArray(allProduct.data) || allProduct.data.length === 0)
+        return;
+      console.log("ALL: ", allProduct.data);
+      const top4 = allProduct.data
+        .sort((a, b) => (b.totalRating || 0) - (a.totalRating || 0))
+        .slice(0, 4);
 
-    console.log("Top 4 sản phẩm đánh giá cao nhất:", top4);
-    setBestSeller(top4); // <- cập nhật state
-  };
+      console.log("Top 4 sản phẩm đánh giá cao nhất:", top4);
+      setBestSeller(top4); // <- cập nhật state
+    };
 
-  fetchBestSellers();
-}, []);
+    fetchBestSellers();
+  }, []);
 
-  
-
-
-  
   const promoProductList = selectedPromo.discountProduct || [];
   const findPromoApplied = (productId) => {
-  if (!Array.isArray(promos) || promos.length === 0) return 0;
+    if (!Array.isArray(promos) || promos.length === 0) return 0;
 
-  const now = Date.now();
+    const now = Date.now();
 
-  const appliedDiscount = promos.find(discount => {
-    const start = new Date(discount.discountStartDate).getTime();
-    const end = new Date(discount.discountEndDate).getTime();
+    const appliedDiscount = promos.find((discount) => {
+      const start = new Date(discount.discountStartDate).getTime();
+      const end = new Date(discount.discountEndDate).getTime();
 
-    const isInTimeRange = start <= now && now <= end;
-    const isProductIncluded = discount.discountProduct?.some(pro => pro._id === productId);
-    return isInTimeRange && isProductIncluded;
-  });
+      const isInTimeRange = start <= now && now <= end;
+      const isProductIncluded = discount.discountProduct?.some(
+        (pro) => pro._id === productId
+      );
+      return isInTimeRange && isProductIncluded;
+    });
 
-  // Lấy phần trăm giảm nếu có
-  const discountPercent = appliedDiscount?.discountValue || 0;
+    // Lấy phần trăm giảm nếu có
+    const discountPercent = appliedDiscount?.discountValue || 0;
 
-  return discountPercent;
-};
-
+    return discountPercent;
+  };
 
   return (
     <div>
@@ -233,6 +239,7 @@ console.log("ALL: ", allProduct.data)
         />
       </div>
       <div
+        data-aos="fade-up"
         style={{
           marginTop: 100,
           paddingTop: 50,
@@ -308,6 +315,9 @@ console.log("ALL: ", allProduct.data)
             marginRight: "137px",
             gap: "18px",
           }}
+          data-aos="fade-up"
+          data-aos-duration="2000"
+          data-aos-anchor-placement="center-bottom"
         >
           {bestSeller.map((product) => (
             <CardProduct
@@ -405,6 +415,9 @@ console.log("ALL: ", allProduct.data)
             gap: "18px",
             paddingBottom: 50,
           }}
+          data-aos="fade-up"
+          data-aos-duration="2000"
+          data-aos-anchor-placement="center-bottom"
         >
           {products.map((product) => (
             <CardProduct
@@ -589,6 +602,8 @@ console.log("ALL: ", allProduct.data)
             gap: "25px",
             paddingBottom: 25,
           }}
+          data-aos="fade-up"
+          data-aos-duration="2000"
         >
           {newsList.map((newsItem, index) => (
             <CardNews
