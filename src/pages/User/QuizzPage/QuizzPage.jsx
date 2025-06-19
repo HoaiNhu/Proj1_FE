@@ -6,6 +6,7 @@ import QuizService from "../../../services/QuizService";
 import { getDetailsproduct } from "../../../services/productServices";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import CardProduct from "../../../components/CardProduct/CardProduct";
+import Loading from "../../../components/LoadingComponent/Loading";
 
 const QuizzPage = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const QuizzPage = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sessionId] = useState(crypto.randomUUID()); // Generate unique session ID
+  const [loadingRecommendation, setLoadingRecommendation] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -74,8 +76,7 @@ const QuizzPage = () => {
         setCurrentQuestion(questions[currentIndex + 1]);
         setCustomAnswer("");
       } else {
-        console.log("Sending answers to server:", newAnswers);
-
+        setLoadingRecommendation(true);
         try {
           // Lưu câu trả lời
           await QuizService.saveMultipleResponses(newAnswers);
@@ -91,6 +92,7 @@ const QuizzPage = () => {
             setError(
               "Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại."
             );
+            setLoadingRecommendation(false);
             return;
           }
 
@@ -126,6 +128,8 @@ const QuizzPage = () => {
         } catch (error) {
           console.error("Error in final step:", error);
           setError(error.message);
+        } finally {
+          setLoadingRecommendation(false);
         }
       }
     } catch (error) {
@@ -206,6 +210,10 @@ const QuizzPage = () => {
 
   if (!currentQuestion) {
     return <div className={styles.error}>Không tìm thấy câu hỏi</div>;
+  }
+
+  if (loadingRecommendation) {
+    return <Loading isLoading={true} />;
   }
 
   return (

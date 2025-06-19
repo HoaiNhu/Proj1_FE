@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { processQuery } from "../../services/ChatbotService";
-import "./ChatbotComponent.css";
+import styles from "./ChatbotComponent.module.css";
 import { FaPaperPlane, FaTimes, FaRobot, FaUser } from "react-icons/fa";
 
 const ChatbotComponent = () => {
@@ -9,7 +9,8 @@ const ChatbotComponent = () => {
   const [messages, setMessages] = useState([
     {
       type: "bot",
-      content: "Xin chào! Tôi là trợ lý AI của AVOCADO. Bạn có thể hỏi tôi về các sản phẩm của AVOCADO, cách mua hàng. Tôi có thể giúp gì cho bạn?",
+      content:
+        "Xin chào! Tôi là trợ lý AI của AVOCADO. Bạn có thể hỏi tôi về các sản phẩm của AVOCADO, cách mua hàng. Tôi có thể giúp gì cho bạn?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -69,8 +70,7 @@ const ChatbotComponent = () => {
       console.error("Error sending message:", error);
       const errorMessage = {
         type: "bot",
-        content:
-          "Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng thử lại sau.",
+        content: "Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng thử lại sau.",
         isError: true,
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -81,7 +81,7 @@ const ChatbotComponent = () => {
 
   const renderMessageContent = (message) => {
     if (message.isError) {
-      return <div className="error-message">{message.content}</div>;
+      return <div className={styles["error-message"]}>{message.content}</div>;
     }
 
     // Regular text message
@@ -89,10 +89,12 @@ const ChatbotComponent = () => {
   };
 
   return (
-    <div className="chatbot-container">
+    <div className={styles["chatbot-container"]}>
       {/* Chatbot toggle button */}
       <button
-        className={`chatbot-toggle ${isOpen ? "open" : ""}`}
+        className={`${styles["chatbot-toggle"]} ${
+          isOpen ? styles["open"] : ""
+        }`}
         onClick={toggleChatbot}
         aria-label="Toggle chatbot"
       >
@@ -101,11 +103,11 @@ const ChatbotComponent = () => {
 
       {/* Chatbot window */}
       {isOpen && (
-        <div className="chatbot-window">
-          <div className="chatbot-header">
+        <div className={styles["chatbot-window"]}>
+          <div className={styles["chatbot-header"]}>
             <h3>Trợ lý AI AVOCADO</h3>
             <button
-              className="close-button"
+              className={styles["close-button"]}
               onClick={toggleChatbot}
               aria-label="Close chatbot"
             >
@@ -113,27 +115,29 @@ const ChatbotComponent = () => {
             </button>
           </div>
 
-          <div className="chatbot-messages">
+          <div className={styles["chatbot-messages"]}>
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`message ${message.type === "bot" ? "bot" : "user"}`}
+                className={`${styles["message"]} ${
+                  message.type === "bot" ? styles["bot"] : styles["user"]
+                }`}
               >
-                <div className="message-avatar">
+                <div className={styles["message-avatar"]}>
                   {message.type === "bot" ? <FaRobot /> : <FaUser />}
                 </div>
-                <div className="message-content">
+                <div className={styles["message-content"]}>
                   {renderMessageContent(message)}
                 </div>
               </div>
             ))}
             {isLoading && (
-              <div className="message bot">
-                <div className="message-avatar">
+              <div className={`${styles["message"]} ${styles["bot"]}`}>
+                <div className={styles["message-avatar"]}>
                   <FaRobot />
                 </div>
-                <div className="message-content">
-                  <div className="typing-indicator">
+                <div className={styles["message-content"]}>
+                  <div className={styles["typing-indicator"]}>
                     <span></span>
                     <span></span>
                     <span></span>
@@ -144,7 +148,10 @@ const ChatbotComponent = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <form className="chatbot-input" onSubmit={handleSendMessage}>
+          <form
+            className={styles["chatbot-input"]}
+            onSubmit={handleSendMessage}
+          >
             <input
               type="text"
               value={input}

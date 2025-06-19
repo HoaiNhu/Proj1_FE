@@ -13,18 +13,19 @@ import { getAllDiscount } from "../../../services/DiscountService";
 
 const ProductsPage = () => {
   // ──────────────────────────────────────────── State
-  const [products, setProducts]       = useState([]);
-  const [categories, setCategories]   = useState([]);
-  const [currentCategory, setCurrentCategory] = useState(null);   // null: tất cả – 1: khuyến mãi
-  const [currentCategoryName, setCurrentCategoryName] = useState("Tất cả sản phẩm");
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState(null); // null: tất cả – 1: khuyến mãi
+  const [currentCategoryName, setCurrentCategoryName] =
+    useState("Tất cả sản phẩm");
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages]   = useState(0);
-  const [discounts, setDiscounts]     = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [discounts, setDiscounts] = useState([]);
 
   // ──────────────────────────────────────────── Router
-  const navigate  = useNavigate();
-  const location  = useLocation();
-  const showPromo = location.state?.showPromo || false;            // <── cờ từ HomePage
+  const navigate = useNavigate();
+  const location = useLocation();
+  const showPromo = location.state?.showPromo || false; // <── cờ từ HomePage
   const previousCategoryId = location.state?.categoryIds || null;
 
   // ──────────────────────────────────────────── Fetch danh mục & khuyến mãi
@@ -69,7 +70,7 @@ const ProductsPage = () => {
   // ──────────────────────────────────────────── Hiển thị khuyến mãi
   const handlePromoProductsClick = async () => {
     setCurrentCategoryName("Khuyến mãi");
-    setCurrentCategory(1);     // 1 đánh dấu tab khuyến mãi
+    setCurrentCategory(1); // 1 đánh dấu tab khuyến mãi
     setCurrentPage(0);
 
     try {
@@ -79,7 +80,7 @@ const ProductsPage = () => {
 
       discounts.forEach((d) => {
         const start = new Date(d.discountStartDate).getTime();
-        const end   = new Date(d.discountEndDate).getTime();
+        const end = new Date(d.discountEndDate).getTime();
         if (start <= now && end >= now) {
           d.discountProduct?.forEach((p) =>
             discountedIds.add(typeof p === "string" ? p : p?._id)
@@ -113,7 +114,7 @@ const ProductsPage = () => {
 
   // ──────────────────────────────────────────── Khởi tạo lần đầu
   useEffect(() => {
-    if (!categories.length) return;    // đợi categories load xong
+    if (!categories.length) return; // đợi categories load xong
 
     if (showPromo) {
       handlePromoProductsClick();
@@ -132,7 +133,7 @@ const ProductsPage = () => {
       }
     }
 
-    fetchAllProducts(0, 9);   // mặc định: tất cả
+    fetchAllProducts(0, 9); // mặc định: tất cả
   }, [categories, discounts, showPromo, previousCategoryId]);
 
   // ──────────────────────────────────────────── Phân trang & theo dõi category (trừ khuyến mãi)
@@ -150,16 +151,27 @@ const ProductsPage = () => {
     const p = products.find((prod) => prod._id === productId);
     if (!p) return alert("Product not found!");
     const {
-      productName, productSize, productImage,
-      productCategory, productDescription, productPrice,
-      averageRating, totalRatings
+      productName,
+      productSize,
+      productImage,
+      productCategory,
+      productDescription,
+      productPrice,
+      averageRating,
+      totalRatings,
     } = p;
 
     navigate("/view-product-detail", {
       state: {
-        productId, productName, productSize, productImage,
-        productDescription, productCategory, productPrice,
-        averageRating, totalRatings,
+        productId,
+        productName,
+        productSize,
+        productImage,
+        productDescription,
+        productCategory,
+        productPrice,
+        averageRating,
+        totalRatings,
       },
     });
   };
@@ -184,7 +196,7 @@ const ProductsPage = () => {
   return (
     <div>
       <div className="container-xl product-container">
-         <ChatbotComponent />
+        <ChatbotComponent />
         <div className="product">
           <div className="product__top">
             <h1 className="product__title">SẢN PHẨM</h1>
@@ -230,16 +242,22 @@ const ProductsPage = () => {
                 products.map((p) => {
                   const imageUrl = p.productImage.startsWith("http")
                     ? p.productImage
-                    : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${p.productImage.replace("\\", "/")}`;
+                    : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${p.productImage.replace(
+                        "\\",
+                        "/"
+                      )}`;
 
                   const now = Date.now();
                   const discount = discounts.find((d) => {
                     const st = new Date(d.discountStartDate).getTime();
                     const ed = new Date(d.discountEndDate).getTime();
-                    return st <= now && ed >= now &&
+                    return (
+                      st <= now &&
+                      ed >= now &&
                       d.discountProduct?.some((x) =>
                         typeof x === "string" ? x === p._id : x._id === p._id
-                      );
+                      )
+                    );
                   });
                   const discountPercent = discount?.discountValue || 0;
 

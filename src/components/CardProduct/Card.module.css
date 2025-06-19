@@ -58,16 +58,22 @@
 }
 
 .cartButton {
-  background-color: var(--green100);
+  /* background-color: var(--green100); */
+  background: linear-gradient(90deg, var(--green100), #44ee5e 80%);
   border: none;
-  font-size: 13px;
+  font-size: 1.4rem;
   color: black;
   font-weight: 500;
-  width: 100%;
+  width: 90%;
+  border-radius: 10px;
+  padding: 5px 0;
+  margin-bottom: 10px;
+  transition: background 1s ease;
 }
 .cartButton:hover,
 .cartButton:active {
-  background-color: rgb(187, 248, 5);
+  /* background-color: rgb(187, 248, 5); */
+  background: linear-gradient(90deg, #5befa1, #44e328 80%);
   color: black;
 }
 
