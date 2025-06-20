@@ -20,6 +20,9 @@ const ProductPageAdmin = () => {
   const [totalPages, setTotalPages] = useState(0); // Tổng số trang
   const [error, setError] = useState(""); // State lưu lỗi
   const [discounts, setDiscounts] = useState([]);
+  const [promoGroups, setPromoGroups] = useState([]); 
+  const [promoPage, setPromoPage] = useState(0);   // trang hiện tại của tab KM
+  const promoPerPage = 1;                          // mỗi trang hiển thị 2 khuyến mãi
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -114,47 +117,42 @@ const ProductPageAdmin = () => {
   };
 
   // Khi click promo:
-  const handlePromoProductsClick = async () => {
-    setCurrentCategoryName("Khuyến mãi");
-    setCurrentCategory(1);
-    setCurrentPage(0);
-  
-    try {
-      const allProductResponse = await getAllproduct();
-      const allProducts = allProductResponse.data;
-      console.log("DATA PROMO: ", allProducts)
-  
-      const discountedProductIds = new Set();
-      const now = Date.now();
-      discounts.forEach((discount) => {
-        const start = new Date(discount.discountStartDate).getTime();
-        const end = new Date(discount.discountEndDate).getTime();
-        if (start <= now && end >= now) {
-          discount.discountProduct?.forEach((product) => {
-            if (typeof product === "string") {
-              discountedProductIds.add(product);
-            } else if (product?._id) {
-              discountedProductIds.add(product._id);
-            }
-          });
-        }
+ const handlePromoProductsClick = async () => {
+  setCurrentCategoryName("Khuyến mãi");
+  setCurrentCategory(1);
+  setPromoPage(0);
+
+  try {
+    // lấy toàn bộ sản phẩm
+    const allProducts = (await getAllproduct()).data;
+    const now = Date.now();
+
+    // gom theo từng discount
+    const groups = discounts
+      .filter((d) => {
+        const st = new Date(d.discountStartDate).getTime();
+        const ed = new Date(d.discountEndDate).getTime();
+        return st <= now && ed >= now;
+      })
+      .map((d) => {
+        const ids = d.discountProduct.map((x) =>
+          typeof x === "string" ? x : x._id
+        );
+        return {
+          ...d,
+          products: allProducts.filter((p) => ids.includes(p._id)),
+        };
       });
-      console.log("DATA PROMO12: ", discounts)
 
-  
-      const filtered = allProducts.filter((product) =>
-        discountedProductIds.has(product._id)
-      );
+    setPromoGroups(groups);
+    setTotalPages(Math.ceil(groups.length / promoPerPage));
+  } catch (err) {
+    console.error("Lỗi khi lọc KM:", err);
+    setPromoGroups([]);
+    setTotalPages(1);
+  }
+};
 
-      console.log("DATA PROMO: ", filtered)
-  
-      setProducts(filtered); // ✅ chỉ chứa sản phẩm đang áp dụng mã
-      setTotalPages(1); // Hoặc tính lại phân trang nếu cần
-    } catch (err) {
-      console.error("Lỗi khi lọc sản phẩm khuyến mãi:", err);
-      setProducts([]);
-    }
-  };
 
   // Khi nhấn vào Tất cả sản phẩm
   const handleAllProductsClick = () => {
@@ -184,8 +182,8 @@ const ProductPageAdmin = () => {
   };
 
   // Xử lý cập nhật sản phẩm
-  const handleUpdate = (productId) => {
-    const selectedProduct = products.find((product) => product._id === productId);
+  const handleUpdate = (productId, source) => {
+    const selectedProduct = source.find((product) => product._id === productId);
     console.log("SDSDSF: ", selectedProduct)
     if (selectedProduct) {
       const { productName, productSize, productImage, productCategory, productDescription, productPrice } = selectedProduct;
@@ -239,77 +237,128 @@ const ProductPageAdmin = () => {
               >
                 Khuyến mãi
               </SideMenuComponent>
-              {Array.isArray(categories) && categories.length > 0 ? (
-                categories.map((category) => (
-                  <SideMenuComponent
-                    key={category._id}
-                    value={category._id}
-                    onClick={() => handleCategoryClick(category._id, category.categoryName)}
-                    isActive={currentCategory === category._id}
-                  >
-                    {category.categoryName}
-                  </SideMenuComponent>
-                ))
-              ) : (
-                <p>Không có loại sản phẩm</p>
-              )}
+              {categories.map((c) => (
+                              <SideMenuComponent
+                                key={c._id}
+                                value={c._id}
+                                isActive={currentCategory === c._id}
+                                onClick={() => handleCategoryClick(c._id, c.categoryName)}
+                              >
+                                {c.categoryName}
+                              </SideMenuComponent>
+                            ))}
+                          </div>
               
-          </div>
-
-          {/* productadmin list */}
-          <div className="container product__list">
-              {products.length > 0 ? (
-                products.map((product) => {
-                  const imageUrl = product.productImage.startsWith("http")
-                    ? product.productImage
-                    : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace("\\", "/")}`;
-
-                  const now = Date.now();
-                  const appliedDiscount = discounts.find((discount) => {
-                    const start = new Date(discount.discountStartDate).getTime();
-                    const end = new Date(discount.discountEndDate).getTime();
-                    return start <= now && end >= now &&
-                      discount.discountProduct?.some((pro) =>
-                        typeof pro === "string"
-                          ? pro === product._id
-                          : pro._id === product._id
-                      );
-                  });
-
-                  const discountPercent = appliedDiscount?.discountValue || 0;
+                          {/* ─────────────── Danh sách sản phẩm */}
+              <div className="container product__list">
+                {currentCategory === 1 ? (          // 👉 Tab Khuyến mãi
+                  promoGroups.length ? (
+                    promoGroups
+                    .slice(promoPage*promoPerPage, (promoPage+1)*promoPerPage).map((g) => (
+                      <div key={g._id} className="promo-group">
+                        <h2 className="promo-group__label">
+                          {g.discountName} – Giảm {g.discountValue}%
+                        </h2>
+              
+                        <div className="promo-group__products">
+                          {g.products.map((p) => {
+                            const imageUrl = p.productImage.startsWith("http")
+                              ? p.productImage
+                              : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${p.productImage.replace(
+                                  "\\",
+                                  "/"
+                                )}`;
+              
+                            return (
+                              <CardProductAdmin
+                                key={p._id}
+                                className="col productadmin__item"
+                                type="primary"
+                                img={imageUrl}
+                                title={p.productName}
+                                price={p.productPrice}
+                                discount={g.discountValue}
+                                id={p._id}
+                                size={p.productSize}
+                                averageRating={p.averageRating}
+                                totalRatings={p.totalRatings}
+                                onClick={() => handleUpdate(p._id, g.products)}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Không có khuyến mãi nào</p>
+                  )
+                ) : (
+                  products.length ? (
+                    products.map((p) => {
+                      const imageUrl = p.productImage.startsWith("http")
+                        ? p.productImage
+                        : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${p.productImage.replace(
+                            "\\",
+                            "/"
+                          )}`;
+              
+                      const now = Date.now();
+                      const discount = discounts.find((d) => {
+                        const st = new Date(d.discountStartDate).getTime();
+                        const ed = new Date(d.discountEndDate).getTime();
+                        return (
+                          st <= now &&
+                          ed >= now &&
+                          d.discountProduct?.some((x) =>
+                            typeof x === "string" ? x === p._id : x._id === p._id
+                          )
+                        );
+                      });
+                      const discountPercent = discount?.discountValue || 0;
 
                   return (
                     <CardProductAdmin
-                      key={product._id}
+                      key={p._id}
                       className="col productadmin__item"
                       type="primary"
                       img={imageUrl}
-                      title={product.productName}
-                      price={product.productPrice}
+                      title={p.productName}
+                      price={p.productPrice}
                       discount={discountPercent}
-                      id={product._id}
-                      size={product.productSize}
-                      onClick={() => handleUpdate(product._id)}
-                      averageRating={product.averageRating}
-                      totalRatings={product.totalRatings}
+                      id={p._id}
+                      size={p.productSize}
+                      onClick={() => handleUpdate(p._id,products)}
+                      averageRating={p.averageRating}
+                      totalRatings={p.totalRatings}
                      
                     />
                   );
                 })
               ) : (
                 <p>Không có sản phẩm nào</p>
+              )
               )}
             </div>
         </div>
 
          {/* Pagination */}
          <div className="PageNumberHolder">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
-        </div>
+  {currentCategory === 1 ? (
+    /* 👉 Pagination cho tab Khuyến mãi */
+    <Pagination
+      currentPage={promoPage}
+      totalPages={totalPages}
+      onPageChange={setPromoPage}
+    />
+  ) : (
+    /* 👉 Pagination cho tất cả các tab còn lại */
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPageChange={setCurrentPage}
+    />
+  )}
+</div>
       </div>
     </div>
   );
