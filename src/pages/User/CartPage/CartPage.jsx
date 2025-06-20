@@ -160,7 +160,7 @@ const CartPage = () => {
                     <ProductInfor
                       image={product.img}
                       name={product.title}
-                      size={product.size ? `${product.size} cm` : "Không có"}
+                      size={product.size ? `${product.size} cm` : ""}
                     />
                   </td>
                   <td className="PriceProduct">

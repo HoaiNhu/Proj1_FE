@@ -150,9 +150,9 @@ const HomePage = () => {
 
   // Khi nhấn vào sản phẩm
   const handleDetailProduct = (productId) => {
-    const selectedProduct = products.find(
-      (product) => product._id === productId
-    );
+    const selectedProduct =
+    products.find((p) => p._id === productId) ||
+    bestSeller.find((p) => p._id === productId);
 
     if (selectedProduct) {
       const {
@@ -201,6 +201,7 @@ const HomePage = () => {
 
       console.log("Top 4 sản phẩm đánh giá cao nhất:", top4);
       setBestSeller(top4); // <- cập nhật state
+      console.log("BEST SELLER: ", bestSeller)
     };
 
     fetchBestSellers();
@@ -322,13 +323,14 @@ const HomePage = () => {
           {bestSeller.map((product) => (
             <CardProduct
               key={product._id}
-              id={product._id} // Thêm prop id vào đây
-              type="secondary"
+              id={product._id}
+              type={"secondary"}
               img={product.productImage}
               title={product.productName}
               price={product.productPrice}
               discount={findPromoApplied(product._id)}
               averageRating={product.averageRating}
+              size={product.productSize}
               onClick={() => handleDetailProduct(product._id)}
             />
           ))}
