@@ -207,16 +207,16 @@ h2 {
 
 /* Nút thanh toán */
 .payment-button {
-  width: 50% !important;
-  margin: 30px auto !important;
-  padding: 15px 30px !important;
-  font-size: 18px !important;
-  font-weight: 600 !important;
-  background: #28a745 !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 10px !important;
-  transition: all 0.3s ease !important;
+  width: 80%;
+  margin: 30px auto;
+  padding: 15px 30px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  transition: all 0.3s ease;
 }
 
 .payment-button:hover {
