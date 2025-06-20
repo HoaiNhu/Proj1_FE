@@ -27,7 +27,6 @@ const ViewProductDetailPage = () => {
   const { state: productData } = useLocation(); // Nhận dữ liệu từ `state`
   const dispatch = useDispatch();
 
-
   console.log("Product Data from location:", productData); // Thêm log này
 
   const [product, setProduct] = useState(
@@ -40,9 +39,16 @@ const ViewProductDetailPage = () => {
       productDescription: "",
       averageRating: 0,
       totalRatings: 0,
-      discount:""
+      discount: "",
     }
   );
+
+  useEffect(() => {
+    if (productData) {
+      setProduct(productData);
+      window.scrollTo(0, 0);
+    }
+  }, [productData]);
 
   // Thêm useEffect để log khi product thay đổi
   useEffect(() => {

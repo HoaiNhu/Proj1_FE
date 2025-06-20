@@ -46,6 +46,9 @@ const RecommendationCarouselComponent = ({ products }) => {
           productDescription: product.productDescription,
           productCategory: product.productCategory,
           productPrice: product.productPrice,
+          averageRating: product.averageRating || 5.0,
+          totalRatings: product.totalRatings || 0,
+          discount: product.discount || 0,
         },
       });
     } else {
