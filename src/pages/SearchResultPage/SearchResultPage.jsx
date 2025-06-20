@@ -66,36 +66,41 @@ const SearchResultPage = () => {
   }, [query]);
 
   return (
-    <div className="products-page">
-      <h2>Kết quả tìm kiếm cho {query}</h2>
-      <div className=" container product__list">
-        {products.length > 0 ? (
-          products.map((product) => {
-            // console.log("productPage", products.length);
-            const imageUrl = product.productImage.startsWith("http")
-              ? product.productImage
-              : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace(
-                  "\\",
-                  "/"
-                )}`;
-            console.log("Product ID in ProductsPage:", product._id);
-            //console.log("Product image URL:", imageUrl);  // Debug URL ảnh
-            return (
-              <CardProduct
-                key={product._id} // Dùng _id làm key cho mỗi sản phẩm
-                className="col productadmin__item"
-                type={"primary"}
-                img={imageUrl} // Sử dụng URL ảnh đã xử lý
-                title={product.productName} // Hiển thị tên sản phẩm
-                price={product.productPrice}// Hiển thị giá sản phẩm
-                id={product._id}
-                onClick={() => handleDetail(product._id)}
-              />
-            );
-          })
-        ) : (
-          <p>Không có sản phẩm nào</p>
-        )}
+    <div className="container-xl">
+      <div className="products-page">
+        <h2>Kết quả tìm kiếm cho {query}</h2>
+        <div className="container product__list">
+          {products.length > 0 ? (
+            products.map((product) => {
+              // console.log("productPage", products.length);
+              const imageUrl = product.productImage.startsWith("http")
+                ? product.productImage
+                : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${product.productImage.replace(
+                    "\\",
+                    "/"
+                  )}`;
+              console.log("Product ID in ProductsPage:", product._id);
+              //console.log("Product image URL:", imageUrl);  // Debug URL ảnh
+              return (
+                <CardProduct
+                  key={product._id} // Dùng _id làm key cho mỗi sản phẩm
+                  className="col productadmin__item"
+                  type={"primary"}
+                  img={imageUrl} // Sử dụng URL ảnh đã xử lý
+                  title={product.productName} // Hiển thị tên sản phẩm
+                  price={product.productPrice} // Hiển thị giá sản phẩm
+                  id={product._id}
+                  // discount={findPromoApplied(product._id)}
+                  averageRating={product.averageRating}
+                  size={product.productSize}
+                  onClick={() => handleDetail(product._id)}
+                />
+              );
+            })
+          ) : (
+            <p>Không có sản phẩm nào</p>
+          )}
+        </div>
       </div>
     </div>
   );

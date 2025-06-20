@@ -64,10 +64,11 @@ export const getAllStatus = async (access_token) => {
     );
     return res.data;
   } catch (error) {
+    console.error("Error fetching statuses:", error);
     if (error.response) {
       throw {
-        // status: error.response.data?.status || "ERR",
-        message: error.response.data?.message || "Đã xảy ra lỗi.",
+        message:
+          error.response.data?.message || "Đã xảy ra lỗi khi lấy trạng thái.",
       };
     } else {
       throw { status: 500, message: "Không thể kết nối đến máy chủ." };

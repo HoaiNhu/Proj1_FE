@@ -283,7 +283,7 @@ const HeaderComponent = () => {
                   {/* nav admin */}
                   {user?.isAdmin ? (
                     <>
-                      <ButtonNoBGComponent to="/">
+                      <ButtonNoBGComponent to="/admin/">
                         Trang chủ
                       </ButtonNoBGComponent>
                       <ButtonNoBGComponent to="/admin/products">

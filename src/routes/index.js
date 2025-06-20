@@ -52,6 +52,7 @@ import ListQuizPage from "../pages/Admin/CRUDQuiz/ListQuizPage/ListQuizPage.jsx"
 import UpdateQuizPage from "../pages/Admin/CRUDQuiz/UpdateQuizPage/UpdateQuizPage.jsx";
 import DeleteQuizPage from "../pages/Admin/CRUDQuiz/DeleteQuizPage/DeleteQuizPage.jsx";
 import MiniGamePage from "../pages/User/MiniGamePage/MiniGamePage.jsx";
+import HomeAdminPage from "../pages/Admin/HomeAdminPage/HomeAdminPage.jsx";
 export const routes = [
   {
     path: "/",
@@ -276,7 +277,15 @@ export const routes = [
     page: ReportPage,
     isShowHeader: true,
     isShowFooter: true,
-    // isPrivate: true,
+    isPrivate: true,
+  },
+
+  {
+    path: "/admin/",
+    page: HomeAdminPage,
+    isShowHeader: true,
+    // isShowFooter: true,
+    isPrivate: true,
   },
 
   {
