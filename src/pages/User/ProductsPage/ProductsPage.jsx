@@ -10,6 +10,8 @@ import {
 } from "../../../services/productServices";
 import { getAllCategory } from "../../../services/CategoryService";
 import { getAllDiscount } from "../../../services/DiscountService";
+const PAGE_SIZE = 9;   // 9 sản phẩm mỗi trang
+
 
 const ProductsPage = () => {
   // ──────────────────────────────────────────── State
@@ -21,6 +23,9 @@ const ProductsPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [discounts, setDiscounts] = useState([]);
+const [promoGroups, setPromoGroups] = useState([]); 
+const [promoPage, setPromoPage] = useState(0);   // trang hiện tại của tab KM
+const promoPerPage = 1;                          // mỗi trang hiển thị 2 khuyến mãi
 
   // ──────────────────────────────────────────── Router
   const navigate = useNavigate();
@@ -45,57 +50,79 @@ const ProductsPage = () => {
   }, []);
 
   // ──────────────────────────────────────────── Hàm fetch sản phẩm
-  const fetchProductsByCategory = async (page = 0, limit = 9, categoryId) => {
-    try {
-      const { total, data } = await getProductsByCategory(categoryId);
-      setProducts(Array.isArray(data) ? data : []);
-      setTotalPages(Math.ceil(total / limit));
-      setCurrentPage(page);
-    } catch (err) {
-      console.error("Error fetching products:", err);
-    }
-  };
+  const fetchProductsByCategory = async (page = 0, limit = PAGE_SIZE, categoryId) => {
+  try {
+    const { data } = await getProductsByCategory(categoryId);
 
-  const fetchAllProducts = async (page = 0, limit = 9) => {
-    try {
-      const { total, data } = await getAllproduct();
-      setProducts(Array.isArray(data) ? data : []);
-      setTotalPages(Math.ceil(total / limit));
-      setCurrentPage(page);
-    } catch (err) {
-      console.error("Error fetching products:", err);
-    }
-  };
+    const start = page * limit;
+    const end   = start + limit;
+
+    setProducts(data.slice(start, end));
+    setTotalPages(Math.ceil(data.length / limit));
+    setCurrentPage(page);
+  } catch (err) {
+    console.error("Error fetching products:", err);
+  }
+};
+
+
+  const fetchAllProducts = async (page = 0, limit = PAGE_SIZE) => {
+  try {
+    const { data } = await getAllproduct();
+
+    const start = page * limit;
+    const end   = start + limit;
+
+    setProducts(data.slice(start, end));      // ⬅️ chỉ giữ phần trang hiện tại
+    setTotalPages(Math.ceil(data.length / limit));
+    setCurrentPage(page);
+  } catch (err) {
+    console.error("Error fetching products:", err);
+  }
+};
+
 
   // ──────────────────────────────────────────── Hiển thị khuyến mãi
-  const handlePromoProductsClick = async () => {
-    setCurrentCategoryName("Khuyến mãi");
-    setCurrentCategory(1); // 1 đánh dấu tab khuyến mãi
-    setCurrentPage(0);
+ const handlePromoProductsClick = async () => {
+  setCurrentCategoryName("Khuyến mãi");
+  setCurrentCategory(1);
+  setPromoPage(0);          // reset về trang đầu của tab KM
+  setCurrentPage(0);        // (giữ nguyên cho tab khác)
 
-    try {
-      const allProducts = (await getAllproduct()).data;
-      const now = Date.now();
-      const discountedIds = new Set();
+  try {
+    const allProducts = (await getAllproduct()).data;
+    const now = Date.now();
 
-      discounts.forEach((d) => {
-        const start = new Date(d.discountStartDate).getTime();
-        const end = new Date(d.discountEndDate).getTime();
-        if (start <= now && end >= now) {
-          d.discountProduct?.forEach((p) =>
-            discountedIds.add(typeof p === "string" ? p : p?._id)
-          );
-        }
+    const groups = discounts
+      .filter((d) => {
+        const st = new Date(d.discountStartDate).getTime();
+        const ed = new Date(d.discountEndDate).getTime();
+        return st <= now && ed >= now;
+      })
+      .map((d) => {
+        const ids = d.discountProduct.map((x) =>
+          typeof x === "string" ? x : x._id
+        );
+        return {
+          ...d,
+          products: allProducts.filter((p) => ids.includes(p._id)),
+        };
       });
 
-      const filtered = allProducts.filter((p) => discountedIds.has(p._id));
-      setProducts(filtered);
-      setTotalPages(1);
-    } catch (err) {
-      console.error("Error filtering promo products:", err);
-      setProducts([]);
-    }
-  };
+    setPromoGroups(groups);
+
+    // 👉 TÍNH SỐ TRANG riêng cho tab KM
+    const totalPromoPages = Math.ceil(groups.length / promoPerPage);
+    setTotalPages(totalPromoPages);   // tái dùng state totalPages
+    setProducts([]);                  // rỗng vì không dùng ở tab KM
+  } catch (err) {
+    console.error("Error filtering promo products:", err);
+    setPromoGroups([]);
+    setTotalPages(1);
+  }
+};
+
+
 
   // ──────────────────────────────────────────── Chọn category
   const handleCategoryClick = (id, name) => {
@@ -237,62 +264,117 @@ const ProductsPage = () => {
             </div>
 
             {/* ─────────────── Danh sách sản phẩm */}
-            <div className="container product__list">
-              {products.length ? (
-                products.map((p) => {
-                  const imageUrl = p.productImage.startsWith("http")
-                    ? p.productImage
-                    : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${p.productImage.replace(
-                        "\\",
-                        "/"
-                      )}`;
+<div className="container product__list">
+  {currentCategory === 1 ? (          // 👉 Tab Khuyến mãi
+    promoGroups.length ? (
+      promoGroups
+      .slice(promoPage*promoPerPage, (promoPage+1)*promoPerPage).map((g) => (
+        <div key={g._id} className="promo-group">
+          <h3 className="promo-group__label">
+            {g.discountName} – Giảm {g.discountValue}%
+          </h3>
 
-                  const now = Date.now();
-                  const discount = discounts.find((d) => {
-                    const st = new Date(d.discountStartDate).getTime();
-                    const ed = new Date(d.discountEndDate).getTime();
-                    return (
-                      st <= now &&
-                      ed >= now &&
-                      d.discountProduct?.some((x) =>
-                        typeof x === "string" ? x === p._id : x._id === p._id
-                      )
-                    );
-                  });
-                  const discountPercent = discount?.discountValue || 0;
+          <div className="promo-group__products">
+            {g.products.map((p) => {
+              const imageUrl = p.productImage.startsWith("http")
+                ? p.productImage
+                : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${p.productImage.replace(
+                    "\\",
+                    "/"
+                  )}`;
 
-                  return (
-                    <CardProduct
-                      key={p._id}
-                      className="col productadmin__item"
-                      type="primary"
-                      img={imageUrl}
-                      title={p.productName}
-                      price={p.productPrice}
-                      discount={discountPercent}
-                      id={p._id}
-                      size={p.productSize}
-                      averageRating={p.averageRating}
-                      totalRatings={p.totalRatings}
-                      onClick={() => handleDetail(p._id)}
-                    />
-                  );
-                })
-              ) : (
-                <p>Không có sản phẩm nào</p>
-              )}
-            </div>
+              return (
+                <CardProduct
+                  key={p._id}
+                  className="col productadmin__item"
+                  type="primary"
+                  img={imageUrl}
+                  title={p.productName}
+                  price={p.productPrice}
+                  discount={g.discountValue}
+                  id={p._id}
+                  size={p.productSize}
+                  averageRating={p.averageRating}
+                  totalRatings={p.totalRatings}
+                  onClick={() => handleDetail(p._id, g.products)}
+                />
+              );
+            })}
+          </div>
+        </div>
+      ))
+    ) : (
+      <p>Không có khuyến mãi nào</p>
+    )
+  ) : (
+    products.length ? (
+      products.map((p) => {
+        const imageUrl = p.productImage.startsWith("http")
+          ? p.productImage
+          : `https://res.cloudinary.com/dlyl41lgq/image/upload/v2/${p.productImage.replace(
+              "\\",
+              "/"
+            )}`;
+
+        const now = Date.now();
+        const discount = discounts.find((d) => {
+          const st = new Date(d.discountStartDate).getTime();
+          const ed = new Date(d.discountEndDate).getTime();
+          return (
+            st <= now &&
+            ed >= now &&
+            d.discountProduct?.some((x) =>
+              typeof x === "string" ? x === p._id : x._id === p._id
+            )
+          );
+        });
+        const discountPercent = discount?.discountValue || 0;
+
+        return (
+          <CardProduct
+            key={p._id}
+            className="col productadmin__item"
+            type="primary"
+            img={imageUrl}
+            title={p.productName}
+            price={p.productPrice}
+            discount={discountPercent}
+            id={p._id}
+            size={p.productSize}
+            averageRating={p.averageRating}
+            totalRatings={p.totalRatings}
+            onClick={() => handleDetail(p._id, products)}
+          />
+        );
+      })
+    ) : (
+      <p>Không có sản phẩm nào</p>
+    )
+  )}
+</div>
+
           </div>
         </div>
 
-        {/* ─────────────── Pagination */}
-        <div className="PageNumberHolder">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(p) => setCurrentPage(p)}
-          />
-        </div>
+       {/* ─────────────── Pagination */}
+<div className="PageNumberHolder">
+  {currentCategory === 1 ? (
+    /* 👉 Pagination cho tab Khuyến mãi */
+    <Pagination
+      currentPage={promoPage}
+      totalPages={totalPages}
+      onPageChange={setPromoPage}
+    />
+  ) : (
+    /* 👉 Pagination cho tất cả các tab còn lại */
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPageChange={setCurrentPage}
+    />
+  )}
+</div>
+
       </div>
     </div>
   );

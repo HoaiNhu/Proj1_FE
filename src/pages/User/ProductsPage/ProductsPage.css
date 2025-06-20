@@ -39,6 +39,26 @@
   /* background-color: var(--grey5); */
 }
 
+.product__list .promo-group {
+ grid-column: 1 / -1;   /* span toàn bộ */
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.promo-group__label {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 1rem 0 0.5rem;
+}
+
+/* layout sản phẩm giống .product__list */
+.promo-group__products {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+
 /* .CardProduct.product__item {
   font-weight: 600;
 } */
@@ -77,3 +97,5 @@
     /* background-color: var(--grey5); */
   }
 }
+
+
