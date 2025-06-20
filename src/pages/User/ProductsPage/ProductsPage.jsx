@@ -174,34 +174,37 @@ const promoPerPage = 1;                          // mỗi trang hiển thị 2 k
   }, [currentPage, currentCategory]);
 
   // ──────────────────────────────────────────── Xem chi tiết sản phẩm
-  const handleDetail = (productId) => {
-    const p = products.find((prod) => prod._id === productId);
-    if (!p) return alert("Product not found!");
-    const {
+ const handleDetail = (productId, source = products) => {
+  const p = source.find((prod) => prod._id === productId);
+
+  if (!p) return alert("Product not found!");
+
+  const {
+    productName,
+    productSize,
+    productImage,
+    productCategory,
+    productDescription,
+    productPrice,
+    averageRating,
+    totalRatings,
+  } = p;
+
+  navigate("/view-product-detail", {
+    state: {
+      productId,
       productName,
       productSize,
       productImage,
-      productCategory,
       productDescription,
+      productCategory,
       productPrice,
       averageRating,
       totalRatings,
-    } = p;
+    },
+  });
+};
 
-    navigate("/view-product-detail", {
-      state: {
-        productId,
-        productName,
-        productSize,
-        productImage,
-        productDescription,
-        productCategory,
-        productPrice,
-        averageRating,
-        totalRatings,
-      },
-    });
-  };
 
   // ──────────────────────────────────────────── Phân trang UI
   const Pagination = ({ currentPage, totalPages, onPageChange }) => (
@@ -270,9 +273,9 @@ const promoPerPage = 1;                          // mỗi trang hiển thị 2 k
       promoGroups
       .slice(promoPage*promoPerPage, (promoPage+1)*promoPerPage).map((g) => (
         <div key={g._id} className="promo-group">
-          <h3 className="promo-group__label">
+          <h2 className="promo-group__label">
             {g.discountName} – Giảm {g.discountValue}%
-          </h3>
+          </h2>
 
           <div className="promo-group__products">
             {g.products.map((p) => {
