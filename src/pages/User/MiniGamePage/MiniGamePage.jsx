@@ -180,19 +180,20 @@ const MiniGamePage = () => {
       });
       return;
     }
-    // Ghép đáp án từ missingInput vào puzzle.puzzle
+    // Ghép đáp án từ missingInput vào puzzle.puzzle theo đúng hiddenIndices
     let arr = puzzle.puzzle.split("");
     let inputArr = missingInput.split("");
-    let idx = 0;
-    for (let i = 0; i < arr.length; i++) {
-      if (hiddenIndices.includes(i)) {
-        arr[i] = inputArr[idx] || "_";
-        idx++;
-      }
+    for (let i = 0; i < hiddenIndices.length; i++) {
+      arr[hiddenIndices[i]] = inputArr[i] || "_";
     }
-    const answer = arr.join("").replace(/\s/g, "");
+    const answer = arr.join("");
+    console.log("arr after fill:", arr);
+    console.log("answer to submit:", answer);
+
     try {
       const response = await GameService.submitAnswer(answer);
+      console.log("response", response);
+
       if (response.success) {
         const {
           isCorrect,
