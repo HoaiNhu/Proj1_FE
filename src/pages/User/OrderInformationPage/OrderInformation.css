@@ -202,7 +202,7 @@
 .District,
 .Village {
   /* display: flex; */
-  flex: 1 1 0;
+  /* flex: 1 1 0; */
   height: 54px;
   padding: 16px 20px;
   /* justify-content: space-between; */
@@ -220,16 +220,16 @@
 .comboBoxHolder {
   display: flex;
   /* flex: 1 1 0; */
-  margin-left: 50px;
+  margin-left: 40px;
   justify-content: space-between;
-  margin-right: 50px;
+  margin-right: 40px;
   gap: 0;
 }
 
-.DistrictHolder,
+/* .DistrictHolder,
 .VillageHolder {
   margin-left: 238px;
-}
+} */
 
 .TimeHolder {
   margin-left: -50px;
