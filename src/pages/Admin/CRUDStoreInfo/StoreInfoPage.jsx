@@ -40,10 +40,7 @@ const StoreInfoPage = () => {
                 <div className="col name-phone">
                   <div className="store-name">
                     <label className="title-name">Tên cửa hàng</label>
-                    <FormComponent
-                      style={{ width: "100%" }}
-                      value="AVOCADO"
-                    />
+                    <FormComponent style={{ width: "100%" }} value="AVOCADO" />
                   </div>
                   <div className="store-phone">
                     <label className="title-name">Số điện thoại</label>
@@ -62,7 +59,7 @@ const StoreInfoPage = () => {
                   className="store__mail"
                   type="email"
                   style={{ width: "100%" }}
-                  value="avocado@gmail.com"
+                  value="avocadosweetlove@gmail.com"
                 />
               </div>
               <div className="row store-info__email mb-5">
