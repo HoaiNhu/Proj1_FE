@@ -66,6 +66,7 @@ const QuizzPage = () => {
           questionId: currentQuestion._id,
           answer,
           customAnswer: answer === "custom" ? customAnswer : null,
+          
           sessionId: sessionId,
         },
       ];

@@ -45,7 +45,7 @@ const HomeAdminPage = () => {
           await Promise.all([
             UserService.getAllUser(token),
             OrderService.getAllOrders(token),
-            ProductService.getAllproduct(token),
+            ProductService.getAllProduct(token),
             CategoryService.getAllCategory(),
             StatusService.getAllStatus(token),
           ]);

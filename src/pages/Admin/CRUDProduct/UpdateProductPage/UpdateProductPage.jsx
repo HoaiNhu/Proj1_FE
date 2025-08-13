@@ -87,7 +87,7 @@ const UpdateProductPage = () => {
         console.log("form", `${pair[0]}: ${pair[1]}`);
       }
       console.log("DATA", data)
-      const response = await productService.updateproduct(data.id, accessToken, data.formData);
+      const response = await productService.updateProduct(data.id, accessToken, data.formData);
       console.log("RESULT", response);
       try {
         const result = await response;

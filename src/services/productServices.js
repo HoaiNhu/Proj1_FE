@@ -64,7 +64,7 @@ export const getDetailsproduct = async (id, access_token) => {
   }
 };
 
-export const getAllproduct = async (access_token) => {
+export const getAllProduct = async (access_token) => {
   try {
     const res = await axiosJWT.get(
       `${process.env.REACT_APP_API_URL_BACKEND}/product/get-all-product`,
@@ -91,7 +91,7 @@ export const getAllproduct = async (access_token) => {
   }
 };
 
-export const updateproduct = async (id, access_token, data) => {
+export const updateProduct = async (id, access_token, data) => {
   try {
     for (let pair of data.entries()) {
       console.log("form", `${pair[0]}: ${pair[1]}`);

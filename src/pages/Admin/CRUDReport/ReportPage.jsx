@@ -61,7 +61,7 @@ const ReportPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await ProductService.getAllproduct();
+      const response = await ProductService.getAllProduct();
       setProducts(response.data || []);
       console.log("responseProduct", response);
     } catch (error) {

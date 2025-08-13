@@ -13,7 +13,7 @@ import img12 from "../../../assets/img/hero_2.jpg";
 import ChatbotComponent from "../../../components/ChatbotComponent/ChatbotComponent";
 import { getAllCategory } from "../../../services/CategoryService";
 import {
-  getAllproduct,
+  getAllProduct,
   getProductsByCategory,
 } from "../../../services/productServices";
 import AOS from "aos";
@@ -188,7 +188,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchBestSellers = async () => {
-      const allProduct = await getAllproduct(); // <- chờ fetch hoàn tất
+      const allProduct = await getAllProduct(); // <- chờ fetch hoàn tất
       //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);
 
       //console.log("Top 4 sản phẩm đánh giá cao nhất:", allProduct);

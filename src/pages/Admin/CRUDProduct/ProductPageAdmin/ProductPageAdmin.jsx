@@ -8,7 +8,7 @@ import axios from 'axios'; // For making API calls
 import { Button, Modal } from "react-bootstrap";
 import { getAllCategory } from "../../../../services/CategoryService";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getProductsByCategory, getAllproduct } from "../../../../services/productServices";
+import { getProductsByCategory, getAllProduct } from "../../../../services/productServices";
 import { getAllDiscount } from "../../../../services/DiscountService";
 
 const ProductPageAdmin = () => {
@@ -79,7 +79,7 @@ const ProductPageAdmin = () => {
       try {
         const queryParams = new URLSearchParams({ page, limit }).toString();
   
-        const data = await getAllproduct();
+        const data = await getAllProduct();
         setCurrentPage(page);
         setTotalPages(Math.ceil(data.total / limit));
   
@@ -124,7 +124,7 @@ const ProductPageAdmin = () => {
 
   try {
     // lấy toàn bộ sản phẩm
-    const allProducts = (await getAllproduct()).data;
+    const allProducts = (await getAllProduct()).data;
     const now = Date.now();
 
     // gom theo từng discount
